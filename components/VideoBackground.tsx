@@ -8,10 +8,12 @@ export default function VideoBackground() {
       <video
         className={styles.video}
         src="/mintsyrup.mov"
+        poster="/frames/drops.jpg"
         autoPlay
         muted
         loop
         playsInline
+        preload="auto"
       />
       <div className={styles.grain} aria-hidden />
     </div>
