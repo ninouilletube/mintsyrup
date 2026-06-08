@@ -89,7 +89,7 @@
 }
 
 .blockSquareSmall {
-  flex: 1;
+  flex: 1.3;
   aspect-ratio: 1 / 1;
   overflow-y: auto;
   transform: scale(0.85);
