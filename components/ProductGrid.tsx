@@ -77,8 +77,8 @@ export default function ProductGrid() {
   const byCategory = isDrops
     ? [...visible].sort((a, b) => b.id - a.id)
     : activeCategory === 'ete'
-      ? visible.filter((p) => p.seasons?.includes(SEASON_TO_ID[getCurrentSeason()]))
-      : visible.filter((p) => p.categories.includes(activeCategory));
+      ? [...visible.filter((p) => p.seasons?.includes(SEASON_TO_ID[getCurrentSeason()]))].sort((a, b) => b.id - a.id)
+      : [...visible.filter((p) => p.categories.includes(activeCategory))].sort((a, b) => b.id - a.id);
 
   // Sous-catégories disponibles
   const availableTypeIds = [...new Set(byCategory.map((p) => p.subcategory).filter(Boolean))] as string[];

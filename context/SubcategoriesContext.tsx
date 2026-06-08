@@ -14,7 +14,7 @@ type SubcategoriesContextType = {
 
 const SubcategoriesContext = createContext<SubcategoriesContextType>({
   subcategories: [],
-  addSubcategory: () => {},
+  addSubcategory: () => '',
   deleteSubcategory: () => {},
 });
 
