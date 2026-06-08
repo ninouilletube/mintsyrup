@@ -84,6 +84,7 @@
 
 .blockSquare {
   flex: 1;
+  background: #ffffff !important;
 }
 
 .blockSquareSmall {
@@ -91,6 +92,7 @@
   transform: scale(0.85);
   transform-origin: center center;
   align-self: center;
+  background: #FAE2E8 !important;
 }
 
 .blockFull {
