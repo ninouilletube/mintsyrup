@@ -120,6 +120,9 @@ export default function AdminPage() {
   const [bio1, setBio1] = useState('');
   const [bio2, setBio2] = useState('');
   const [bio3, setBio3] = useState('');
+  const [bioTitle1, setBioTitle1] = useState('');
+  const [bioTitle2, setBioTitle2] = useState('');
+  const [bioTitle3, setBioTitle3] = useState('');
   const [bioSaving, setBioSaving] = useState(false);
   const [bioSaved, setBioSaved] = useState(false);
 
@@ -158,6 +161,9 @@ export default function AdminPage() {
     getData('bio1').then((v) => v && setBio1(v as string));
     getData('bio2').then((v) => v && setBio2(v as string));
     getData('bio3').then((v) => v && setBio3(v as string));
+    getData('bioTitle1').then((v) => v && setBioTitle1(v as string));
+    getData('bioTitle2').then((v) => v && setBioTitle2(v as string));
+    getData('bioTitle3').then((v) => v && setBioTitle3(v as string));
   }, [auth]);
 
   const login = () => {
@@ -1019,18 +1025,24 @@ export default function AdminPage() {
         <div className={styles.section}>
           {bioSaved && <span className={styles.bioSavedMsg}>✓ Enregistré</span>}
           {([
-            { label: 'Bloc 1', value: bio1, set: setBio1 },
-            { label: 'Bloc 2', value: bio2, set: setBio2 },
-            { label: 'Bloc 3', value: bio3, set: setBio3 },
-          ] as const).map(({ label, value, set }) => (
+            { label: 'Bloc 1', value: bio1, set: setBio1, title: bioTitle1, setTitle: setBioTitle1 },
+            { label: 'Bloc 2', value: bio2, set: setBio2, title: bioTitle2, setTitle: setBioTitle2 },
+            { label: 'Bloc 3', value: bio3, set: setBio3, title: bioTitle3, setTitle: setBioTitle3 },
+          ] as const).map(({ label, value, set, title, setTitle }) => (
             <div key={label} className={styles.bioBlock}>
               <label className={styles.editLabel}>{label}</label>
+              <input
+                className={styles.editInput}
+                value={title}
+                onChange={(e) => { setTitle(e.target.value); setBioSaved(false); }}
+                placeholder="Titre..."
+              />
               <textarea
                 className={styles.bioTextarea}
                 value={value}
                 onChange={(e) => { set(e.target.value); setBioSaved(false); }}
-                placeholder="Écris ici..."
-                rows={5}
+                placeholder="Texte..."
+                rows={4}
               />
             </div>
           ))}
@@ -1044,6 +1056,9 @@ export default function AdminPage() {
                   setData('bio1', bio1),
                   setData('bio2', bio2),
                   setData('bio3', bio3),
+                  setData('bioTitle1', bioTitle1),
+                  setData('bioTitle2', bioTitle2),
+                  setData('bioTitle3', bioTitle3),
                 ]);
                 setBioSaving(false);
                 setBioSaved(true);

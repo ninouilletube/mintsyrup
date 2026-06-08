@@ -88,6 +88,14 @@
   line-height: 1.75;
 }
 
+.blockTitle {
+  font-family: 'MyUglyHandwriting', cursive;
+  font-size: 1.6rem;
+  color: #6B1028;
+  line-height: 1.1;
+  margin-bottom: 0.75rem;
+}
+
 .content p {
   margin-bottom: 1rem;
 }
