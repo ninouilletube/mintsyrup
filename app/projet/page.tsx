@@ -28,10 +28,6 @@ export default async function ProjetPage() {
         <div className={styles.container}>
           <div className={styles.layout}>
             <div className={styles.layoutTop}>
-              <div className={styles.photoWrap}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/nina - copie.png" alt="Nina" className={styles.photo} />
-              </div>
               <div className={styles.blocksTop}>
                 {[blocks[0], blocks[1]].map((b, i) => b && (
                   <div key={i} className={`${styles.content} ${styles.blockSquare}`}>
@@ -41,6 +37,10 @@ export default async function ProjetPage() {
                     ))}
                   </div>
                 ))}
+              </div>
+              <div className={styles.photoWrap}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/nina - copie.png" alt="Nina" className={styles.photo} />
               </div>
             </div>
             {blocks[2] && (
