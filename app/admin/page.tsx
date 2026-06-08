@@ -116,6 +116,11 @@ export default function AdminPage() {
   const [seasonOverride, setSeasonOverride] = useState<SeasonKey | null>(null);
   const [seasonSaving, setSeasonSaving] = useState(false);
 
+  // Bio
+  const [bio, setBio] = useState('');
+  const [bioSaving, setBioSaving] = useState(false);
+  const [bioSaved, setBioSaved] = useState(false);
+
   // Articles multi-select
   const [selected, setSelected] = useState<Set<number>>(new Set());
 
@@ -148,6 +153,7 @@ export default function AdminPage() {
     getData('analytics').then((v) => v && setAnalytics(v as Analytics));
     getData('article_stats').then((v) => v && setArticleStats(v as ArticleStats));
     getData('season_override').then((v) => v && setSeasonOverride(v as SeasonKey));
+    getData('bio').then((v) => v && setBio(v as string));
   }, [auth]);
 
   const login = () => {
@@ -489,6 +495,35 @@ export default function AdminPage() {
           </div>
 
           {/* Recent articles */}
+          {/* Bio */}
+          <div className={styles.section}>
+            <div className={styles.bioHeader}>
+              <h2 className={styles.widgetTitle}>Page projet — Bio</h2>
+              {bioSaved && <span className={styles.bioSavedMsg}>✓ Enregistré</span>}
+            </div>
+            <textarea
+              className={styles.bioTextarea}
+              value={bio}
+              onChange={(e) => { setBio(e.target.value); setBioSaved(false); }}
+              placeholder="Raconte ton projet ici..."
+              rows={6}
+            />
+            <div className={styles.bioActions}>
+              <button
+                className={styles.btnPrimary}
+                disabled={bioSaving}
+                onClick={async () => {
+                  setBioSaving(true);
+                  await setData('bio', bio);
+                  setBioSaving(false);
+                  setBioSaved(true);
+                }}
+              >
+                {bioSaving ? 'Enregistrement...' : 'Enregistrer'}
+              </button>
+            </div>
+          </div>
+
           <div className={styles.sectionFlat}>
 {products.length === 0 ? (
               <p className={styles.empty}>Aucun article pour l&apos;instant.</p>

@@ -71,6 +71,41 @@
   margin-bottom: 2rem;
 }
 
+.bioHeader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.bioSavedMsg {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #2E6840;
+}
+
+.bioTextarea {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border: 2px solid var(--dark);
+  border-radius: 8px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.9rem;
+  color: var(--dark);
+  background: white;
+  outline: none;
+  resize: vertical;
+  line-height: 1.6;
+  transition: box-shadow 0.15s;
+}
+.bioTextarea:focus { box-shadow: 3px 3px 0 var(--dark); }
+
+.bioActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
 .section {
   background: var(--cream);
   border: 2.5px solid var(--dark);

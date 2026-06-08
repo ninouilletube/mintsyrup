@@ -1,9 +1,14 @@
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import Image from 'next/image';
+import { getData } from '@/lib/supabase';
 import styles from './projet.module.css';
 
-export default function ProjetPage() {
+export const revalidate = 60;
+
+export default async function ProjetPage() {
+  const bio = (await getData('bio') as string | null) ?? '';
+
   return (
     <>
       <Nav />
@@ -20,7 +25,13 @@ export default function ProjetPage() {
               />
             </div>
             <div className={styles.content}>
-              <p>Écris ton texte ici.</p>
+              {bio ? (
+                bio.split('\n').filter(Boolean).map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))
+              ) : (
+                <p style={{ color: 'var(--light)', fontStyle: 'italic' }}>Aucun texte pour l&apos;instant.</p>
+              )}
             </div>
           </div>
         </div>
