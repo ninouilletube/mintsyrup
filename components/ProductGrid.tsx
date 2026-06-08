@@ -106,7 +106,7 @@ export default function ProductGrid() {
 
   return (
     <div className={styles.overlay}>
-      <div className={`${isDrops ? styles.panelOpen : styles.panel} ${activeCategory === 'ete' ? styles.panelSummer : ''}`} ref={panelRef}>
+      <div className={isDrops ? styles.panelOpen : styles.panel} ref={panelRef}>
 
         {hasFilters && (
           <div className={styles.filterBar}>
