@@ -21,7 +21,11 @@ export default async function FavorisPage() {
       <Nav />
       <main className={styles.main}>
         <div className={styles.container}>
-{products.length === 0 ? (
+          <div className={styles.heartCenter}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/coeur.png" alt="" className={styles.heartImg} />
+          </div>
+          {products.length === 0 ? (
             <p className={styles.empty}>Aucun favori pour l&apos;instant.</p>
           ) : (
             <div className={styles.grid}>

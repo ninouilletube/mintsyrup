@@ -20,6 +20,18 @@
   margin-bottom: 2.5rem;
 }
 
+.heartCenter {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.heartImg {
+  width: 120px;
+  height: auto;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+}
+
 .empty {
   color: white;
   font-family: var(--font-dm-sans), sans-serif;
