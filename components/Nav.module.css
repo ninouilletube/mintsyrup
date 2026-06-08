@@ -82,6 +82,20 @@
   flex-wrap: wrap;
 }
 
+.heartLink {
+  display: flex;
+  align-items: center;
+  margin-right: 0.4rem;
+  transition: transform 0.15s;
+}
+.heartLink:hover { transform: scale(1.12); }
+
+.heartNav {
+  width: 28px;
+  height: auto;
+  display: block;
+}
+
 .link {
   background: transparent;
   border: 2px solid transparent;

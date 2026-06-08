@@ -56,6 +56,10 @@ export default function Nav() {
       </div>
 
       <div className={styles.links}>
+        <a href="/favoris" className={styles.heartLink}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/coeur.png" alt="Favoris" className={styles.heartNav} />
+        </a>
         {CATEGORIES.map((cat) => (
           <button
             key={cat.id}
