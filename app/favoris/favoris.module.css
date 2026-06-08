@@ -20,32 +20,28 @@
   margin-bottom: 2.5rem;
 }
 
-.heartRow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
+.intro {
+  text-align: center;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: white;
   margin-bottom: 2.5rem;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
 }
 
-.heartImg {
-  width: 100px;
+.heartFixed {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 200px;
   height: auto;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
-  flex-shrink: 0;
-}
-
-.heartLabel {
-  background: white;
-  border: 2.5px solid var(--dark);
-  border-radius: 16px;
-  box-shadow: 5px 5px 0 var(--dark);
-  padding: 1rem 1.75rem;
-  font-family: 'MyUglyHandwriting', cursive;
-  font-size: 2rem;
-  color: #C8306A;
-  line-height: 1.1;
-  white-space: nowrap;
+  filter: drop-shadow(0 6px 20px rgba(0,0,0,0.2));
+  pointer-events: none;
+  z-index: 50;
 }
 
 .empty {

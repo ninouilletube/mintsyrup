@@ -16,11 +16,7 @@ export default async function FavorisPage() {
       <Nav />
       <main className={styles.main}>
         <div className={styles.container}>
-          <div className={styles.heartRow}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/coeur.png" alt="" className={styles.heartImg} />
-            <div className={styles.heartLabel}>Mes coups de cœur</div>
-          </div>
+          <p className={styles.intro}>Je ne pouvais pas vous proposer ces fringues sans vous en dire plus sur ce qu&apos;elles m&apos;inspirent.</p>
           {products.length === 0 ? (
             <p className={styles.empty}>Aucun favori pour l&apos;instant.</p>
           ) : (
@@ -44,6 +40,8 @@ export default async function FavorisPage() {
             </div>
           )}
         </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/coeur.png" alt="" className={styles.heartFixed} />
       </main>
       <Footer />
     </>
