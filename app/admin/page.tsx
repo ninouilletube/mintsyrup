@@ -947,7 +947,7 @@ export default function AdminPage() {
                 <span className={styles.financeCardSub}>{soldProducts.length} ventes</span>
               </div>
               <div className={`${styles.financeCard} ${profit >= 0 ? styles.financeCardProfit : styles.financeCardLoss}`}>
-                <span className={styles.financeCardLabel}>Bénéfice net</span>
+                <span className={styles.financeCardLabel}>Bénéfice</span>
                 <span className={styles.financeCardValue}>{profit >= 0 ? '+' : ''}{fmt2(profit)} €</span>
                 <span className={styles.financeCardSub}>sur les articles vendus</span>
               </div>
