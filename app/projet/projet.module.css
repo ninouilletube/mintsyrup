@@ -19,24 +19,24 @@
 }
 
 .photoWrap {
-  background: white;
-  padding: 10px 10px 36px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.1);
   transform: rotate(-2.5deg);
   flex-shrink: 0;
   width: 220px;
   position: relative;
+  border-radius: 4px;
+  overflow: hidden;
 }
 
 .photoWrap::before {
   content: '';
   position: absolute;
-  top: -10px;
+  top: 6px;
   left: 50%;
   transform: translateX(-50%) rotate(1deg);
   width: 48px;
   height: 16px;
-  background: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.55);
   backdrop-filter: blur(2px);
   border-radius: 2px;
   z-index: 2;
