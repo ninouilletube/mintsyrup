@@ -29,8 +29,7 @@ body {
   display: flex;
   flex-direction: column;
 
-  /* Tile grid base */
-  background: var(--bg);
+  background: #ffffff;
 }
 
 main { flex: 1; }
