@@ -80,13 +80,29 @@ export default function ProductGrid() {
       ? [...visible.filter((p) => p.seasons?.includes(SEASON_TO_ID[getCurrentSeason()]))].sort((a, b) => b.id - a.id)
       : [...visible.filter((p) => p.categories.includes(activeCategory))].sort((a, b) => b.id - a.id);
 
-  // Sous-catégories disponibles
-  const availableTypeIds = [...new Set(byCategory.map((p) => p.subcategory).filter(Boolean))] as string[];
-  // Tailles disponibles
   const SIZE_ORDER = ['TU','XXXS / 30 / 2','XXS / 32 / 4','XS / 34 / 6','S / 36 / 8','M / 38 / 10','L / 40 / 12','XL / 42 / 14','XXL / 44 / 16','XXXL / 46 / 18','4XL / 48 / 20'];
-  const availableSizes = [...new Set(byCategory.map((p) => p.size).filter(Boolean))].sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
-  // Couleurs disponibles
-  const availableColorIds = [...new Set(byCategory.flatMap((p) => p.tags ?? []))].filter(id => getColor(id));
+
+  // Faceted filtering: each group is computed from products filtered by the OTHER active filters
+  const forTypes = byCategory.filter((p) => {
+    if (filterSizes.length > 0 && !filterSizes.includes(p.size)) return false;
+    if (filterColor && !p.tags?.includes(filterColor)) return false;
+    return true;
+  });
+  const availableTypeIds = [...new Set(forTypes.map((p) => p.subcategory).filter(Boolean))] as string[];
+
+  const forSizes = byCategory.filter((p) => {
+    if (filterType && p.subcategory !== filterType) return false;
+    if (filterColor && !p.tags?.includes(filterColor)) return false;
+    return true;
+  });
+  const availableSizes = [...new Set(forSizes.map((p) => p.size).filter(Boolean))].sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
+
+  const forColors = byCategory.filter((p) => {
+    if (filterType && p.subcategory !== filterType) return false;
+    if (filterSizes.length > 0 && !filterSizes.includes(p.size)) return false;
+    return true;
+  });
+  const availableColorIds = [...new Set(forColors.flatMap((p) => p.tags ?? []))].filter(id => getColor(id));
 
   // Apply filters
   const filtered = byCategory.filter((p) => {
