@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
+import PageArrow from '@/components/PageArrow';
 import { getData } from '@/lib/supabase';
 import styles from './projet.module.css';
 
@@ -25,6 +26,7 @@ export default async function ProjetPage() {
   return (
     <>
       <Nav />
+      <PageArrow href="/favoris" label="Mes favoris" direction="right" />
       <main className={styles.main}>
         <div className={styles.container}>
           <div className={styles.layout}>

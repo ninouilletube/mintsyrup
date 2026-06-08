@@ -1,6 +1,7 @@
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
+import PageArrow from '@/components/PageArrow';
 import { getData } from '@/lib/supabase';
 import type { Product } from '@/data/products';
 import styles from './favoris.module.css';
@@ -16,6 +17,8 @@ export default async function FavorisPage() {
   return (
     <>
       <Nav />
+      <PageArrow href="/projet" label="Le projet" direction="left" />
+      <PageArrow href="/" label="Derniers drops" direction="right" />
       <main className={styles.main}>
         <div className={styles.container}>
           <p className={styles.intro}>Je ne pouvais pas vous proposer ces fringues sans vous en dire plus sur ce qu&apos;elles m&apos;inspirent.</p>

@@ -1,0 +1,42 @@
+.arrow {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  z-index: 20;
+  padding: 0.6rem 0.75rem;
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(58,24,8,0.15);
+  border-radius: 8px;
+  transition: all 0.15s;
+}
+
+.arrow:hover {
+  background: rgba(255,255,255,0.95);
+  border-color: var(--dark);
+}
+
+.left { left: 1rem; }
+.right { right: 1rem; }
+
+.chevron {
+  font-size: 1.3rem;
+  line-height: 1;
+  color: var(--dark);
+  font-weight: 300;
+}
+
+.label {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mid);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
