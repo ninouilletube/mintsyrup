@@ -1,6 +1,6 @@
 .main {
   min-height: 100vh;
-  background: #FAE2E8;
+  background: url('/mer.png') center center / cover no-repeat fixed;
   padding: 3rem 2rem 6rem;
   display: flex;
   justify-content: center;
