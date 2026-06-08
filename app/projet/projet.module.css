@@ -135,13 +135,13 @@
   top: 0;
   width: 220px;
   background: #FAE2E8;
-  color: #5ECEC0;
+  color: var(--dark);
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.75rem;
   line-height: 1.5;
   padding: 0.6rem 0.85rem;
   border-radius: 8px;
-  border: 1.5px solid rgba(200,48,106,0.2);
+  border: 1.5px solid #5ECEC0;
   box-shadow: 0 4px 16px rgba(0,0,0,0.08);
   opacity: 0;
   pointer-events: none;
