@@ -20,6 +20,13 @@
   scrollbar-width: thin;
 }
 
+.panelSummer {
+  background-image: url('/mer.png') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-color: transparent !important;
+}
+
 .panel {
   pointer-events: all;
   position: relative;

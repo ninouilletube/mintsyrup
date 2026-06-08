@@ -11,7 +11,7 @@ import { getCurrentSeason } from '@/lib/season';
 import { getData, setData } from '@/lib/supabase';
 import styles from './Admin.module.css';
 
-type View = 'dashboard' | 'articles' | 'add-article' | 'edit-article' | 'article-detail';
+type View = 'dashboard' | 'articles' | 'add-article' | 'edit-article' | 'article-detail' | 'bio';
 
 const SIZES = [
   'TU',
@@ -379,12 +379,13 @@ export default function AdminPage() {
               ←
             </button>
           )}
-          <h1 className={styles.title}>
+          <h1 className={styles.title} style={{ cursor: view === 'dashboard' ? 'pointer' : 'default' }} onClick={() => view === 'dashboard' && setView('bio')}>
             {view === 'dashboard'      && 'Mint Syrup'}
             {view === 'articles'       && 'Articles'}
             {view === 'add-article'    && 'Nouvel article'}
             {view === 'edit-article'   && 'Modifier'}
             {view === 'article-detail' && (detailProduct?.title.fr ?? '')}
+            {view === 'bio'            && 'Le projet'}
           </h1>
         </div>
         {view === 'dashboard' && <a href="/" className={styles.backLink}>← Site</a>}
@@ -495,35 +496,6 @@ export default function AdminPage() {
           </div>
 
           {/* Recent articles */}
-          {/* Bio */}
-          <div className={styles.section}>
-            <div className={styles.bioHeader}>
-              <h2 className={styles.widgetTitle}>Page projet — Bio</h2>
-              {bioSaved && <span className={styles.bioSavedMsg}>✓ Enregistré</span>}
-            </div>
-            <textarea
-              className={styles.bioTextarea}
-              value={bio}
-              onChange={(e) => { setBio(e.target.value); setBioSaved(false); }}
-              placeholder="Raconte ton projet ici..."
-              rows={6}
-            />
-            <div className={styles.bioActions}>
-              <button
-                className={styles.btnPrimary}
-                disabled={bioSaving}
-                onClick={async () => {
-                  setBioSaving(true);
-                  await setData('bio', bio);
-                  setBioSaving(false);
-                  setBioSaved(true);
-                }}
-              >
-                {bioSaving ? 'Enregistrement...' : 'Enregistrer'}
-              </button>
-            </div>
-          </div>
-
           <div className={styles.sectionFlat}>
 {products.length === 0 ? (
               <p className={styles.empty}>Aucun article pour l&apos;instant.</p>
@@ -1036,6 +1008,34 @@ export default function AdminPage() {
           </div>
         </section>
         </>
+      )}
+
+      {/* ── BIO ─────────────────────────────────────────────────────────────── */}
+      {view === 'bio' && (
+        <div className={styles.section}>
+          {bioSaved && <span className={styles.bioSavedMsg}>✓ Enregistré</span>}
+          <textarea
+            className={styles.bioTextarea}
+            value={bio}
+            onChange={(e) => { setBio(e.target.value); setBioSaved(false); }}
+            placeholder="Raconte ton projet ici..."
+            rows={12}
+          />
+          <div className={styles.bioActions}>
+            <button
+              className={styles.btnPrimary}
+              disabled={bioSaving}
+              onClick={async () => {
+                setBioSaving(true);
+                await setData('bio', bio);
+                setBioSaving(false);
+                setBioSaved(true);
+              }}
+            >
+              {bioSaving ? 'Enregistrement...' : 'Enregistrer'}
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
