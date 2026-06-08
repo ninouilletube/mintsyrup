@@ -8,7 +8,6 @@ export default function ProjetPage() {
       <Nav />
       <main className={styles.main}>
         <div className={styles.container}>
-          <h1 className={styles.title}>Le projet</h1>
           <div className={styles.content}>
             <p>Écris ton texte ici.</p>
           </div>
