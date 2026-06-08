@@ -12,25 +12,44 @@
 }
 
 .layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  align-items: start;
+  display: flex;
+  align-items: flex-start;
+  gap: 4rem;
+  padding-top: 2rem;
 }
 
 .photoWrap {
   position: relative;
+  width: 260px;
   aspect-ratio: 3 / 4;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 2.5px solid var(--dark);
-  box-shadow: 6px 6px 0 var(--dark);
-  transform: rotate(-1.5deg);
+  background: white;
+  padding: 10px 10px 32px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18), 0 2px 6px rgba(0,0,0,0.1);
+  transform: rotate(-2.5deg);
+  flex-shrink: 0;
+}
+
+.photoWrap::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(1deg);
+  width: 48px;
+  height: 18px;
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(2px);
+  border-radius: 2px;
+  z-index: 2;
 }
 
 .photo {
   object-fit: cover;
   object-position: center top;
+  position: absolute !important;
+  inset: 10px 10px 32px !important;
+  width: auto !important;
+  height: auto !important;
 }
 
 .grain {
