@@ -290,7 +290,7 @@ export default function AdminPage() {
     // Si on ajoute un nouveau favori, enlever le plus ancien si déjà 3
     if (isNowFav && !wasAlreadyFav) {
       const currentFavs = products.filter(p => p.favorite && p.id !== editingProduct.id);
-      if (currentFavs.length >= 3) {
+      if (currentFavs.length >= 4) {
         const oldest = [...currentFavs].sort((a, b) => (a.favoriteOrder ?? 0) - (b.favoriteOrder ?? 0))[0];
         updateProduct({ ...oldest, favorite: undefined, favoriteText: undefined, favoriteOrder: undefined });
       }
@@ -363,7 +363,7 @@ export default function AdminPage() {
     // FIFO: enlever le plus ancien si > 3
     if (form.favorite) {
       const currentFavs = products.filter(p => p.favorite);
-      if (currentFavs.length >= 3) {
+      if (currentFavs.length >= 4) {
         const oldest = [...currentFavs].sort((a, b) => (a.favoriteOrder ?? 0) - (b.favoriteOrder ?? 0))[0];
         updateProduct({ ...oldest, favorite: undefined, favoriteText: undefined, favoriteOrder: undefined });
       }
