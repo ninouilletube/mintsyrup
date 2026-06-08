@@ -25,6 +25,7 @@ export const COLORS: Color[] = [
   { id: 'pistache',     label: 'Pistache',    bg: '#C8DC90' },
   { id: 'vert-feuille', label: 'Vert feuille', bg: '#2E6840' },
   { id: 'bleu-marine',  label: 'Bleu marine', bg: '#1A2848' },
+  { id: 'mint',         label: 'Mint',        bg: '#5ECEC0' },
   { id: 'bleu',         label: 'Bleu',        bg: '#5A8EC8' },
   { id: 'lavande',      label: 'Lavande',     bg: '#C4A8D4' },
   { id: 'prune',        label: 'Prune',       bg: '#4A1848' },
