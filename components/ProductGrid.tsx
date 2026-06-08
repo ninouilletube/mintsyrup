@@ -163,6 +163,7 @@ export default function ProductGrid() {
         ) : isDrops ? (
           <div className={styles.carousel}>
             <button className={styles.carouselArrow} style={{ visibility: canPrev ? 'visible' : 'hidden' }} onClick={() => scrollTo(Math.max(0, dropsIndex - 1))}>‹</button>
+            <div className={styles.carouselClip}>
             <div className={styles.carouselWindow} ref={carouselWindowRef}>
               <div className={styles.carouselTrack}>
                 {dropsPool.map((product) => (
@@ -171,6 +172,7 @@ export default function ProductGrid() {
                   </div>
                 ))}
               </div>
+            </div>
             </div>
             <button className={styles.carouselArrow} style={{ visibility: canNext ? 'visible' : 'hidden' }} onClick={() => scrollTo(Math.min(dropsPool.length - DROPS_VISIBLE, dropsIndex + 1))}>›</button>
           </div>

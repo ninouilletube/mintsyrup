@@ -212,16 +212,21 @@
   width: 100%;
 }
 
-.carouselWindow {
+.carouselClip {
   flex: 1;
+  overflow: hidden;
+  min-width: 0;
+  padding: 6px 0;
+  margin: -6px 0;
+}
+
+.carouselWindow {
+  width: 100%;
   overflow-x: scroll;
   overflow-y: visible;
   scrollbar-width: none;
   scroll-snap-type: x mandatory;
-  min-width: 0;
   container-type: inline-size;
-  padding: 6px 8px;
-  margin: -6px -8px;
 }
 .carouselWindow::-webkit-scrollbar { display: none; }
 
