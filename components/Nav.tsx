@@ -56,10 +56,6 @@ export default function Nav() {
       </div>
 
       <div className={styles.links}>
-        <a href="/favoris" className={styles.heartLink}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/coeur.png" alt="Favoris" className={styles.heartNav} />
-        </a>
         {CATEGORIES.map((cat) => (
           <button
             key={cat.id}
@@ -69,6 +65,10 @@ export default function Nav() {
             {cat.id === 'ete' ? SEASON_LABEL[season][lang] : (lang === 'fr' ? cat.fr : cat.en)}
           </button>
         ))}
+        <a href="/favoris" className={styles.heartLink}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/coeur.png" alt="Favoris" className={styles.heartNav} />
+        </a>
       </div>
 
       <div className={styles.lang}>

@@ -85,7 +85,7 @@
 .heartLink {
   display: flex;
   align-items: center;
-  margin-right: 0.4rem;
+  margin-left: 0.4rem;
   transition: transform 0.15s;
 }
 .heartLink:hover { transform: scale(1.12); }
