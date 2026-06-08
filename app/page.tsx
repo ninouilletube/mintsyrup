@@ -4,19 +4,22 @@ import VideoHero from '@/components/VideoHero';
 import ProductGrid from '@/components/ProductGrid';
 import Footer from '@/components/Footer';
 import CategoryInit from '@/components/CategoryInit';
+import PageBackground from '@/components/PageBackground';
 import styles from './page.module.css';
 
 export default function Home() {
   return (
     <>
       <Nav />
-      <main>
-        <div className={styles.heroWrap}>
-          <VideoHero />
-          <ProductGrid />
-        </div>
-        <Footer />
-      </main>
+      <PageBackground>
+        <main>
+          <div className={styles.heroWrap}>
+            <VideoHero />
+            <ProductGrid />
+          </div>
+          <Footer />
+        </main>
+      </PageBackground>
       <Suspense><CategoryInit /></Suspense>
     </>
   );
