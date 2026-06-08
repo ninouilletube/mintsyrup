@@ -18,7 +18,7 @@ export default function ProductGrid() {
   const { subcategories } = useSubcategories();
 
   const [filterType, setFilterType] = useState<string | null>(null);
-  const [filterSize, setFilterSize] = useState<string | null>(null);
+  const [filterSizes, setFilterSizes] = useState<string[]>([]);
   const [filterColor, setFilterColor] = useState<string | null>(null);
   const [dropsIndex, setDropsIndex] = useState(0);
   const carouselWindowRef = useRef<HTMLDivElement>(null);
@@ -91,7 +91,7 @@ export default function ProductGrid() {
   // Apply filters
   const filtered = byCategory.filter((p) => {
     if (filterType && p.subcategory !== filterType) return false;
-    if (filterSize && p.size !== filterSize) return false;
+    if (filterSizes.length > 0 && !filterSizes.includes(p.size)) return false;
     if (filterColor && !p.tags?.includes(filterColor)) return false;
     return true;
   });
@@ -130,8 +130,8 @@ export default function ProductGrid() {
                 {availableSizes.map((size) => (
                   <button
                     key={size}
-                    className={`${styles.filterSizeTag} ${filterSize === size ? styles.filterSizeTagActive : ''}`}
-                    onClick={() => setFilterSize(filterSize === size ? null : size)}
+                    className={`${styles.filterSizeTag} ${filterSizes.includes(size) ? styles.filterSizeTagActive : ''}`}
+                    onClick={() => setFilterSizes(filterSizes.includes(size) ? filterSizes.filter(s => s !== size) : [...filterSizes, size])}
                   >{size}</button>
                 ))}
               </div>
