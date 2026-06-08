@@ -11,5 +11,31 @@ export async function getData(key: string) {
 }
 
 export async function setData(key: string, value: unknown) {
-  await supabase.from('mint_data').upsert({ key, value });
+  const { error } = await supabase
+    .from('mint_data')
+    .upsert({ key, value }, { onConflict: 'key' });
+  if (error) console.error('[setData]', key, error.message);
+}
+
+export async function trackVisit() {
+  const existing = (await getData('analytics') as { total: number; days: Record<string, number> } | null) || { total: 0, days: {} };
+  const today = new Date().toISOString().split('T')[0];
+  await setData('analytics', {
+    total: (existing.total || 0) + 1,
+    days: { ...existing.days, [today]: (existing.days[today] || 0) + 1 },
+  });
+}
+
+export async function trackArticleView(productId: number) {
+  const stats = (await getData('article_stats') as Record<string, { views: number; vinted: number }> | null) || {};
+  const key = String(productId);
+  const current = stats[key] || { views: 0, vinted: 0 };
+  await setData('article_stats', { ...stats, [key]: { ...current, views: (current.views || 0) + 1 } });
+}
+
+export async function trackVintedClick(productId: number) {
+  const stats = (await getData('article_stats') as Record<string, { views: number; vinted: number }> | null) || {};
+  const key = String(productId);
+  const current = stats[key] || { views: 0, vinted: 0 };
+  await setData('article_stats', { ...stats, [key]: { ...current, vinted: (current.vinted || 0) + 1 } });
 }

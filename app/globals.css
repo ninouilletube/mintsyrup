@@ -4,18 +4,22 @@
 }
 
 :root {
-  --orange:   #E8621A;
-  --coral:    #F07838;
-  --rose:     #D8385A;
-  --fuchsia:  #C82858;
-  --burgundy: #7A2010;
-  --yellow:   #F0A820;
-  --cream:    #F8EED8;
-  --white:    #FDFAF5;
-  --dark:     #3A1808;
-  --mid:      #7A4830;
+  --burgundy: #781515;   /* bordeaux profond */
+  --crimson:  #B82818;   /* cramoisie */
+  --red:      #C83A20;   /* rouge chaud */
+  --coral:    #E05530;   /* corail */
+  --orange:   #E8621A;   /* orange (inchangé) */
+  --amber:    #F0A020;   /* ambre doré */
+  --salmon:   #D87060;   /* saumon */
+  --rose:     #C87870;   /* rose poudré */
+  --fuchsia:  #C04050;   /* rose profond */
+  --yellow:   #F0A820;   /* compat admin */
+  --cream:    #FAE8D0;   /* crème ensoleillée */
+  --white:    #FDF6EE;
+  --dark:     #3A1008;
+  --mid:      #7A3828;
   --light:    #C4907A;
-  --bg:       #F5D0A8;
+  --bg:       #F2C098;   /* fond plus riche */
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,7 +32,6 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-
   background: #ffffff;
 }
 

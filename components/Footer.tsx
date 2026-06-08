@@ -19,7 +19,7 @@ export default function Footer() {
           </a>
         </div>
       </div>
-      <p className={styles.copy}>© 2026 Mint Syrup</p>
+      <p className={styles.copy}>© 2026 Mint Syrup <a href="/admin" className={styles.secret}>·</a></p>
     </footer>
   );
 }

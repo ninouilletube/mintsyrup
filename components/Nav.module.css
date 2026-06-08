@@ -50,12 +50,12 @@
 
 .link:hover {
   color: var(--dark);
-  background: rgba(240,120,56,0.15);
-  border-color: var(--dark);
+  background: rgba(224,85,48,0.13);
+  border-color: var(--coral);
 }
 
 .link.active {
-  background: var(--orange);
+  background: var(--coral);
   border-color: var(--dark);
   color: var(--white);
   font-weight: 700;
@@ -72,10 +72,10 @@
   transition: transform 0.2s ease;
 }
 
-.linkSummer { color: #F5A020; }
+.linkSummer { color: #F0A020; }
 .linkAutumn { color: #E8621A; }
-.linkWinter { color: #7AB8D8; }
-.linkSpring { color: #D8385A; }
+.linkWinter { color: #C87870; }
+.linkSpring { color: #C83A20; }
 
 .linkSummer:hover,
 .linkAutumn:hover,
@@ -86,10 +86,10 @@
   box-shadow: none;
   transform: scale(1.12);
 }
-.linkSummer:hover { color: #F5A020; }
+.linkSummer:hover { color: #F0A020; }
 .linkAutumn:hover { color: #E8621A; }
-.linkWinter:hover { color: #7AB8D8; }
-.linkSpring:hover { color: #D8385A; }
+.linkWinter:hover { color: #C87870; }
+.linkSpring:hover { color: #C83A20; }
 
 .lang {
   display: flex;

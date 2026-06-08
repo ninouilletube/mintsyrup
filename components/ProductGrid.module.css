@@ -109,7 +109,7 @@
   align-items: center;
   gap: 0.35rem;
   padding: 0.3rem 0.75rem;
-  border: 2px solid #F0A820;
+  border: 2px solid var(--amber);
   border-radius: 999px;
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.7rem;
@@ -177,13 +177,13 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   color: var(--dark);
-  background: rgba(240,168,32,0.3);
+  background: rgba(240,160,32,0.28);
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
 }
 .chipSize:hover { background: rgba(240,168,32,0.5); }
-.chipSizeActive { background: #F0729A; border-color: #F0729A; color: white; box-shadow: 2px 2px 0 var(--dark); }
+.chipSizeActive { background: var(--salmon); border-color: var(--salmon); color: white; box-shadow: 2px 2px 0 var(--dark); }
 
 .colorDot {
   width: 22px;
@@ -196,24 +196,24 @@
   align-self: flex-start;
 }
 .colorDot:hover { transform: scale(1.15); }
-.colorDotActive { border-color: #F0729A; border-width: 1.5px; box-shadow: 1px 1px 0 #F0729A; transform: scale(1.15); }
+.colorDotActive { border-color: var(--salmon); border-width: 1.5px; box-shadow: 1px 1px 0 var(--salmon); transform: scale(1.15); }
 
 .clearFilters {
   padding: 0.3rem 0.75rem;
-  border: 2px solid #F0729A;
+  border: 2px solid var(--salmon);
   border-radius: 999px;
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #F0729A;
+  color: var(--salmon);
   background: transparent;
   cursor: pointer;
   transition: all 0.15s;
   align-self: flex-start;
 }
-.clearFilters:hover { background: #F0729A; color: white; }
+.clearFilters:hover { background: var(--salmon); color: white; }
 
 .empty {
   position: relative;

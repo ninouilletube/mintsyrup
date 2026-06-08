@@ -15,6 +15,7 @@ export type Product = {
   subcategory?: string;
   seasons?: Season[];
   tags?: string[];
+  hidden?: boolean;
 };
 
 export type Season = 'printemps' | 'ete' | 'automne' | 'hiver';

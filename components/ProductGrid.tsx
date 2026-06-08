@@ -5,6 +5,7 @@ import { useLang } from '@/context/LangContext';
 import { useShop } from '@/context/ShopContext';
 import { useProducts } from '@/context/ProductsContext';
 import { useTags } from '@/context/TagsContext';
+import { useSubcategories } from '@/context/SubcategoriesContext';
 import { getCurrentSeason, SEASON_TO_ID, type SeasonKey } from '@/lib/season';
 import type { Season } from '@/data/products';
 import ProductCard from './ProductCard';
@@ -14,7 +15,7 @@ const SEASON_LABEL: Record<SeasonKey, string> = {
   summer: 'SUMMER', autumn: 'AUTUMN', winter: 'WINTER', spring: 'SPRING',
 };
 const SEASON_COLOR: Record<SeasonKey, string> = {
-  summer: '#F5A020', autumn: '#E8621A', winter: '#7AB8D8', spring: '#D8385A',
+  summer: '#F0A020', autumn: '#E8621A', winter: '#C87870', spring: '#C83A20',
 };
 const SEASON_FR: Record<Season, string> = {
   printemps: 'Printemps', ete: 'Été', automne: 'Automne', hiver: 'Hiver',
@@ -25,10 +26,12 @@ export default function ProductGrid() {
   const { activeCategory } = useShop();
   const { products } = useProducts();
   const { tags } = useTags();
+  const { subcategories } = useSubcategories();
 
   const [filterSizes, setFilterSizes] = useState<string[]>([]);
   const [filterTags, setFilterTags] = useState<string[]>([]);
   const [filterSeasons, setFilterSeasons] = useState<Season[]>([]);
+  const [filterTypes, setFilterTypes] = useState<string[]>([]);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const [dropsIndex, setDropsIndex] = useState(0);
   const carouselWindowRef = useRef<HTMLDivElement>(null);
@@ -96,11 +99,13 @@ export default function ProductGrid() {
 
   const isDrops = activeCategory === 'drops';
 
+  const visible = products.filter((p) => !p.hidden);
+
   const byCategory = isDrops
-    ? [...products].sort((a, b) => b.id - a.id)
+    ? [...visible].sort((a, b) => b.id - a.id)
     : activeCategory === 'ete'
-      ? products.filter((p) => p.seasons?.includes(SEASON_TO_ID[getCurrentSeason()]))
-      : products.filter((p) => p.categories.includes(activeCategory));
+      ? visible.filter((p) => p.seasons?.includes(SEASON_TO_ID[getCurrentSeason()]))
+      : visible.filter((p) => p.categories.includes(activeCategory));
 
   // Available filter options from the current category
   const SIZE_ORDER = ['XXS','XS','XS/S','S','S/M','M','M/L','L','L/XL','XL','XXL'];
@@ -120,11 +125,15 @@ export default function ProductGrid() {
   const availableSeasons = ([...new Set(byCategory.flatMap((p) => p.seasons ?? []))] as Season[])
     .sort((a, b) => SEASON_ORDER.indexOf(a) - SEASON_ORDER.indexOf(b));
 
+  // Sous-catégories disponibles dans la sélection courante
+  const availableTypeIds = [...new Set(byCategory.map((p) => p.subcategory).filter(Boolean))] as string[];
+
   // Apply filters
   const filtered = byCategory.filter((p) => {
     if (filterSizes.length > 0 && !filterSizes.includes(p.size)) return false;
     if (filterTags.length > 0 && !filterTags.some((id) => p.tags?.includes(id))) return false;
     if (filterSeasons.length > 0 && !filterSeasons.some((s) => p.seasons?.includes(s))) return false;
+    if (filterTypes.length > 0 && !filterTypes.includes(p.subcategory ?? '')) return false;
     return true;
   });
 
@@ -132,8 +141,8 @@ export default function ProductGrid() {
     arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val];
 
   const isSeason = activeCategory === 'ete';
-  const hasFilters = !isDrops && (availableSizes.length > 0 || availableTagIds.length > 0 || (!isSeason && availableSeasons.length > 0));
-  const activeFiltersCount = filterSizes.length + filterTags.length + filterSeasons.length;
+  const hasFilters = !isDrops && (availableSizes.length > 0 || availableTagIds.length > 0 || availableTypeIds.length > 0 || (!isSeason && availableSeasons.length > 0));
+  const activeFiltersCount = filterSizes.length + filterTags.length + filterSeasons.length + filterTypes.length;
 
   const season = activeCategory === 'ete' ? getCurrentSeason() : null;
 
@@ -179,6 +188,24 @@ export default function ProductGrid() {
                 )}
               </div>
             )}
+            {availableTypeIds.length > 0 && (
+              <div className={styles.filterGroup}>
+                <button className={`${styles.filterToggle} ${filterTypes.length > 0 ? styles.filterToggleActive : ''}`} onClick={() => toggleGroup('type')}>
+                  Type {filterTypes.length > 0 && <span className={styles.filterBadge}>{filterTypes.length}</span>} <span className={styles.filterCaret}>{openGroup === 'type' ? '▲' : '▼'}</span>
+                </button>
+                {openGroup === 'type' && (
+                  <div className={styles.filterChips}>
+                    {availableTypeIds.map((id) => {
+                      const sub = subcategories.find((s) => s.id === id);
+                      if (!sub) return null;
+                      return (
+                        <button key={id} className={`${styles.chip} ${filterTypes.includes(id) ? styles.chipActive : ''}`} onClick={() => setFilterTypes(toggle(filterTypes, id))}>{sub.label}</button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
             {!isSeason && availableSeasons.length > 0 && (
               <div className={styles.filterGroup}>
                 <button className={`${styles.filterToggle} ${filterSeasons.length > 0 ? styles.filterToggleActive : ''}`} onClick={() => toggleGroup('season')}>
@@ -194,7 +221,7 @@ export default function ProductGrid() {
               </div>
             )}
             {activeFiltersCount > 0 && (
-              <button className={styles.clearFilters} onClick={() => { setFilterSizes([]); setFilterTags([]); setFilterSeasons([]); setOpenGroup(null); }}>
+              <button className={styles.clearFilters} onClick={() => { setFilterSizes([]); setFilterTags([]); setFilterSeasons([]); setFilterTypes([]); setOpenGroup(null); }}>
                 Effacer
               </button>
             )}

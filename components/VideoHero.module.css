@@ -59,8 +59,9 @@
 .title {
   font-family: 'MyUglyHandwriting', cursive;
   font-size: clamp(4rem, 12vw, 9rem);
-  color: rgba(255, 255, 255, 0.55);
+  font-weight: 300;
+  color: white;
   line-height: 1;
-  text-shadow: 0 2px 30px rgba(0,0,0,0.2);
   letter-spacing: 0.02em;
+  mix-blend-mode: difference;
 }
