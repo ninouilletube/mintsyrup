@@ -127,14 +127,12 @@ export default function ProductGrid() {
             </div>
             {availableSizes.length > 0 && (
               <div className={styles.filterSizes}>
-                {availableSizes.map((size, i) => (
-                  <span key={size} className={styles.filterRow}>
-                    {i > 0 && <span className={styles.filterSep}>—</span>}
-                    <button
-                      className={`${styles.filterItem} ${filterSize === size ? styles.filterItemActive : ''}`}
-                      onClick={() => setFilterSize(filterSize === size ? null : size)}
-                    >{size}</button>
-                  </span>
+                {availableSizes.map((size) => (
+                  <button
+                    key={size}
+                    className={`${styles.filterSizeTag} ${filterSize === size ? styles.filterSizeTagActive : ''}`}
+                    onClick={() => setFilterSize(filterSize === size ? null : size)}
+                  >{size}</button>
                 ))}
               </div>
             )}
