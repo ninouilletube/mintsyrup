@@ -31,6 +31,10 @@
   transition: color 0.2s;
 }
 
+.logoWrap:hover .logoText {
+  color: #5ECEC0;
+}
+
 
 .links {
   display: flex;
