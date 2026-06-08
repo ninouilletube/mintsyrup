@@ -6,13 +6,14 @@ import styles from './projet.module.css';
 export const revalidate = 60;
 
 export default async function ProjetPage() {
-  const [bio1, bio2, bio3, title1, title2, title3] = await Promise.all([
+  const [bio1, bio2, bio3, title1, title2, title3, tooltip3] = await Promise.all([
     getData('bio1') as Promise<string | null>,
     getData('bio2') as Promise<string | null>,
     getData('bio3') as Promise<string | null>,
     getData('bioTitle1') as Promise<string | null>,
     getData('bioTitle2') as Promise<string | null>,
     getData('bioTitle3') as Promise<string | null>,
+    getData('bio3Tooltip') as Promise<string | null>,
   ]);
 
   const blocks = [
@@ -45,6 +46,12 @@ export default async function ProjetPage() {
             </div>
             {blocks[2] && (
               <div className={`${styles.content} ${styles.blockFull}`}>
+                {tooltip3 && (
+                  <div className={styles.infoWrap}>
+                    <span className={styles.infoIcon}>i</span>
+                    <div className={styles.infoTooltip}>{tooltip3}</div>
+                  </div>
+                )}
                 {blocks[2].title && <h2 className={styles.blockTitle}>{blocks[2].title}</h2>}
                 {blocks[2].text && blocks[2].text.split('\n').filter(Boolean).map((p, j) => (
                   <p key={j}>{p}</p>

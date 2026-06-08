@@ -123,6 +123,7 @@ export default function AdminPage() {
   const [bioTitle1, setBioTitle1] = useState('');
   const [bioTitle2, setBioTitle2] = useState('');
   const [bioTitle3, setBioTitle3] = useState('');
+  const [bio3Tooltip, setBio3Tooltip] = useState('');
   const [bioSaving, setBioSaving] = useState(false);
   const [bioSaved, setBioSaved] = useState(false);
 
@@ -164,6 +165,7 @@ export default function AdminPage() {
     getData('bioTitle1').then((v) => v && setBioTitle1(v as string));
     getData('bioTitle2').then((v) => v && setBioTitle2(v as string));
     getData('bioTitle3').then((v) => v && setBioTitle3(v as string));
+    getData('bio3Tooltip').then((v) => v && setBio3Tooltip(v as string));
   }, [auth]);
 
   const login = () => {
@@ -1027,8 +1029,8 @@ export default function AdminPage() {
           {([
             { label: 'Bloc 1', value: bio1, set: setBio1, title: bioTitle1, setTitle: setBioTitle1 },
             { label: 'Bloc 2', value: bio2, set: setBio2, title: bioTitle2, setTitle: setBioTitle2 },
-            { label: 'Bloc 3', value: bio3, set: setBio3, title: bioTitle3, setTitle: setBioTitle3 },
-          ] as const).map(({ label, value, set, title, setTitle }) => (
+            { label: 'Bloc 3', value: bio3, set: setBio3, title: bioTitle3, setTitle: setBioTitle3, tooltip: bio3Tooltip, setTooltip: setBio3Tooltip },
+          ] as { label: string; value: string; set: (v: string) => void; title: string; setTitle: (v: string) => void; tooltip?: string; setTooltip?: (v: string) => void }[]).map(({ label, value, set, title, setTitle, tooltip, setTooltip }) => (
             <div key={label} className={styles.bioBlock}>
               <label className={styles.editLabel}>{label}</label>
               <input
@@ -1044,6 +1046,17 @@ export default function AdminPage() {
                 placeholder="Texte..."
                 rows={4}
               />
+              {setTooltip !== undefined && (
+                <>
+                  <label className={styles.editLabel} style={{ marginTop: '0.5rem' }}>Info-bulle (i)</label>
+                  <input
+                    className={styles.editInput}
+                    value={tooltip ?? ''}
+                    onChange={(e) => { setTooltip(e.target.value); setBioSaved(false); }}
+                    placeholder="Texte au survol du (i)..."
+                  />
+                </>
+              )}
             </div>
           ))}
           <div className={styles.bioActions}>
@@ -1059,6 +1072,7 @@ export default function AdminPage() {
                   setData('bioTitle1', bioTitle1),
                   setData('bioTitle2', bioTitle2),
                   setData('bioTitle3', bioTitle3),
+                  setData('bio3Tooltip', bio3Tooltip),
                 ]);
                 setBioSaving(false);
                 setBioSaved(true);

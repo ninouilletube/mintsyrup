@@ -97,6 +97,60 @@
 
 .blockFull {
   width: 100%;
+  position: relative;
+}
+
+.infoWrap {
+  position: absolute;
+  top: 0.85rem;
+  right: 1rem;
+  z-index: 5;
+}
+
+.infoIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(58,24,8,0.3);
+  font-family: Georgia, serif;
+  font-style: italic;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(58,24,8,0.45);
+  cursor: default;
+  transition: all 0.15s;
+}
+
+.infoWrap:hover .infoIcon {
+  border-color: #C8306A;
+  color: #C8306A;
+}
+
+.infoTooltip {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  width: 220px;
+  background: var(--dark);
+  color: white;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  padding: 0.6rem 0.85rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.infoWrap:hover .infoTooltip {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .content {
