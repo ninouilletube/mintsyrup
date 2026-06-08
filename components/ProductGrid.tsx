@@ -18,6 +18,7 @@ export default function ProductGrid() {
   const { subcategories } = useSubcategories();
 
   const [filterType, setFilterType] = useState<string | null>(null);
+  const [filterSize, setFilterSize] = useState<string | null>(null);
   const [filterColor, setFilterColor] = useState<string | null>(null);
   const [dropsIndex, setDropsIndex] = useState(0);
   const carouselWindowRef = useRef<HTMLDivElement>(null);
@@ -81,17 +82,21 @@ export default function ProductGrid() {
 
   // Sous-catégories disponibles
   const availableTypeIds = [...new Set(byCategory.map((p) => p.subcategory).filter(Boolean))] as string[];
+  // Tailles disponibles
+  const SIZE_ORDER = ['TU','XXXS / 30 / 2','XXS / 32 / 4','XS / 34 / 6','S / 36 / 8','M / 38 / 10','L / 40 / 12','XL / 42 / 14','XXL / 44 / 16','XXXL / 46 / 18','4XL / 48 / 20'];
+  const availableSizes = [...new Set(byCategory.map((p) => p.size).filter(Boolean))].sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
   // Couleurs disponibles
   const availableColorIds = [...new Set(byCategory.flatMap((p) => p.tags ?? []))].filter(id => getColor(id));
 
   // Apply filters
   const filtered = byCategory.filter((p) => {
     if (filterType && p.subcategory !== filterType) return false;
+    if (filterSize && p.size !== filterSize) return false;
     if (filterColor && !p.tags?.includes(filterColor)) return false;
     return true;
   });
 
-  const hasFilters = !isDrops && (availableTypeIds.length > 0 || availableColorIds.length > 0);
+  const hasFilters = !isDrops && (availableTypeIds.length > 0 || availableSizes.length > 0 || availableColorIds.length > 0);
 
   const season = activeCategory === 'ete' ? getCurrentSeason() : null;
 
@@ -120,6 +125,19 @@ export default function ProductGrid() {
                 );
               })}
             </div>
+            {availableSizes.length > 0 && (
+              <div className={styles.filterSizes}>
+                {availableSizes.map((size, i) => (
+                  <span key={size} className={styles.filterRow}>
+                    {i > 0 && <span className={styles.filterSep}>—</span>}
+                    <button
+                      className={`${styles.filterItem} ${filterSize === size ? styles.filterItemActive : ''}`}
+                      onClick={() => setFilterSize(filterSize === size ? null : size)}
+                    >{size}</button>
+                  </span>
+                ))}
+              </div>
+            )}
             {availableColorIds.length > 0 && (
               <div className={styles.filterColors}>
                 {availableColorIds.map((id) => {

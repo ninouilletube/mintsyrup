@@ -107,6 +107,13 @@
   gap: 0;
 }
 
+.filterSizes {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
 .filterColors {
   display: flex;
   align-items: center;
