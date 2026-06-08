@@ -92,8 +92,9 @@
   flex: 1;
   aspect-ratio: 1 / 1;
   overflow-y: auto;
-  transform: scale(0.95);
-  transform-origin: top left;
+  transform: scale(0.85);
+  transform-origin: center center;
+  align-self: center;
 }
 
 .blockFull {
