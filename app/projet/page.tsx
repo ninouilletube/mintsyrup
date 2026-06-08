@@ -18,7 +18,6 @@ export default function ProjetPage() {
                 className={styles.photo}
                 sizes="(max-width: 768px) 100vw, 45vw"
               />
-              <div className={styles.grain} />
             </div>
             <div className={styles.content}>
               <p>Écris ton texte ici.</p>
