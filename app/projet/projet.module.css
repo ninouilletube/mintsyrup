@@ -88,6 +88,14 @@
   overflow-y: auto;
 }
 
+.blockSquareSmall {
+  flex: 1;
+  aspect-ratio: 1 / 1;
+  overflow-y: auto;
+  transform: scale(0.95);
+  transform-origin: top left;
+}
+
 .blockFull {
   width: 100%;
 }
