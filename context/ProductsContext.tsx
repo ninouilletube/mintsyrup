@@ -33,18 +33,25 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
         // Met à jour localStorage avec la version Supabase
         try { localStorage.setItem(LS_KEY, JSON.stringify(prods)); } catch {}
       } else {
-        // 2. Fallback localStorage si Supabase vide ou indisponible
+        // 2. Fallback localStorage + re-sync vers Supabase
         try {
           const local = localStorage.getItem(LS_KEY);
-          if (local) setProducts(JSON.parse(local));
+          if (local) {
+            const parsed = JSON.parse(local) as Product[];
+            setProducts(parsed);
+            if (parsed.length > 0) setData('products', parsed).catch(() => {});
+          }
         } catch {}
       }
       setLoaded(true);
     }).catch(() => {
-      // Supabase inaccessible — localStorage seulement
       try {
         const local = localStorage.getItem(LS_KEY);
-        if (local) setProducts(JSON.parse(local));
+        if (local) {
+          const parsed = JSON.parse(local) as Product[];
+          setProducts(parsed);
+          if (parsed.length > 0) setData('products', parsed).catch(() => {});
+        }
       } catch {}
       setLoaded(true);
     });

@@ -31,14 +31,22 @@ export function SubcategoriesProvider({ children }: { children: React.ReactNode 
       } else {
         try {
           const local = localStorage.getItem(LS_KEY);
-          if (local) setSubcategories(JSON.parse(local));
+          if (local) {
+            const parsed = JSON.parse(local) as Subcategory[];
+            setSubcategories(parsed);
+            if (parsed.length > 0) setData('subcategories', parsed).catch(() => {});
+          }
         } catch {}
       }
       setLoaded(true);
     }).catch(() => {
       try {
         const local = localStorage.getItem(LS_KEY);
-        if (local) setSubcategories(JSON.parse(local));
+        if (local) {
+          const parsed = JSON.parse(local) as Subcategory[];
+          setSubcategories(parsed);
+          if (parsed.length > 0) setData('subcategories', parsed).catch(() => {});
+        }
       } catch {}
       setLoaded(true);
     });
