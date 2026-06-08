@@ -21,8 +21,7 @@ export default async function FavorisPage() {
       <Nav />
       <main className={styles.main}>
         <div className={styles.container}>
-          <h1 className={styles.title}>Mes favoris</h1>
-          {products.length === 0 ? (
+{products.length === 0 ? (
             <p className={styles.empty}>Aucun favori pour l&apos;instant.</p>
           ) : (
             <div className={styles.grid}>
