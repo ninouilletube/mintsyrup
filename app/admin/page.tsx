@@ -641,7 +641,7 @@ export default function AdminPage() {
               <label className={styles.editLabel}>Catégorie</label>
               <div className={styles.catPicker}>
                 <div className={styles.catPills}>
-                  {CATEGORIES.filter((c) => c.id !== 'drops' && c.id !== 'ete').map((cat) => (
+                  {CATEGORIES.filter((c) => c.id !== 'drops' && c.id !== 'ete').filter((c) => !editForm.categories[0] || editForm.categories[0] === c.id).map((cat) => (
                     <button key={cat.id} type="button"
                       className={`${styles.catPill} ${editForm.categories[0] === cat.id ? styles.catPillActive : ''}`}
                       onClick={() => toggleEditCat(cat.id)}
@@ -653,7 +653,6 @@ export default function AdminPage() {
                   const subs = subcategories.filter((s) => s.parentCategory === catId);
                   return (
                     <div className={styles.subRow}>
-                      <span className={styles.subRowLabel}>{CATEGORIES.find(c => c.id === catId)?.fr}</span>
                       <div className={styles.subRowPills}>
                         {subs.map((s) => (
                           <button key={s.id} type="button"
@@ -893,7 +892,7 @@ export default function AdminPage() {
                 <p className={styles.stepQ}>Dans quelle catégorie ?</p>
                 <div className={styles.catPicker}>
                   <div className={styles.catPills}>
-                    {CATEGORIES.filter((cat) => cat.id !== 'drops' && cat.id !== 'ete').map((cat) => (
+                    {CATEGORIES.filter((cat) => cat.id !== 'drops' && cat.id !== 'ete').filter((c) => !form.categories[0] || form.categories[0] === c.id).map((cat) => (
                       <button key={cat.id} type="button"
                         className={`${styles.catPill} ${form.categories[0] === cat.id ? styles.catPillActive : ''}`}
                         onClick={() => toggleCategory(cat.id)}
@@ -905,7 +904,6 @@ export default function AdminPage() {
                     const subs = subcategories.filter((s) => s.parentCategory === catId);
                     return (
                       <div className={styles.subRow}>
-                        <span className={styles.subRowLabel}>{CATEGORIES.find(c => c.id === catId)?.fr}</span>
                         <div className={styles.subRowPills}>
                           {subs.map((s) => (
                             <button key={s.id} type="button"

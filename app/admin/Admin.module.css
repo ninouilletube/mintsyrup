@@ -495,12 +495,10 @@
 .subRow {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
   padding: 0.6rem 0.9rem;
   background: #FAE2E8;
   border: 1.5px solid var(--light);
   border-radius: 10px;
-  flex-wrap: wrap;
   animation: subSlideIn 0.18s ease;
 }
 
