@@ -1,19 +1,22 @@
 'use client';
 
+import { useState } from 'react';
 import styles from './VideoBackground.module.css';
 
 export default function VideoBackground() {
+  const [ready, setReady] = useState(false);
+
   return (
     <div className={styles.wrapper}>
       <video
-        className={styles.video}
+        className={`${styles.video} ${ready ? styles.videoReady : ''}`}
         src="/mintsyrup.mov"
-        poster="/frames/drops.jpg"
         autoPlay
         muted
         loop
         playsInline
         preload="auto"
+        onCanPlay={() => setReady(true)}
       />
       <div className={styles.grain} aria-hidden />
     </div>
