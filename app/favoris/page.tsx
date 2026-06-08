@@ -32,6 +32,7 @@ export default async function FavorisPage() {
                       style={{ background: `linear-gradient(135deg, ${p.placeholder[0]}, ${p.placeholder[1]})` }}
                     >
                       {img && <img src={img} alt={p.title.fr} className={styles.img} />}
+                      {p.images?.[1] && <img src={p.images[1]} alt="" className={styles.imgHover} />}
                     </div>
                     {p.favoriteText && (
                       <p className={styles.favoriteText}>{p.favoriteText}</p>

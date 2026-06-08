@@ -87,7 +87,21 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: opacity 0.3s ease;
 }
+
+.imgHover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.thumb:hover .img { opacity: 0; }
+.thumb:hover .imgHover { opacity: 1; }
 
 .info {
   padding: 0.5rem 0.25rem;
