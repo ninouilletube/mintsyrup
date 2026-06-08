@@ -83,12 +83,12 @@
 }
 
 .blockSquare {
-  flex: 1;
+  flex: 1.3;
   background: #ffffff !important;
 }
 
 .blockSquareSmall {
-  flex: 1.3;
+  flex: 1;
   transform: scale(0.85);
   transform-origin: center center;
   align-self: center;
