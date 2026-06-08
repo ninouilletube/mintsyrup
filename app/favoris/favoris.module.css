@@ -23,13 +23,11 @@
 .intro {
   text-align: center;
   font-family: var(--font-dm-sans), sans-serif;
-  font-size: 0.9rem;
+  font-size: calc(0.9rem + 2px);
   font-style: italic;
   color: white;
   margin-bottom: 2.5rem;
-  max-width: 520px;
-  margin-left: auto;
-  margin-right: auto;
+  white-space: nowrap;
   line-height: 1.6;
 }
 
