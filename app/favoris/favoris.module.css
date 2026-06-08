@@ -9,6 +9,9 @@
 .container {
   width: 100%;
   max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .title {
@@ -21,14 +24,19 @@
 }
 
 .intro {
-  text-align: center;
+  display: inline-block;
   font-family: var(--font-dm-sans), sans-serif;
   font-size: calc(0.9rem + 2px);
   font-style: italic;
-  color: white;
-  margin-bottom: 2.5rem;
+  color: var(--dark);
+  margin: 0 auto 2.5rem;
   white-space: nowrap;
   line-height: 1.6;
+  background: var(--cream);
+  border: 2.5px solid var(--dark);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 var(--dark);
+  padding: 0.75rem 1.75rem;
 }
 
 .heartFixed {
