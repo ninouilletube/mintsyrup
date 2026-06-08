@@ -25,17 +25,16 @@
   width: 220px;
   position: relative;
   border-radius: 4px;
-  overflow: hidden;
 }
 
 .photoWrap::before {
   content: '';
   position: absolute;
-  top: 6px;
+  top: -8px;
   left: 50%;
   transform: translateX(-50%) rotate(1deg);
   width: 48px;
-  height: 16px;
+  height: 18px;
   background: rgba(255,255,255,0.55);
   backdrop-filter: blur(2px);
   border-radius: 2px;
@@ -48,6 +47,7 @@
   height: 300px;
   object-fit: cover;
   object-position: center 15%;
+  border-radius: 4px;
 }
 
 .grain {
