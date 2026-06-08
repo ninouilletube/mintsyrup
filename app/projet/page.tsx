@@ -27,24 +27,30 @@ export default async function ProjetPage() {
       <main className={styles.main}>
         <div className={styles.container}>
           <div className={styles.layout}>
-            <div className={styles.photoWrap}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/nina - copie.png" alt="Nina" className={styles.photo} />
+            <div className={styles.layoutTop}>
+              <div className={styles.photoWrap}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/nina - copie.png" alt="Nina" className={styles.photo} />
+              </div>
+              <div className={styles.blocksTop}>
+                {[blocks[0], blocks[1]].map((b, i) => b && (
+                  <div key={i} className={`${styles.content} ${styles.blockSquare}`}>
+                    {b.title && <h2 className={styles.blockTitle}>{b.title}</h2>}
+                    {b.text && b.text.split('\n').filter(Boolean).map((p, j) => (
+                      <p key={j}>{p}</p>
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className={styles.blocks}>
-              {blocks.length > 0 ? blocks.map((b, i) => (
-                <div key={i} className={styles.content}>
-                  {b.title && <h2 className={styles.blockTitle}>{b.title}</h2>}
-                  {b.text && b.text.split('\n').filter(Boolean).map((p, j) => (
-                    <p key={j}>{p}</p>
-                  ))}
-                </div>
-              )) : (
-                <div className={styles.content}>
-                  <p style={{ color: 'var(--light)', fontStyle: 'italic' }}>Aucun texte pour l&apos;instant.</p>
-                </div>
-              )}
-            </div>
+            {blocks[2] && (
+              <div className={`${styles.content} ${styles.blockFull}`}>
+                {blocks[2].title && <h2 className={styles.blockTitle}>{blocks[2].title}</h2>}
+                {blocks[2].text && blocks[2].text.split('\n').filter(Boolean).map((p, j) => (
+                  <p key={j}>{p}</p>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </main>
