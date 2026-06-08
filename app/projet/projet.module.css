@@ -83,13 +83,14 @@
 }
 
 .blockSquare {
-  flex: 1.4;
+  flex: 1;
   aspect-ratio: 1 / 1;
   overflow-y: auto;
 }
 
 .blockSquareSmall {
-  flex: 0.7;
+  flex: 0 0 auto;
+  width: 160px;
   aspect-ratio: 1 / 1;
   overflow-y: auto;
 }
