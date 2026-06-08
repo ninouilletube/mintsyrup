@@ -117,7 +117,9 @@ export default function AdminPage() {
   const [seasonSaving, setSeasonSaving] = useState(false);
 
   // Bio
-  const [bio, setBio] = useState('');
+  const [bio1, setBio1] = useState('');
+  const [bio2, setBio2] = useState('');
+  const [bio3, setBio3] = useState('');
   const [bioSaving, setBioSaving] = useState(false);
   const [bioSaved, setBioSaved] = useState(false);
 
@@ -153,7 +155,9 @@ export default function AdminPage() {
     getData('analytics').then((v) => v && setAnalytics(v as Analytics));
     getData('article_stats').then((v) => v && setArticleStats(v as ArticleStats));
     getData('season_override').then((v) => v && setSeasonOverride(v as SeasonKey));
-    getData('bio').then((v) => v && setBio(v as string));
+    getData('bio1').then((v) => v && setBio1(v as string));
+    getData('bio2').then((v) => v && setBio2(v as string));
+    getData('bio3').then((v) => v && setBio3(v as string));
   }, [auth]);
 
   const login = () => {
@@ -1014,20 +1018,33 @@ export default function AdminPage() {
       {view === 'bio' && (
         <div className={styles.section}>
           {bioSaved && <span className={styles.bioSavedMsg}>✓ Enregistré</span>}
-          <textarea
-            className={styles.bioTextarea}
-            value={bio}
-            onChange={(e) => { setBio(e.target.value); setBioSaved(false); }}
-            placeholder="Raconte ton projet ici..."
-            rows={12}
-          />
+          {([
+            { label: 'Bloc 1', value: bio1, set: setBio1 },
+            { label: 'Bloc 2', value: bio2, set: setBio2 },
+            { label: 'Bloc 3', value: bio3, set: setBio3 },
+          ] as const).map(({ label, value, set }) => (
+            <div key={label} className={styles.bioBlock}>
+              <label className={styles.editLabel}>{label}</label>
+              <textarea
+                className={styles.bioTextarea}
+                value={value}
+                onChange={(e) => { set(e.target.value); setBioSaved(false); }}
+                placeholder="Écris ici..."
+                rows={5}
+              />
+            </div>
+          ))}
           <div className={styles.bioActions}>
             <button
               className={styles.btnPrimary}
               disabled={bioSaving}
               onClick={async () => {
                 setBioSaving(true);
-                await setData('bio', bio);
+                await Promise.all([
+                  setData('bio1', bio1),
+                  setData('bio2', bio2),
+                  setData('bio3', bio3),
+                ]);
                 setBioSaving(false);
                 setBioSaved(true);
               }}
