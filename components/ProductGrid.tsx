@@ -44,8 +44,11 @@ export default function ProductGrid() {
     setDropsIndex(index);
   };
 
-  // Reset scroll on category change
+  // Reset filters and scroll on category change
   useEffect(() => {
+    setFilterType(null);
+    setFilterSizes([]);
+    setFilterColor(null);
     if (activeCategory === 'drops') {
       carouselWindowRef.current?.scrollTo({ left: 0 });
     }
