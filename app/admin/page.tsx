@@ -608,7 +608,6 @@ export default function AdminPage() {
                   >
                     {p.image && <Image src={p.image} alt={p.title.fr} fill style={{ objectFit: 'cover' }} />}
                     {p.hidden && <span className={styles.hiddenBadge}>masqué</span>}
-                    {p.favorite && <span className={styles.favBadge}>♥</span>}
                   </div>
                   <div className={styles.articleGridStats}>
                     <span className={styles.statPill}>
