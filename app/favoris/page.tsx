@@ -8,13 +8,8 @@ import styles from './favoris.module.css';
 export const revalidate = 60;
 
 export default async function FavorisPage() {
-  const [favIds, allProducts] = await Promise.all([
-    getData('favorites') as Promise<number[] | null>,
-    getData('products') as Promise<Product[] | null>,
-  ]);
-
-  const ids = favIds ?? [];
-  const products = (allProducts ?? []).filter((p) => ids.includes(p.id));
+  const allProducts = (await getData('products') as Product[] | null) ?? [];
+  const products = allProducts.filter((p) => p.favorite && !p.hidden);
 
   return (
     <>
@@ -40,11 +35,9 @@ export default async function FavorisPage() {
                     >
                       {img && <img src={img} alt={p.title.fr} className={styles.img} />}
                     </div>
-                    <div className={styles.info}>
-                      <p className={styles.name}>{p.title.fr}</p>
-                      {p.brand && <p className={styles.brand}>{p.brand}</p>}
-                      <p className={styles.price}>{p.price} €</p>
-                    </div>
+                    {p.favoriteText && (
+                      <p className={styles.favoriteText}>{p.favoriteText}</p>
+                    )}
                   </Link>
                 );
               })}

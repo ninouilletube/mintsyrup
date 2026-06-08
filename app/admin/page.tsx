@@ -99,6 +99,8 @@ const emptyForm = {
   subcategory: '',
   seasons: [] as Season[],
   tags: [] as string[],
+  favorite: false,
+  favoriteText: '',
 };
 
 export default function AdminPage() {
@@ -273,6 +275,8 @@ export default function AdminPage() {
       subcategory: p.subcategory || '',
       seasons: p.seasons || [],
       tags: p.tags || [],
+      favorite: p.favorite || false,
+      favoriteText: p.favoriteText || '',
     });
     setView('edit-article');
   };
@@ -293,6 +297,8 @@ export default function AdminPage() {
       subcategory: editForm.subcategory || undefined,
       seasons: editForm.seasons.length > 0 ? editForm.seasons : undefined,
       tags: editForm.tags.length > 0 ? editForm.tags : undefined,
+      favorite: editForm.favorite || undefined,
+      favoriteText: editForm.favoriteText || undefined,
     });
     setView('articles');
     setEditingProduct(null);
@@ -336,6 +342,8 @@ export default function AdminPage() {
       subcategory: form.subcategory || undefined,
       seasons: form.seasons.length > 0 ? form.seasons : undefined,
       tags: form.tags.length > 0 ? form.tags : undefined,
+      favorite: form.favorite || undefined,
+      favoriteText: form.favoriteText || undefined,
     });
     setSuccess(true);
     setTimeout(() => { setSuccess(false); setForm(emptyForm); setStep(0); setView('dashboard'); }, 1800);
@@ -577,18 +585,7 @@ export default function AdminPage() {
                   >
                     {p.image && <Image src={p.image} alt={p.title.fr} fill style={{ objectFit: 'cover' }} />}
                     {p.hidden && <span className={styles.hiddenBadge}>masqué</span>}
-                    <button
-                      type="button"
-                      className={`${styles.heartBtn} ${favorites.includes(p.id) ? styles.heartBtnActive : ''}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const next = favorites.includes(p.id)
-                          ? favorites.filter(id => id !== p.id)
-                          : favorites.length < 4 ? [...favorites, p.id] : favorites;
-                        setFavorites(next);
-                        setData('favorites', next).catch(() => {});
-                      }}
-                    >♥</button>
+                    {p.favorite && <span className={styles.favBadge}>♥</span>}
                   </div>
                   <div className={styles.articleGridStats}>
                     <span className={styles.statPill}>
@@ -736,6 +733,21 @@ export default function AdminPage() {
                   />
                 ))}
               </div>
+            </div>
+            <div className={styles.editField}>
+              <label className={`${styles.checkLabel} ${editForm.favorite ? styles.checkActive : ''}`} style={{ cursor: 'pointer', userSelect: 'none' }}>
+                <input type="checkbox" className={styles.checkbox} checked={!!editForm.favorite} onChange={(e) => setEditForm({ ...editForm, favorite: e.target.checked, favoriteText: e.target.checked ? editForm.favoriteText : '' })} />
+                ♥ Ajouter aux favoris
+              </label>
+              {editForm.favorite && (
+                <textarea
+                  className={styles.editTextarea}
+                  value={editForm.favoriteText}
+                  rows={3}
+                  placeholder="Ce que j'aime dans cette pièce..."
+                  onChange={(e) => setEditForm({ ...editForm, favoriteText: e.target.value })}
+                />
+              )}
             </div>
             <div className={styles.editActions}>
               <button type="button" className={styles.stepSkip} onClick={() => setView('articles')}>Annuler</button>
@@ -996,6 +1008,22 @@ export default function AdminPage() {
                       onClick={() => setForm({ ...form, tags: form.tags.includes(c.id) ? form.tags.filter((id) => id !== c.id) : [...form.tags, c.id] })}
                     />
                   ))}
+                </div>
+                <div style={{ marginTop: '1.25rem' }}>
+                  <label className={`${styles.checkLabel} ${form.favorite ? styles.checkActive : ''}`} style={{ cursor: 'pointer', userSelect: 'none' }}>
+                    <input type="checkbox" className={styles.checkbox} checked={!!form.favorite} onChange={(e) => setForm({ ...form, favorite: e.target.checked, favoriteText: e.target.checked ? form.favoriteText : '' })} />
+                    ♥ Ajouter aux favoris
+                  </label>
+                  {form.favorite && (
+                    <textarea
+                      className={styles.stepTextarea}
+                      value={form.favoriteText}
+                      rows={3}
+                      placeholder="Ce que j'aime dans cette pièce..."
+                      onChange={(e) => setForm({ ...form, favoriteText: e.target.value })}
+                      style={{ marginTop: '0.75rem' }}
+                    />
+                  )}
                 </div>
                 <div className={styles.stepActions}>
                   <button className={styles.stepNext} onClick={next}>Continuer →</button>
