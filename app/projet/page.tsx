@@ -49,7 +49,17 @@ export default async function ProjetPage() {
                 {tooltip3 && (
                   <div className={styles.infoWrap}>
                     <span className={styles.infoIcon}>i</span>
-                    <div className={styles.infoTooltip}>{tooltip3}</div>
+                    <div className={styles.infoTooltip}>
+                    <div className={styles.infoTooltipInner}>
+                      <span>{tooltip3}</span>
+                      <a
+                        href="https://www.vinted.pt/member/3125590380"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.infoLink}
+                      >Voir mon profil Vinted ↗</a>
+                    </div>
+                  </div>
                   </div>
                 )}
                 {blocks[2].title && <h2 className={styles.blockTitle}>{blocks[2].title}</h2>}
