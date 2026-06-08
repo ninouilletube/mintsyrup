@@ -17,6 +17,9 @@ export default function Footer() {
           <a href="https://www.youtube.com/@chatcheper" target="_blank" rel="noopener noreferrer" className={styles.link}>
             YouTube @chatcheper
           </a>
+          <a href="/projet" className={styles.link}>
+            {lang === 'fr' ? 'Le projet' : 'The project'}
+          </a>
         </div>
       </div>
       <p className={styles.copy}>© 2026 Mint Syrup <a href="/admin" className={styles.secret}>·</a></p>
