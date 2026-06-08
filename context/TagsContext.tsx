@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { Tag } from '@/data/tags';
+import { getData, setData } from '@/lib/supabase';
 
 type TagsContextType = {
   tags: Tag[];
@@ -15,23 +16,20 @@ const TagsContext = createContext<TagsContextType>({
   deleteTag: () => {},
 });
 
-const STORAGE_KEY = 'msc_tags';
-
 export function TagsProvider({ children }: { children: React.ReactNode }) {
   const [tags, setTags] = useState<Tag[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setTags(JSON.parse(stored));
-    } catch {}
-    setLoaded(true);
+    getData('tags').then((val) => {
+      if (val) setTags(val as Tag[]);
+      setLoaded(true);
+    });
   }, []);
 
   const save = (items: Tag[]) => {
     setTags(items);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    setData('tags', items);
   };
 
   const addTag = (t: Omit<Tag, 'id'>) => save([...tags, { ...t, id: Date.now().toString() }]);

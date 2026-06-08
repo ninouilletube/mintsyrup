@@ -16,7 +16,7 @@ const SEASONS: { id: Season; label: string }[] = [
 ];
 import styles from './Admin.module.css';
 
-const PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'mintsyrup2026';
+const PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'sun';
 
 const PLACEHOLDERS: [string, string][] = [
   ['#E8621A', '#F5C842'],
@@ -41,7 +41,7 @@ const emptyForm = {
 };
 
 export default function AdminPage() {
-  const [auth, setAuth] = useState(false);
+  const [auth, setAuth] = useState(() => sessionStorage.getItem('msc_auth') === '1');
   const [pwd, setPwd] = useState('');
   const [pwdError, setPwdError] = useState(false);
   const [form, setForm] = useState(emptyForm);
@@ -88,7 +88,7 @@ export default function AdminPage() {
   const [newTagColor, setNewTagColor] = useState('#E8621A');
 
   const login = () => {
-    if (pwd === PASSWORD) { setAuth(true); setPwdError(false); }
+    if (pwd === PASSWORD) { setAuth(true); sessionStorage.setItem('msc_auth', '1'); setPwdError(false); }
     else setPwdError(true);
   };
 

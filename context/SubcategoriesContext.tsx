@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import type { Subcategory } from '@/data/subcategories';
+import { getData, setData } from '@/lib/supabase';
 
 type SubcategoriesContextType = {
   subcategories: Subcategory[];
@@ -15,32 +16,24 @@ const SubcategoriesContext = createContext<SubcategoriesContextType>({
   deleteSubcategory: () => {},
 });
 
-const STORAGE_KEY = 'msc_subcategories';
-
 export function SubcategoriesProvider({ children }: { children: React.ReactNode }) {
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setSubcategories(JSON.parse(stored));
-    } catch {}
-    setLoaded(true);
+    getData('subcategories').then((val) => {
+      if (val) setSubcategories(val as Subcategory[]);
+      setLoaded(true);
+    });
   }, []);
 
   const save = (items: Subcategory[]) => {
     setSubcategories(items);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    setData('subcategories', items);
   };
 
-  const addSubcategory = (s: Omit<Subcategory, 'id'>) => {
-    save([...subcategories, { ...s, id: Date.now().toString() }]);
-  };
-
-  const deleteSubcategory = (id: string) => {
-    save(subcategories.filter((s) => s.id !== id));
-  };
+  const addSubcategory = (s: Omit<Subcategory, 'id'>) => save([...subcategories, { ...s, id: Date.now().toString() }]);
+  const deleteSubcategory = (id: string) => save(subcategories.filter((s) => s.id !== id));
 
   if (!loaded) return null;
 
