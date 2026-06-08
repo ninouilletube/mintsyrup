@@ -53,6 +53,37 @@ export default function AdminPage() {
   const { subcategories, addSubcategory, deleteSubcategory } = useSubcategories();
   const { tags, addTag, deleteTag } = useTags();
   const [addingTag, setAddingTag] = useState(false);
+
+  const handleExport = () => {
+    const data = {
+      products: localStorage.getItem('msc_products'),
+      subcategories: localStorage.getItem('msc_subcategories'),
+      tags: localStorage.getItem('msc_tags'),
+    };
+    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'mintsyrup-data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const data = JSON.parse(ev.target?.result as string);
+        if (data.products) localStorage.setItem('msc_products', data.products);
+        if (data.subcategories) localStorage.setItem('msc_subcategories', data.subcategories);
+        if (data.tags) localStorage.setItem('msc_tags', data.tags);
+        window.location.reload();
+      } catch {}
+    };
+    reader.readAsText(file);
+  };
   const [newTagLabel, setNewTagLabel] = useState('');
   const [newTagColor, setNewTagColor] = useState('#E8621A');
 
@@ -173,7 +204,14 @@ export default function AdminPage() {
     <div className={styles.page}>
       <header className={styles.header}>
         <h1 className={styles.title}>Admin</h1>
-        <a href="/" className={styles.backLink}>← Retour au site</a>
+        <div className={styles.headerActions}>
+          <button className={styles.btnSecondary} onClick={handleExport}>⬇ Exporter</button>
+          <label className={styles.btnSecondary} style={{ cursor: 'pointer' }}>
+            ⬆ Importer
+            <input type="file" accept=".json" onChange={handleImport} style={{ display: 'none' }} />
+          </label>
+          <a href="/" className={styles.backLink}>← Retour au site</a>
+        </div>
       </header>
 
       <section className={styles.section}>

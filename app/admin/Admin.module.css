@@ -60,6 +60,12 @@
   line-height: 1;
 }
 
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .backLink {
   font-size: 0.8rem;
   font-weight: 600;
