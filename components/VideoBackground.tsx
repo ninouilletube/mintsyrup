@@ -16,6 +16,7 @@ export default function VideoBackground() {
         loop
         playsInline
         preload="auto"
+        onLoadedMetadata={(e) => { (e.target as HTMLVideoElement).currentTime = 4; }}
         onCanPlay={() => setReady(true)}
       />
       <div className={styles.grain} aria-hidden />
