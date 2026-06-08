@@ -12,9 +12,50 @@
   border-bottom: 2.5px solid var(--dark);
 }
 
+.logoWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
 .logo {
   cursor: pointer;
-  flex-shrink: 0;
+}
+
+.logoDropdown {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.logoWrap:hover .logoDropdown {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+
+.logoDropdownItem {
+  display: block;
+  white-space: nowrap;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--dark);
+  text-decoration: none;
+  padding: 0.35rem 0.75rem;
+  background: var(--cream);
+  border: 2px solid var(--dark);
+  border-radius: 6px;
+  box-shadow: 3px 3px 0 var(--dark);
+  transition: background 0.15s;
+}
+
+.logoDropdownItem:hover {
+  background: #FAE2E8;
 }
 
 .logoText {

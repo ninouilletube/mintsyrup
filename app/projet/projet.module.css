@@ -1,0 +1,40 @@
+.main {
+  min-height: 100vh;
+  background: #FAE2E8;
+  padding: 4rem 2rem 6rem;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 720px;
+}
+
+.title {
+  font-family: 'MyUglyHandwriting', cursive;
+  font-size: 4rem;
+  color: var(--orange);
+  line-height: 1;
+  margin-bottom: 2.5rem;
+}
+
+.content {
+  background: var(--cream);
+  border: 2.5px solid var(--dark);
+  border-radius: 16px;
+  box-shadow: 5px 5px 0 var(--dark);
+  padding: 2.5rem 3rem;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  color: var(--dark);
+  line-height: 1.7;
+}
+
+.content p {
+  margin-bottom: 1.25rem;
+}
+
+.content p:last-child {
+  margin-bottom: 0;
+}

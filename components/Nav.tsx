@@ -28,8 +28,13 @@ export default function Nav() {
 
   return (
     <nav className={styles.nav}>
-      <div className={styles.logo} onClick={() => setActiveCategory(null)}>
-        <span className={styles.logoText}>Mint Syrup</span>
+      <div className={styles.logoWrap}>
+        <div className={styles.logo} onClick={() => setActiveCategory(null)}>
+          <span className={styles.logoText}>Mint Syrup</span>
+        </div>
+        <div className={styles.logoDropdown}>
+          <a href="/projet" className={styles.logoDropdownItem}>Le projet</a>
+        </div>
       </div>
 
       <div className={styles.links}>
