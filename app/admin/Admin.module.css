@@ -1695,7 +1695,7 @@
 .financeCards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  gap: 0.6rem;
   margin-bottom: 2rem;
 }
 
@@ -1704,10 +1704,11 @@
   border: 2.5px solid var(--dark);
   border-radius: 14px;
   box-shadow: 4px 4px 0 var(--dark);
-  padding: 1.25rem 1.5rem;
+  padding: 0.9rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
+  gap: 0.25rem;
+  min-width: 0;
 }
 
 .financeCardProfit { border-color: #1a9e6e; box-shadow: 4px 4px 0 #1a9e6e; }
@@ -1723,7 +1724,7 @@
 }
 
 .financeCardValue {
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--dark);
   line-height: 1;
