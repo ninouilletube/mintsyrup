@@ -51,6 +51,7 @@ export default function Nav() {
         </div>
         <div className={styles.logoDropdown}>
           <a href="/projet" className={styles.logoDropdownItem}>Le projet</a>
+          <a href="/favoris" className={styles.logoDropdownItem}>Mes favoris</a>
         </div>
       </div>
 

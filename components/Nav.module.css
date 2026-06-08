@@ -30,6 +30,9 @@
   pointer-events: none;
   transform: translateY(-4px);
   transition: opacity 0.15s, transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
 .logoWrap:hover .logoDropdown {

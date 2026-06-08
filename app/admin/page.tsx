@@ -116,6 +116,9 @@ export default function AdminPage() {
   const [seasonOverride, setSeasonOverride] = useState<SeasonKey | null>(null);
   const [seasonSaving, setSeasonSaving] = useState(false);
 
+  // Favoris
+  const [favorites, setFavorites] = useState<number[]>([]);
+
   // Bio
   const [bio1, setBio1] = useState('');
   const [bio2, setBio2] = useState('');
@@ -159,6 +162,7 @@ export default function AdminPage() {
     getData('analytics').then((v) => v && setAnalytics(v as Analytics));
     getData('article_stats').then((v) => v && setArticleStats(v as ArticleStats));
     getData('season_override').then((v) => v && setSeasonOverride(v as SeasonKey));
+    getData('favorites').then((v) => v && setFavorites(v as number[]));
     getData('bio1').then((v) => v && setBio1(v as string));
     getData('bio2').then((v) => v && setBio2(v as string));
     getData('bio3').then((v) => v && setBio3(v as string));
@@ -572,6 +576,19 @@ export default function AdminPage() {
                     style={{ background: `linear-gradient(135deg, ${p.placeholder[0]}, ${p.placeholder[1]})` }}
                   >
                     {p.image && <Image src={p.image} alt={p.title.fr} fill style={{ objectFit: 'cover' }} />}
+                    {p.hidden && <span className={styles.hiddenBadge}>masqué</span>}
+                    <button
+                      type="button"
+                      className={`${styles.heartBtn} ${favorites.includes(p.id) ? styles.heartBtnActive : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const next = favorites.includes(p.id)
+                          ? favorites.filter(id => id !== p.id)
+                          : favorites.length < 4 ? [...favorites, p.id] : favorites;
+                        setFavorites(next);
+                        setData('favorites', next).catch(() => {});
+                      }}
+                    >♥</button>
                   </div>
                   <div className={styles.articleGridStats}>
                     <span className={styles.statPill}>
