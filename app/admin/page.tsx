@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useProducts } from '@/context/ProductsContext';
 import { useSubcategories } from '@/context/SubcategoriesContext';
-import { useTags } from '@/context/TagsContext';
 import { CATEGORIES } from '@/data/categories';
+import { COLORS } from '@/data/colors';
 import type { Category, Season, Product } from '@/data/products';
 import { getCurrentSeason } from '@/lib/season';
 import { getData, setData } from '@/lib/supabase';
@@ -127,24 +127,17 @@ export default function AdminPage() {
   const [editForm, setEditForm] = useState(emptyForm);
   const [editAddingSubFor, setEditAddingSubFor] = useState<Category | null>(null);
   const [editNewSubLabel, setEditNewSubLabel] = useState('');
-  const [editAddingTag, setEditAddingTag] = useState(false);
-  const [editNewTagLabel, setEditNewTagLabel] = useState('');
-  const [editNewTagColor, setEditNewTagColor] = useState('#E8621A');
 
   // Add-article step form
   const [form, setForm] = useState(emptyForm);
   const [success, setSuccess] = useState(false);
   const [addingSubFor, setAddingSubFor] = useState<Category | null>(null);
   const [newSubLabel, setNewSubLabel] = useState('');
-  const [addingTag, setAddingTag] = useState(false);
-  const [newTagLabel, setNewTagLabel] = useState('');
-  const [newTagColor, setNewTagColor] = useState('#E8621A');
   const [step, setStep] = useState(0);
   const TOTAL_STEPS = 10;
 
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const { subcategories, addSubcategory, deleteSubcategory } = useSubcategories();
-  const { tags, addTag, deleteTag } = useTags();
 
   useEffect(() => {
     setAuth(sessionStorage.getItem('msc_auth') === '1');
@@ -695,24 +688,18 @@ export default function AdminPage() {
               </div>
             </div>
             <div className={styles.editField}>
-              <label className={styles.editLabel}>Étiquettes</label>
-              <div className={styles.inlineSubTags}>
-                {tags.map((tag) => (
-                  <div key={tag.id} className={styles.colorTag} style={{ background: tag.color, borderColor: editForm.tags.includes(tag.id) ? '#3A1808' : tag.color, boxShadow: editForm.tags.includes(tag.id) ? '2px 2px 0 #3A1808' : 'none' }} onClick={() => setEditForm({ ...editForm, tags: editForm.tags.includes(tag.id) ? editForm.tags.filter((id) => id !== tag.id) : [...editForm.tags, tag.id] })}>
-                    <span className={styles.colorTagLabel}>{tag.label}</span>
-                    <button type="button" className={styles.subDelete} onClick={(e) => { e.stopPropagation(); deleteTag(tag.id); }}>×</button>
-                  </div>
+              <label className={styles.editLabel}>Couleurs</label>
+              <div className={styles.colorSwatchGrid}>
+                {COLORS.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    title={c.label}
+                    className={`${styles.colorSwatch} ${editForm.tags.includes(c.id) ? styles.colorSwatchActive : ''}`}
+                    style={{ background: c.bg }}
+                    onClick={() => setEditForm({ ...editForm, tags: editForm.tags.includes(c.id) ? editForm.tags.filter((id) => id !== c.id) : [...editForm.tags, c.id] })}
+                  />
                 ))}
-                {editAddingTag ? (
-                  <div className={styles.colorTagForm}>
-                    <input autoFocus className={styles.inlineInput} value={editNewTagLabel} onChange={(e) => setEditNewTagLabel(e.target.value)} placeholder="Nom..." style={{ width: '90px' }} onKeyDown={(e) => { if (e.key === 'Escape') { setEditAddingTag(false); setEditNewTagLabel(''); } }} />
-                    <input type="color" value={editNewTagColor} onChange={(e) => setEditNewTagColor(e.target.value)} className={styles.colorPicker} />
-                    <button type="button" className={styles.inlineConfirm} onClick={() => { if (editNewTagLabel.trim()) addTag({ label: editNewTagLabel.trim(), color: editNewTagColor }); setEditNewTagLabel(''); setEditAddingTag(false); }}>✓</button>
-                    <button type="button" className={styles.inlineCancel} onClick={() => { setEditAddingTag(false); setEditNewTagLabel(''); }}>×</button>
-                  </div>
-                ) : (
-                  <button type="button" className={styles.inlineAddBtn} onClick={() => setEditAddingTag(true)}>+</button>
-                )}
               </div>
             </div>
             <div className={styles.editActions}>
@@ -963,24 +950,18 @@ export default function AdminPage() {
             )}
             {step === 9 && (
               <div className={styles.stepField}>
-                <p className={styles.stepQ}>Une étiquette couleur ?</p>
-                <div className={styles.inlineSubTags}>
-                  {tags.map((tag) => (
-                    <div key={tag.id} className={styles.colorTag} style={{ background: tag.color, borderColor: form.tags.includes(tag.id) ? '#3A1808' : tag.color, boxShadow: form.tags.includes(tag.id) ? '2px 2px 0 #3A1808' : 'none' }} onClick={() => setForm({ ...form, tags: form.tags.includes(tag.id) ? form.tags.filter((id) => id !== tag.id) : [...form.tags, tag.id] })}>
-                      <span className={styles.colorTagLabel}>{tag.label}</span>
-                      <button type="button" className={styles.subDelete} onClick={(e) => { e.stopPropagation(); deleteTag(tag.id); }}>×</button>
-                    </div>
+                <p className={styles.stepQ}>La couleur ?</p>
+                <div className={styles.colorSwatchGrid}>
+                  {COLORS.map((c) => (
+                    <button
+                      key={c.id}
+                      type="button"
+                      title={c.label}
+                      className={`${styles.colorSwatch} ${form.tags.includes(c.id) ? styles.colorSwatchActive : ''}`}
+                      style={{ background: c.bg }}
+                      onClick={() => setForm({ ...form, tags: form.tags.includes(c.id) ? form.tags.filter((id) => id !== c.id) : [...form.tags, c.id] })}
+                    />
                   ))}
-                  {addingTag ? (
-                    <div className={styles.colorTagForm}>
-                      <input autoFocus className={styles.inlineInput} value={newTagLabel} onChange={(e) => setNewTagLabel(e.target.value)} placeholder="Nom..." style={{ width: '90px' }} onKeyDown={(e) => { if (e.key === 'Escape') { setAddingTag(false); setNewTagLabel(''); } }} />
-                      <input type="color" value={newTagColor} onChange={(e) => setNewTagColor(e.target.value)} className={styles.colorPicker} />
-                      <button type="button" className={styles.inlineConfirm} onClick={() => { if (newTagLabel.trim()) addTag({ label: newTagLabel.trim(), color: newTagColor }); setNewTagLabel(''); setAddingTag(false); }}>✓</button>
-                      <button type="button" className={styles.inlineCancel} onClick={() => { setAddingTag(false); setNewTagLabel(''); }}>×</button>
-                    </div>
-                  ) : (
-                    <button type="button" className={styles.inlineAddBtn} onClick={() => setAddingTag(true)}>+</button>
-                  )}
                 </div>
                 <div className={styles.stepActions}>
                   <button className={styles.stepNext} onClick={next}>Continuer →</button>

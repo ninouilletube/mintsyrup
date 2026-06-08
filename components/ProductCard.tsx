@@ -3,15 +3,11 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLang } from '@/context/LangContext';
-import { useTags } from '@/context/TagsContext';
 import type { Product } from '@/data/products';
 import styles from './ProductCard.module.css';
 
 export default function ProductCard({ product }: { product: Product }) {
   const { lang } = useLang();
-  const { tags } = useTags();
-  const firstTag = product.tags?.[0] ? tags.find((t) => t.id === product.tags![0]) : null;
-  const priceColor = firstTag?.color ?? '#F0729A';
 
   return (
     <article className={styles.card}>

@@ -4,8 +4,8 @@ import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useLang } from '@/context/LangContext';
 import { useShop } from '@/context/ShopContext';
 import { useProducts } from '@/context/ProductsContext';
-import { useTags } from '@/context/TagsContext';
 import { useSubcategories } from '@/context/SubcategoriesContext';
+import { COLORS, getColor } from '@/data/colors';
 import { getCurrentSeason, SEASON_TO_ID, type SeasonKey } from '@/lib/season';
 import type { Season } from '@/data/products';
 import ProductCard from './ProductCard';
@@ -25,7 +25,6 @@ export default function ProductGrid() {
   const { lang } = useLang();
   const { activeCategory } = useShop();
   const { products } = useProducts();
-  const { tags } = useTags();
   const { subcategories } = useSubcategories();
 
   const [filterSizes, setFilterSizes] = useState<string[]>([]);
@@ -178,10 +177,10 @@ export default function ProductGrid() {
                 {openGroup === 'color' && (
                   <div className={styles.filterChips}>
                     {availableTagIds.map((id) => {
-                      const tag = tags.find((t) => t.id === id);
-                      if (!tag) return null;
+                      const color = getColor(id);
+                      if (!color) return null;
                       return (
-                        <button key={id} className={`${styles.colorDot} ${filterTags.includes(id) ? styles.colorDotActive : ''}`} style={{ background: tag.color }} title={tag.label} onClick={() => setFilterTags(toggle(filterTags, id))} />
+                        <button key={id} className={`${styles.colorDot} ${filterTags.includes(id) ? styles.colorDotActive : ''}`} style={{ background: color.bg }} title={color.label} onClick={() => setFilterTags(toggle(filterTags, id))} />
                       );
                     })}
                   </div>
