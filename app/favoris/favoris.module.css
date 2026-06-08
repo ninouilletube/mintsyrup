@@ -20,16 +20,32 @@
   margin-bottom: 2.5rem;
 }
 
-.heartCenter {
+.heartRow {
   display: flex;
+  align-items: center;
   justify-content: center;
-  margin-bottom: 2rem;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
 }
 
 .heartImg {
-  width: 120px;
+  width: 100px;
   height: auto;
   filter: drop-shadow(0 4px 12px rgba(0,0,0,0.15));
+  flex-shrink: 0;
+}
+
+.heartLabel {
+  background: white;
+  border: 2.5px solid var(--dark);
+  border-radius: 16px;
+  box-shadow: 5px 5px 0 var(--dark);
+  padding: 1rem 1.75rem;
+  font-family: 'MyUglyHandwriting', cursive;
+  font-size: 2rem;
+  color: #C8306A;
+  line-height: 1.1;
+  white-space: nowrap;
 }
 
 .empty {
