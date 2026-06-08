@@ -277,11 +277,11 @@ export default function AdminPage() {
   };
 
   const toggleEditCat = (id: Category) =>
-    setEditForm((f) => {
-      const cats = f.categories.includes(id) ? f.categories.filter((c) => c !== id) : [...f.categories, id];
-      const subOk = subcategories.some((s) => s.id === f.subcategory && (cats.length === 0 || cats.includes(s.parentCategory)));
-      return { ...f, categories: cats, subcategory: subOk ? f.subcategory : '' };
-    });
+    setEditForm((f) => ({
+      ...f,
+      categories: f.categories[0] === id ? [] : [id],
+      subcategory: '',
+    }));
 
   const toggleEditSeason = (id: Season) =>
     setEditForm((f) => ({ ...f, seasons: f.seasons.includes(id) ? f.seasons.filter((s) => s !== id) : [...f.seasons, id] }));
@@ -291,11 +291,11 @@ export default function AdminPage() {
     setForm((f) => ({ ...f, seasons: f.seasons.includes(id) ? f.seasons.filter((s) => s !== id) : [...f.seasons, id] }));
 
   const toggleCategory = (id: Category) =>
-    setForm((f) => {
-      const cats = f.categories.includes(id) ? f.categories.filter((c) => c !== id) : [...f.categories, id];
-      const subOk = subcategories.some((s) => s.id === f.subcategory && (cats.length === 0 || cats.includes(s.parentCategory)));
-      return { ...f, categories: cats, subcategory: subOk ? f.subcategory : '' };
-    });
+    setForm((f) => ({
+      ...f,
+      categories: f.categories[0] === id ? [] : [id],
+      subcategory: '',
+    }));
 
   const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -638,43 +638,43 @@ export default function AdminPage() {
               <button type="button" className={styles.inlineAddBtn} onClick={() => setEditForm({ ...editForm, imageUrls: [...editForm.imageUrls, ''] })}>+</button>
             </div>
             <div className={styles.editField}>
-              <label className={styles.editLabel}>Catégories</label>
-              <div className={styles.checkboxGrid}>
-                {CATEGORIES.filter((c) => c.id !== 'drops' && c.id !== 'ete').map((cat) => (
-                  <label key={cat.id} className={`${styles.checkLabel} ${editForm.categories.includes(cat.id) ? styles.checkActive : ''}`}>
-                    <input type="checkbox" className={styles.checkbox} checked={editForm.categories.includes(cat.id)} onChange={() => toggleEditCat(cat.id)} />
-                    {cat.fr}
-                  </label>
-                ))}
-              </div>
-              {editForm.categories.length > 0 && (
-                <div className={styles.inlineSubsWrap}>
-                  {editForm.categories.map((catId) => {
-                    const subs = subcategories.filter((s) => s.parentCategory === catId);
-                    return (
-                      <div key={catId} className={styles.inlineSubRow}>
-                        <div className={styles.inlineSubTags}>
-                          {subs.map((s) => (
-                            <div key={s.id} className={`${styles.subTag} ${editForm.subcategory === s.id ? styles.subTagActive : ''}`} onClick={() => setEditForm({ ...editForm, subcategory: editForm.subcategory === s.id ? '' : s.id })}>
-                              <span>{s.label}</span>
-                              <button type="button" className={styles.subDelete} onClick={(e) => { e.stopPropagation(); deleteSubcategory(s.id); }}>×</button>
-                            </div>
-                          ))}
-                          {editAddingSubFor === catId ? (
-                            <div className={styles.inlineSubInput}>
-                              <input autoFocus className={styles.inlineInput} value={editNewSubLabel} onChange={(e) => setEditNewSubLabel(e.target.value)} placeholder="Nom..." onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (editNewSubLabel.trim()) addSubcategory({ label: editNewSubLabel.trim(), parentCategory: catId }); setEditNewSubLabel(''); setEditAddingSubFor(null); } if (e.key === 'Escape') { setEditNewSubLabel(''); setEditAddingSubFor(null); } }} />
-                              <button type="button" className={styles.inlineConfirm} onClick={() => { if (editNewSubLabel.trim()) addSubcategory({ label: editNewSubLabel.trim(), parentCategory: catId }); setEditNewSubLabel(''); setEditAddingSubFor(null); }}>✓</button>
-                              <button type="button" className={styles.inlineCancel} onClick={() => { setEditNewSubLabel(''); setEditAddingSubFor(null); }}>×</button>
-                            </div>
-                          ) : (
-                            <button type="button" className={styles.inlineAddBtn} onClick={() => { setEditAddingSubFor(catId); setEditNewSubLabel(''); }}>+</button>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
+              <label className={styles.editLabel}>Catégorie</label>
+              <div className={styles.catPicker}>
+                <div className={styles.catPills}>
+                  {CATEGORIES.filter((c) => c.id !== 'drops' && c.id !== 'ete').map((cat) => (
+                    <button key={cat.id} type="button"
+                      className={`${styles.catPill} ${editForm.categories[0] === cat.id ? styles.catPillActive : ''}`}
+                      onClick={() => toggleEditCat(cat.id)}
+                    >{cat.fr}</button>
+                  ))}
                 </div>
-              )}
+                {editForm.categories[0] && (() => {
+                  const catId = editForm.categories[0];
+                  const subs = subcategories.filter((s) => s.parentCategory === catId);
+                  return (
+                    <div className={styles.subRow}>
+                      <span className={styles.subRowLabel}>{CATEGORIES.find(c => c.id === catId)?.fr}</span>
+                      <div className={styles.subRowPills}>
+                        {subs.map((s) => (
+                          <button key={s.id} type="button"
+                            className={`${styles.subPill} ${editForm.subcategory === s.id ? styles.subPillActive : ''}`}
+                            onClick={() => setEditForm({ ...editForm, subcategory: editForm.subcategory === s.id ? '' : s.id })}
+                          >{s.label}</button>
+                        ))}
+                        {editAddingSubFor === catId ? (
+                          <div className={styles.inlineSubInput}>
+                            <input autoFocus className={styles.inlineInput} value={editNewSubLabel} onChange={(e) => setEditNewSubLabel(e.target.value)} placeholder="Nom..." onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (editNewSubLabel.trim()) addSubcategory({ label: editNewSubLabel.trim(), parentCategory: catId }); setEditNewSubLabel(''); setEditAddingSubFor(null); } if (e.key === 'Escape') { setEditNewSubLabel(''); setEditAddingSubFor(null); } }} />
+                            <button type="button" className={styles.inlineConfirm} onClick={() => { if (editNewSubLabel.trim()) addSubcategory({ label: editNewSubLabel.trim(), parentCategory: catId }); setEditNewSubLabel(''); setEditAddingSubFor(null); }}>✓</button>
+                            <button type="button" className={styles.inlineCancel} onClick={() => { setEditNewSubLabel(''); setEditAddingSubFor(null); }}>×</button>
+                          </div>
+                        ) : (
+                          <button type="button" className={styles.inlineAddBtn} onClick={() => { setEditAddingSubFor(catId); setEditNewSubLabel(''); }}>+</button>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
             </div>
             <div className={styles.editField}>
               <label className={styles.editLabel}>Saisons</label>
@@ -890,43 +890,43 @@ export default function AdminPage() {
             )}
             {step === 7 && (
               <div className={styles.stepField}>
-                <p className={styles.stepQ}>Dans quelles catégories ?</p>
-                <div className={styles.checkboxGrid}>
-                  {CATEGORIES.filter((cat) => cat.id !== 'drops' && cat.id !== 'ete').map((cat) => (
-                    <label key={cat.id} className={`${styles.checkLabel} ${form.categories.includes(cat.id) ? styles.checkActive : ''}`}>
-                      <input type="checkbox" checked={form.categories.includes(cat.id)} onChange={() => toggleCategory(cat.id)} className={styles.checkbox} />
-                      {cat.fr}
-                    </label>
-                  ))}
-                </div>
-                {form.categories.length > 0 && (
-                  <div className={styles.inlineSubsWrap} style={{ marginTop: '1rem' }}>
-                    {form.categories.map((catId) => {
-                      const subs = subcategories.filter((s) => s.parentCategory === catId);
-                      return (
-                        <div key={catId} className={styles.inlineSubRow}>
-                          <div className={styles.inlineSubTags}>
-                            {subs.map((s) => (
-                              <div key={s.id} className={`${styles.subTag} ${form.subcategory === s.id ? styles.subTagActive : ''}`} onClick={() => setForm({ ...form, subcategory: form.subcategory === s.id ? '' : s.id })}>
-                                <span>{s.label}</span>
-                                <button type="button" className={styles.subDelete} onClick={(e) => { e.stopPropagation(); deleteSubcategory(s.id); }}>×</button>
-                              </div>
-                            ))}
-                            {addingSubFor === catId ? (
-                              <div className={styles.inlineSubInput}>
-                                <input autoFocus className={styles.inlineInput} value={newSubLabel} onChange={(e) => setNewSubLabel(e.target.value)} placeholder="Nom..." onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (newSubLabel.trim()) addSubcategory({ label: newSubLabel.trim(), parentCategory: catId }); setNewSubLabel(''); setAddingSubFor(null); } if (e.key === 'Escape') { setNewSubLabel(''); setAddingSubFor(null); } }} />
-                                <button type="button" className={styles.inlineConfirm} onClick={() => { if (newSubLabel.trim()) addSubcategory({ label: newSubLabel.trim(), parentCategory: catId }); setNewSubLabel(''); setAddingSubFor(null); }}>✓</button>
-                                <button type="button" className={styles.inlineCancel} onClick={() => { setNewSubLabel(''); setAddingSubFor(null); }}>×</button>
-                              </div>
-                            ) : (
-                              <button type="button" className={styles.inlineAddBtn} onClick={() => { setAddingSubFor(catId); setNewSubLabel(''); }}>+</button>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
+                <p className={styles.stepQ}>Dans quelle catégorie ?</p>
+                <div className={styles.catPicker}>
+                  <div className={styles.catPills}>
+                    {CATEGORIES.filter((cat) => cat.id !== 'drops' && cat.id !== 'ete').map((cat) => (
+                      <button key={cat.id} type="button"
+                        className={`${styles.catPill} ${form.categories[0] === cat.id ? styles.catPillActive : ''}`}
+                        onClick={() => toggleCategory(cat.id)}
+                      >{cat.fr}</button>
+                    ))}
                   </div>
-                )}
+                  {form.categories[0] && (() => {
+                    const catId = form.categories[0];
+                    const subs = subcategories.filter((s) => s.parentCategory === catId);
+                    return (
+                      <div className={styles.subRow}>
+                        <span className={styles.subRowLabel}>{CATEGORIES.find(c => c.id === catId)?.fr}</span>
+                        <div className={styles.subRowPills}>
+                          {subs.map((s) => (
+                            <button key={s.id} type="button"
+                              className={`${styles.subPill} ${form.subcategory === s.id ? styles.subPillActive : ''}`}
+                              onClick={() => setForm({ ...form, subcategory: form.subcategory === s.id ? '' : s.id })}
+                            >{s.label}</button>
+                          ))}
+                          {addingSubFor === catId ? (
+                            <div className={styles.inlineSubInput}>
+                              <input autoFocus className={styles.inlineInput} value={newSubLabel} onChange={(e) => setNewSubLabel(e.target.value)} placeholder="Nom..." onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (newSubLabel.trim()) addSubcategory({ label: newSubLabel.trim(), parentCategory: catId }); setNewSubLabel(''); setAddingSubFor(null); } if (e.key === 'Escape') { setNewSubLabel(''); setAddingSubFor(null); } }} />
+                              <button type="button" className={styles.inlineConfirm} onClick={() => { if (newSubLabel.trim()) addSubcategory({ label: newSubLabel.trim(), parentCategory: catId }); setNewSubLabel(''); setAddingSubFor(null); }}>✓</button>
+                              <button type="button" className={styles.inlineCancel} onClick={() => { setNewSubLabel(''); setAddingSubFor(null); }}>×</button>
+                            </div>
+                          ) : (
+                            <button type="button" className={styles.inlineAddBtn} onClick={() => { setAddingSubFor(catId); setNewSubLabel(''); }}>+</button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </div>
                 <div className={styles.stepActions}>
                   <button className={styles.stepNext} onClick={next}>Continuer →</button>
                 </div>
