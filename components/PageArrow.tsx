@@ -12,9 +12,13 @@ type Props = {
 export default function PageArrow({ href, label, direction }: Props) {
   return (
     <Link href={href} className={`${styles.arrow} ${direction === 'left' ? styles.left : styles.right}`}>
-      {direction === 'left' && <span className={styles.chevron}>‹</span>}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/fleche-droite.png"
+        alt={direction === 'left' ? '←' : '→'}
+        className={`${styles.arrowImg} ${direction === 'left' ? styles.arrowImgFlip : ''}`}
+      />
       <span className={styles.label}>{label}</span>
-      {direction === 'right' && <span className={styles.chevron}>›</span>}
     </Link>
   );
 }
