@@ -49,10 +49,6 @@ export default function Nav() {
         <div className={styles.logo} onClick={handleLogo}>
           <span className={styles.logoText}>Mint Syrup</span>
         </div>
-        <div className={styles.logoDropdown}>
-          <a href="/projet" className={styles.logoDropdownItem}>Le projet</a>
-          <a href="/favoris" className={styles.logoDropdownItem}>Mes favoris</a>
-        </div>
       </div>
 
       <div className={styles.links}>
