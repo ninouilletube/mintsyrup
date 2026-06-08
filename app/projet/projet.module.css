@@ -92,7 +92,7 @@
   transform: scale(0.85);
   transform-origin: center center;
   align-self: center;
-  background: #FAE2E8 !important;
+  background: #ffffff !important;
 }
 
 .blockFull {
@@ -100,7 +100,7 @@
 }
 
 .content {
-  background: var(--cream);
+  background: #ffffff;
   border: 2.5px solid var(--dark);
   border-radius: 16px;
   box-shadow: 5px 5px 0 var(--dark);
