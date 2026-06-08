@@ -1,7 +1,9 @@
+import { Suspense } from 'react';
 import Nav from '@/components/Nav';
 import VideoHero from '@/components/VideoHero';
 import ProductGrid from '@/components/ProductGrid';
 import Footer from '@/components/Footer';
+import CategoryInit from '@/components/CategoryInit';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -15,6 +17,7 @@ export default function Home() {
         </div>
         <Footer />
       </main>
+      <Suspense><CategoryInit /></Suspense>
     </>
   );
 }
