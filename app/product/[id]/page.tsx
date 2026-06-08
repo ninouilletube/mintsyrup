@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useProducts } from '@/context/ProductsContext';
 import { useLang } from '@/context/LangContext';
 import { trackArticleView, trackVintedClick } from '@/lib/supabase';
+import Nav from '@/components/Nav';
+import Footer from '@/components/Footer';
 import styles from './Product.module.css';
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
@@ -41,17 +43,23 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
   if (!product) {
     return (
-      <div className={styles.notFound}>
-        <p>Article introuvable.</p>
-        <Link href="/" className={styles.back}>← Retour</Link>
-      </div>
+      <>
+        <Nav />
+        <div className={styles.notFound}>
+          <p>Article introuvable.</p>
+          <Link href="/" className={styles.back}>← Retour</Link>
+        </div>
+        <Footer />
+      </>
     );
   }
 
   const current = images[activeIndex] ?? null;
 
   return (
-    <div className={styles.page}>
+    <>
+      <Nav />
+      <div className={styles.page}>
       <Link href="/" className={styles.back}>← Retour</Link>
       <div className={styles.card}>
         {product.size && <span className={styles.size}>{product.size}</span>}
@@ -109,6 +117,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           <button className={styles.lightboxClose} onClick={() => setLightbox(false)}>×</button>
         </div>
       )}
-    </div>
+      </div>
+      <Footer />
+    </>
   );
 }
