@@ -1,6 +1,5 @@
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
-import Image from 'next/image';
 import { getData } from '@/lib/supabase';
 import styles from './projet.module.css';
 
@@ -16,13 +15,8 @@ export default async function ProjetPage() {
         <div className={styles.container}>
           <div className={styles.layout}>
             <div className={styles.photoWrap}>
-              <Image
-                src="/nina.jpeg"
-                alt="Nina"
-                fill
-                className={styles.photo}
-                sizes="(max-width: 768px) 100vw, 45vw"
-              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/nina.jpeg" alt="Nina" className={styles.photo} />
             </div>
             <div className={styles.content}>
               {bio ? (
