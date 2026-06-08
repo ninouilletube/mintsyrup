@@ -114,19 +114,19 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 1.5px solid rgba(58,24,8,0.3);
+  border: 1.5px solid #5ECEC0;
   font-family: Georgia, serif;
   font-style: italic;
   font-size: 0.65rem;
   font-weight: 700;
-  color: rgba(58,24,8,0.45);
+  color: #5ECEC0;
   cursor: default;
   transition: all 0.15s;
 }
 
 .infoWrap:hover .infoIcon {
-  border-color: #C8306A;
-  color: #C8306A;
+  border-color: #3ABDB0;
+  color: #3ABDB0;
 }
 
 .infoTooltip {
