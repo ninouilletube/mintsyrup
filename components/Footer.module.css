@@ -9,12 +9,35 @@
   flex-wrap: wrap;
 }
 
+.logoRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
 .logo {
   font-family: 'MyUglyHandwriting', cursive;
   font-size: 2rem;
   color: var(--orange);
-  margin-bottom: 0.35rem;
   line-height: 1;
+}
+
+.projetTag {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #C8306A;
+  text-decoration: none;
+  padding: 0.25rem 0.75rem;
+  border: 1.5px solid #C8306A;
+  border-radius: 20px;
+  transition: all 0.15s;
+  background: rgba(200,48,106,0.06);
+}
+.projetTag:hover {
+  background: rgba(200,48,106,0.15);
 }
 
 .tagline { font-size: 0.72rem; color: var(--mid); margin-bottom: 1rem; }
@@ -40,6 +63,20 @@
   background: rgba(216,112,96,0.4);
   transform: translate(-1px, -1px);
   box-shadow: 3px 3px 0 var(--dark);
+}
+
+.linkVinted:hover {
+  background: rgba(94,206,192,0.2);
+  border-color: #5ECEC0;
+  box-shadow: 3px 3px 0 #5ECEC0;
+  color: #3ABDB0;
+}
+
+.linkYoutube:hover {
+  background: rgba(200,48,48,0.1);
+  border-color: #C83030;
+  box-shadow: 3px 3px 0 #C83030;
+  color: #C83030;
 }
 
 .copy { font-size: 0.65rem; color: var(--light); }
