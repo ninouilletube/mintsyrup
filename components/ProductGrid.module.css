@@ -133,8 +133,8 @@
   color: var(--dark);
 }
 .filterSizeTagActive {
-  background: var(--dark);
-  border-color: var(--dark);
+  background: #C8306A;
+  border-color: #C8306A;
   color: white;
 }
 
