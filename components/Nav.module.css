@@ -21,45 +21,6 @@
   cursor: pointer;
 }
 
-.logoDropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  padding-top: 0.4rem;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(-4px);
-  transition: opacity 0.15s, transform 0.15s;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.logoWrap:hover .logoDropdown {
-  opacity: 1;
-  pointer-events: all;
-  transform: translateY(0);
-}
-
-.logoDropdownItem {
-  display: block;
-  white-space: nowrap;
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  color: #C8306A;
-  text-decoration: none;
-  padding: 0.25rem 0.75rem;
-  background: #FFF0F4;
-  border: 1.5px solid #C8306A;
-  border-radius: 20px;
-  transition: background 0.15s;
-}
-
-.logoDropdownItem:hover {
-  background: #FAD4E0;
-}
 
 .logoText {
   font-family: 'MyUglyHandwriting', cursive;
@@ -70,9 +31,6 @@
   transition: color 0.2s;
 }
 
-.logoWrap:hover .logoText {
-  color: #5ECEC0;
-}
 
 .links {
   display: flex;

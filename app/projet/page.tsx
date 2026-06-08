@@ -1,6 +1,7 @@
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import PageArrow from '@/components/PageArrow';
+import RetourArrow from '@/components/RetourArrow';
 import { getData } from '@/lib/supabase';
 import styles from './projet.module.css';
 
@@ -26,6 +27,7 @@ export default async function ProjetPage() {
   return (
     <>
       <Nav />
+      <RetourArrow direction="left" />
       <PageArrow href="/favoris" label="Mes favoris" direction="right" />
       <main className={styles.main}>
         <div className={styles.container}>
@@ -33,7 +35,7 @@ export default async function ProjetPage() {
             <div className={styles.layoutTop}>
               <div className={styles.blocksTop}>
                 {[blocks[0], blocks[1]].map((b, i) => b && (
-                  <div key={i} className={`${styles.content} ${i === 1 ? styles.blockSquareSmall : styles.blockSquare}`}>
+                  <div key={i} className={`${styles.blockNaked} ${i === 1 ? styles.blockNakedNarrow : ''}`}>
                     {b.title && <h2 className={styles.blockTitle}>{b.title}</h2>}
                     {b.text && b.text.split('\n').filter(Boolean).map((p, j) => (
                       <p key={j}>{p}</p>
