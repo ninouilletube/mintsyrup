@@ -5,21 +5,10 @@ import { useLang } from '@/context/LangContext';
 import { useShop } from '@/context/ShopContext';
 import { useProducts } from '@/context/ProductsContext';
 import { useSubcategories } from '@/context/SubcategoriesContext';
-import { COLORS, getColor } from '@/data/colors';
 import { getCurrentSeason, SEASON_TO_ID, type SeasonKey } from '@/lib/season';
-import type { Season } from '@/data/products';
 import ProductCard from './ProductCard';
 import styles from './ProductGrid.module.css';
 
-const SEASON_LABEL: Record<SeasonKey, string> = {
-  summer: 'SUMMER', autumn: 'AUTUMN', winter: 'WINTER', spring: 'SPRING',
-};
-const SEASON_COLOR: Record<SeasonKey, string> = {
-  summer: '#F0A020', autumn: '#E8621A', winter: '#C87870', spring: '#C83A20',
-};
-const SEASON_FR: Record<Season, string> = {
-  printemps: 'Printemps', ete: 'Été', automne: 'Automne', hiver: 'Hiver',
-};
 
 export default function ProductGrid() {
   const { lang } = useLang();
@@ -27,11 +16,7 @@ export default function ProductGrid() {
   const { products } = useProducts();
   const { subcategories } = useSubcategories();
 
-  const [filterSizes, setFilterSizes] = useState<string[]>([]);
-  const [filterTags, setFilterTags] = useState<string[]>([]);
-  const [filterSeasons, setFilterSeasons] = useState<Season[]>([]);
-  const [filterTypes, setFilterTypes] = useState<string[]>([]);
-  const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [filterType, setFilterType] = useState<string | null>(null);
   const [dropsIndex, setDropsIndex] = useState(0);
   const carouselWindowRef = useRef<HTMLDivElement>(null);
 
@@ -63,7 +48,6 @@ export default function ProductGrid() {
     }
   }, [activeCategory]);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const filterBarRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -81,19 +65,6 @@ export default function ProductGrid() {
   const DROPS_VISIBLE = 4;
   const DROPS_MAX = 15;
 
-  useEffect(() => {
-    if (!openGroup) return;
-    const handle = (e: MouseEvent) => {
-      if (filterBarRef.current && !filterBarRef.current.contains(e.target as Node)) {
-        setOpenGroup(null);
-      }
-    };
-    document.addEventListener('mousedown', handle);
-    return () => document.removeEventListener('mousedown', handle);
-  }, [openGroup]);
-
-  const toggleGroup = (key: string) => setOpenGroup((prev) => prev === key ? null : key);
-
   if (activeCategory === null) return null;
 
   const isDrops = activeCategory === 'drops';
@@ -106,42 +77,16 @@ export default function ProductGrid() {
       ? visible.filter((p) => p.seasons?.includes(SEASON_TO_ID[getCurrentSeason()]))
       : visible.filter((p) => p.categories.includes(activeCategory));
 
-  // Available filter options from the current category
-  const SIZE_ORDER = ['XXS','XS','XS/S','S','S/M','M','M/L','L','L/XL','XL','XXL'];
-  const sizeRank = (s: string) => {
-    const letter = s.split(/[\s/]/)[0].toUpperCase();
-    const idx = SIZE_ORDER.indexOf(letter);
-    if (idx !== -1) return idx * 100;
-    const num = parseInt(s.match(/\d+/)?.[0] ?? '9999');
-    return 500 + num;
-  };
-  const availableSizes = [...new Set(byCategory.map((p) => p.size).filter(Boolean))].sort((a, b) => sizeRank(a) - sizeRank(b));
-  const availableTagIds = [...new Set(byCategory.flatMap((p) => p.tags ?? []))];
-  const SEASON_CYCLE: Season[] = ['ete', 'automne', 'hiver', 'printemps'];
-  const currentSeasonId = SEASON_TO_ID[getCurrentSeason()];
-  const startIdx = SEASON_CYCLE.indexOf(currentSeasonId);
-  const SEASON_ORDER = [...SEASON_CYCLE.slice(startIdx), ...SEASON_CYCLE.slice(0, startIdx)];
-  const availableSeasons = ([...new Set(byCategory.flatMap((p) => p.seasons ?? []))] as Season[])
-    .sort((a, b) => SEASON_ORDER.indexOf(a) - SEASON_ORDER.indexOf(b));
-
   // Sous-catégories disponibles dans la sélection courante
   const availableTypeIds = [...new Set(byCategory.map((p) => p.subcategory).filter(Boolean))] as string[];
 
-  // Apply filters
+  // Apply filter
   const filtered = byCategory.filter((p) => {
-    if (filterSizes.length > 0 && !filterSizes.includes(p.size)) return false;
-    if (filterTags.length > 0 && !filterTags.some((id) => p.tags?.includes(id))) return false;
-    if (filterSeasons.length > 0 && !filterSeasons.some((s) => p.seasons?.includes(s))) return false;
-    if (filterTypes.length > 0 && !filterTypes.includes(p.subcategory ?? '')) return false;
+    if (filterType && p.subcategory !== filterType) return false;
     return true;
   });
 
-  const toggle = <T,>(arr: T[], val: T): T[] =>
-    arr.includes(val) ? arr.filter((x) => x !== val) : [...arr, val];
-
-  const isSeason = activeCategory === 'ete';
-  const hasFilters = !isDrops && (availableSizes.length > 0 || availableTagIds.length > 0 || availableTypeIds.length > 0 || (!isSeason && availableSeasons.length > 0));
-  const activeFiltersCount = filterSizes.length + filterTags.length + filterSeasons.length + filterTypes.length;
+  const hasTypeFilter = !isDrops && availableTypeIds.length > 0;
 
   const season = activeCategory === 'ete' ? getCurrentSeason() : null;
 
@@ -153,85 +98,31 @@ export default function ProductGrid() {
     <div className={styles.overlay}>
       <div className={isDrops ? styles.panelOpen : styles.panel} ref={panelRef}>
 
-        {hasFilters && (
-          <div className={styles.filterBar} ref={filterBarRef}>
-            {availableSizes.length > 0 && (
-              <div className={styles.filterGroup}>
-                <button className={`${styles.filterToggle} ${filterSizes.length > 0 ? styles.filterToggleActive : ''}`} onClick={() => toggleGroup('size')}>
-                  Taille {filterSizes.length > 0 && <span className={styles.filterBadge}>{filterSizes.length}</span>} <span className={styles.filterCaret}>{openGroup === 'size' ? '▲' : '▼'}</span>
-                </button>
-                {openGroup === 'size' && (
-                  <div className={styles.filterChips}>
-                    {availableSizes.map((size) => (
-                      <button key={size} className={`${styles.chipSize} ${filterSizes.includes(size) ? styles.chipSizeActive : ''}`} onClick={() => setFilterSizes(toggle(filterSizes, size))}>{size}</button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-            {availableTagIds.length > 0 && (
-              <div className={styles.filterGroup}>
-                <button className={`${styles.filterToggle} ${filterTags.length > 0 ? styles.filterToggleActive : ''}`} onClick={() => toggleGroup('color')}>
-                  Couleur {filterTags.length > 0 && <span className={styles.filterBadge}>{filterTags.length}</span>} <span className={styles.filterCaret}>{openGroup === 'color' ? '▲' : '▼'}</span>
-                </button>
-                {openGroup === 'color' && (
-                  <div className={styles.filterChips}>
-                    {availableTagIds.map((id) => {
-                      const color = getColor(id);
-                      if (!color) return null;
-                      return (
-                        <button key={id} className={`${styles.colorDot} ${filterTags.includes(id) ? styles.colorDotActive : ''}`} style={{ background: color.bg }} title={color.label} onClick={() => setFilterTags(toggle(filterTags, id))} />
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            )}
-            {availableTypeIds.length > 0 && (
-              <div className={styles.filterGroup}>
-                <button className={`${styles.filterToggle} ${filterTypes.length > 0 ? styles.filterToggleActive : ''}`} onClick={() => toggleGroup('type')}>
-                  Type {filterTypes.length > 0 && <span className={styles.filterBadge}>{filterTypes.length}</span>} <span className={styles.filterCaret}>{openGroup === 'type' ? '▲' : '▼'}</span>
-                </button>
-                {openGroup === 'type' && (
-                  <div className={styles.filterChips}>
-                    {availableTypeIds.map((id) => {
-                      const sub = subcategories.find((s) => s.id === id);
-                      if (!sub) return null;
-                      return (
-                        <button key={id} className={`${styles.chip} ${filterTypes.includes(id) ? styles.chipActive : ''}`} onClick={() => setFilterTypes(toggle(filterTypes, id))}>{sub.label}</button>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            )}
-            {!isSeason && availableSeasons.length > 0 && (
-              <div className={styles.filterGroup}>
-                <button className={`${styles.filterToggle} ${filterSeasons.length > 0 ? styles.filterToggleActive : ''}`} onClick={() => toggleGroup('season')}>
-                  Saison {filterSeasons.length > 0 && <span className={styles.filterBadge}>{filterSeasons.length}</span>} <span className={styles.filterCaret}>{openGroup === 'season' ? '▲' : '▼'}</span>
-                </button>
-                {openGroup === 'season' && (
-                  <div className={styles.filterChips}>
-                    {availableSeasons.map((s) => (
-                      <button key={s} className={`${styles.chipSize} ${filterSeasons.includes(s) ? styles.chipSizeActive : ''}`} onClick={() => setFilterSeasons(toggle(filterSeasons, s))}>{SEASON_FR[s]}</button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-            {activeFiltersCount > 0 && (
-              <button className={styles.clearFilters} onClick={() => { setFilterSizes([]); setFilterTags([]); setFilterSeasons([]); setFilterTypes([]); setOpenGroup(null); }}>
-                Effacer
-              </button>
-            )}
+        {hasTypeFilter && (
+          <div className={styles.filterBar}>
+            <button
+              className={`${styles.filterItem} ${filterType === null ? styles.filterItemActive : ''}`}
+              onClick={() => setFilterType(null)}
+            >Tous</button>
+            {availableTypeIds.map((id, i) => {
+              const sub = subcategories.find((s) => s.id === id);
+              if (!sub) return null;
+              return (
+                <span key={id} className={styles.filterRow}>
+                  <span className={styles.filterSep}>—</span>
+                  <button
+                    className={`${styles.filterItem} ${filterType === id ? styles.filterItemActive : ''}`}
+                    onClick={() => setFilterType(filterType === id ? null : id)}
+                  >{sub.label}</button>
+                </span>
+              );
+            })}
           </div>
         )}
 
         {filtered.length === 0 ? (
           <p className={styles.empty}>
-            {activeFiltersCount > 0
-              ? (lang === 'fr' ? 'Aucune pièce pour ces filtres — essaie une autre combinaison <3' : 'No pieces for these filters — try another combo <3')
-              : (lang === 'fr' ? "Il n'y a pas encore de pièces dans cette catégorie — Reviens plus tard <3" : 'No pieces in this category yet... Check back soon <3')}
+            {lang === 'fr' ? "Il n'y a pas encore de pièces dans cette catégorie — Reviens plus tard <3" : 'No pieces in this category yet... Check back soon <3'}
           </p>
         ) : isDrops ? (
           <div className={styles.carousel}>
