@@ -92,11 +92,42 @@
 .filterBar {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 0 0;
+  gap: 0.5rem 0;
   margin-bottom: 1.25rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid rgba(58,24,8,0.1);
+}
+
+.filterLeft {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.filterColors {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filterColorDot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+}
+.filterColorDot:hover { transform: scale(1.2); }
+.filterColorDotActive {
+  border-color: var(--dark) !important;
+  box-shadow: 0 0 0 1.5px white, 0 0 0 3px var(--dark);
+  transform: scale(1.1);
 }
 
 .filterRow {

@@ -6,6 +6,7 @@ import { useShop } from '@/context/ShopContext';
 import { useProducts } from '@/context/ProductsContext';
 import { useSubcategories } from '@/context/SubcategoriesContext';
 import { getCurrentSeason, SEASON_TO_ID, type SeasonKey } from '@/lib/season';
+import { getColor } from '@/data/colors';
 import ProductCard from './ProductCard';
 import styles from './ProductGrid.module.css';
 
@@ -17,6 +18,7 @@ export default function ProductGrid() {
   const { subcategories } = useSubcategories();
 
   const [filterType, setFilterType] = useState<string | null>(null);
+  const [filterColor, setFilterColor] = useState<string | null>(null);
   const [dropsIndex, setDropsIndex] = useState(0);
   const carouselWindowRef = useRef<HTMLDivElement>(null);
 
@@ -77,16 +79,19 @@ export default function ProductGrid() {
       ? visible.filter((p) => p.seasons?.includes(SEASON_TO_ID[getCurrentSeason()]))
       : visible.filter((p) => p.categories.includes(activeCategory));
 
-  // Sous-catégories disponibles dans la sélection courante
+  // Sous-catégories disponibles
   const availableTypeIds = [...new Set(byCategory.map((p) => p.subcategory).filter(Boolean))] as string[];
+  // Couleurs disponibles
+  const availableColorIds = [...new Set(byCategory.flatMap((p) => p.tags ?? []))].filter(id => getColor(id));
 
-  // Apply filter
+  // Apply filters
   const filtered = byCategory.filter((p) => {
     if (filterType && p.subcategory !== filterType) return false;
+    if (filterColor && !p.tags?.includes(filterColor)) return false;
     return true;
   });
 
-  const hasTypeFilter = !isDrops && availableTypeIds.length > 0;
+  const hasFilters = !isDrops && (availableTypeIds.length > 0 || availableColorIds.length > 0);
 
   const season = activeCategory === 'ete' ? getCurrentSeason() : null;
 
@@ -98,21 +103,40 @@ export default function ProductGrid() {
     <div className={styles.overlay}>
       <div className={isDrops ? styles.panelOpen : styles.panel} ref={panelRef}>
 
-        {hasTypeFilter && (
+        {hasFilters && (
           <div className={styles.filterBar}>
-            {availableTypeIds.map((id, i) => {
-              const sub = subcategories.find((s) => s.id === id);
-              if (!sub) return null;
-              return (
-                <span key={id} className={styles.filterRow}>
-                  {i > 0 && <span className={styles.filterSep}>—</span>}
-                  <button
-                    className={`${styles.filterItem} ${filterType === id ? styles.filterItemActive : ''}`}
-                    onClick={() => setFilterType(filterType === id ? null : id)}
-                  >{sub.label}</button>
-                </span>
-              );
-            })}
+            <div className={styles.filterLeft}>
+              {availableTypeIds.map((id, i) => {
+                const sub = subcategories.find((s) => s.id === id);
+                if (!sub) return null;
+                return (
+                  <span key={id} className={styles.filterRow}>
+                    {i > 0 && <span className={styles.filterSep}>—</span>}
+                    <button
+                      className={`${styles.filterItem} ${filterType === id ? styles.filterItemActive : ''}`}
+                      onClick={() => setFilterType(filterType === id ? null : id)}
+                    >{sub.label}</button>
+                  </span>
+                );
+              })}
+            </div>
+            {availableColorIds.length > 0 && (
+              <div className={styles.filterColors}>
+                {availableColorIds.map((id) => {
+                  const color = getColor(id);
+                  if (!color) return null;
+                  return (
+                    <button
+                      key={id}
+                      title={color.label}
+                      className={`${styles.filterColorDot} ${filterColor === id ? styles.filterColorDotActive : ''}`}
+                      style={{ background: color.bg }}
+                      onClick={() => setFilterColor(filterColor === id ? null : id)}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </div>
         )}
 
