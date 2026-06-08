@@ -100,16 +100,12 @@ export default function ProductGrid() {
 
         {hasTypeFilter && (
           <div className={styles.filterBar}>
-            <button
-              className={`${styles.filterItem} ${filterType === null ? styles.filterItemActive : ''}`}
-              onClick={() => setFilterType(null)}
-            >Tous</button>
             {availableTypeIds.map((id, i) => {
               const sub = subcategories.find((s) => s.id === id);
               if (!sub) return null;
               return (
                 <span key={id} className={styles.filterRow}>
-                  <span className={styles.filterSep}>—</span>
+                  {i > 0 && <span className={styles.filterSep}>—</span>}
                   <button
                     className={`${styles.filterItem} ${filterType === id ? styles.filterItemActive : ''}`}
                     onClick={() => setFilterType(filterType === id ? null : id)}
