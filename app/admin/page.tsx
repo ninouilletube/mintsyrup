@@ -11,7 +11,7 @@ import { getCurrentSeason } from '@/lib/season';
 import { getData, setData } from '@/lib/supabase';
 import styles from './Admin.module.css';
 
-type View = 'dashboard' | 'articles' | 'add-article' | 'edit-article' | 'article-detail' | 'bio';
+type View = 'dashboard' | 'articles' | 'add-article' | 'edit-article' | 'article-detail' | 'bio' | 'finances';
 
 const SIZES = [
   'TU',
@@ -101,6 +101,7 @@ const emptyForm = {
   tags: [] as string[],
   favorite: false,
   favoriteText: '',
+  purchasePrice: '',
 };
 
 export default function AdminPage() {
@@ -134,6 +135,10 @@ export default function AdminPage() {
 
   // Articles multi-select
   const [selected, setSelected] = useState<Set<number>>(new Set());
+
+  // Modal vendu
+  const [soldModal, setSoldModal] = useState<{ product: Product } | null>(null);
+  const [soldPriceInput, setSoldPriceInput] = useState('');
 
   // Edit-article form
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -251,6 +256,17 @@ export default function AdminPage() {
     setSelected(new Set());
   };
 
+  const confirmSold = () => {
+    if (!soldModal) return;
+    const p = soldModal.product;
+    const sp = soldPriceInput ? parseFloat(soldPriceInput) : p.price;
+    updateProduct({ ...p, sold: true, soldAt: Date.now(), soldPrice: sp, hidden: true });
+    setDetailProduct(null);
+    setSoldModal(null);
+    setSoldPriceInput('');
+    setView(detailOrigin);
+  };
+
   const toggleHideSelected = () => {
     const allHidden = [...selected].every((id) => products.find((p) => p.id === id)?.hidden);
     selected.forEach((id) => {
@@ -277,6 +293,7 @@ export default function AdminPage() {
       tags: p.tags || [],
       favorite: p.favorite || false,
       favoriteText: p.favoriteText || '',
+      purchasePrice: String(p.purchasePrice ?? ''),
     });
     setView('edit-article');
   };
@@ -304,6 +321,7 @@ export default function AdminPage() {
       favorite: isNowFav || undefined,
       favoriteText: editForm.favoriteText || undefined,
       favoriteOrder: favOrder,
+      purchasePrice: editForm.purchasePrice ? parseFloat(editForm.purchasePrice) : undefined,
     });
     setView('articles');
     setEditingProduct(null);
@@ -350,6 +368,7 @@ export default function AdminPage() {
       favorite: form.favorite || undefined,
       favoriteText: form.favoriteText || undefined,
       favoriteOrder: form.favorite ? Date.now() : undefined,
+      purchasePrice: form.purchasePrice ? parseFloat(form.purchasePrice) : undefined,
     });
     setSuccess(true);
     setTimeout(() => { setSuccess(false); setForm(emptyForm); setStep(0); setView('dashboard'); }, 1800);
@@ -416,6 +435,7 @@ export default function AdminPage() {
             {view === 'edit-article'   && 'Modifier'}
             {view === 'article-detail' && (detailProduct?.title.fr ?? '')}
             {view === 'bio'            && 'Le projet'}
+            {view === 'finances'       && '€€€'}
           </h1>
         </div>
         {view === 'dashboard' && <a href="/" className={styles.backLink}>← Site</a>}
@@ -464,6 +484,9 @@ export default function AdminPage() {
                 </button>
                 <button className={styles.btnSecondary} onClick={() => setView('articles')}>
                   Gérer les articles
+                </button>
+                <button className={styles.btnFinances} onClick={() => setView('finances')}>
+                  €€€
                 </button>
               </div>
               {products.filter(p => p.hidden).length > 0 && (
@@ -641,8 +664,12 @@ export default function AdminPage() {
                 </div>
               </div>
               <div className={styles.editField}>
-                <label className={styles.editLabel}>Prix (€) <span className={styles.stepRequired}>*</span></label>
+                <label className={styles.editLabel}>Prix de vente (€) <span className={styles.stepRequired}>*</span></label>
                 <input className={styles.editInput} type="number" step="0.01" value={editForm.price} onChange={(e) => setEditForm({ ...editForm, price: e.target.value })} />
+              </div>
+              <div className={styles.editField}>
+                <label className={styles.editLabel}>Prix d&apos;achat (€) <span className={styles.editLabelAdmin}>admin</span></label>
+                <input className={styles.editInput} type="number" step="0.01" value={editForm.purchasePrice} placeholder="Ce que tu as payé" onChange={(e) => setEditForm({ ...editForm, purchasePrice: e.target.value })} />
               </div>
             </div>
             <div className={styles.editField}>
@@ -816,6 +843,12 @@ export default function AdminPage() {
                   <button className={styles.btnPrimary} onClick={() => startEdit(p)}>
                     Modifier
                   </button>
+                  {!p.sold && (
+                    <button className={styles.btnSold} onClick={() => { setSoldModal({ product: p }); setSoldPriceInput(String(p.price)); }}>
+                      Vendu ✓
+                    </button>
+                  )}
+                  {p.sold && <span className={styles.soldBadge}>Vendu {p.soldPrice ? `— ${p.soldPrice} €` : ''}</span>}
                   <div className={styles.detailActionsRow}>
                     <button
                       className={styles.btnSecondary}
@@ -849,6 +882,176 @@ export default function AdminPage() {
           </div>
         );
       })()}
+
+      {view === 'finances' && (() => {
+        const soldProducts = products.filter(p => p.sold && p.soldAt);
+        const allProducts = products;
+
+        // Totaux globaux
+        const totalInvested = allProducts.reduce((s, p) => s + (p.purchasePrice ?? 0), 0);
+        const totalSold = soldProducts.reduce((s, p) => s + (p.soldPrice ?? p.price), 0);
+        const totalPurchasedSold = soldProducts.reduce((s, p) => s + (p.purchasePrice ?? 0), 0);
+        const profit = totalSold - totalPurchasedSold;
+
+        // Grouper par mois/année
+        type PeriodData = { invested: number; sold: number; purchase: number; count: number };
+        const byMonth: Record<string, PeriodData> = {};
+        const byYear: Record<string, PeriodData> = {};
+        soldProducts.forEach(p => {
+          const d = new Date(p.soldAt!);
+          const mKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+          const yKey = String(d.getFullYear());
+          const sp = p.soldPrice ?? p.price;
+          const pp = p.purchasePrice ?? 0;
+          if (!byMonth[mKey]) byMonth[mKey] = { invested: 0, sold: 0, purchase: 0, count: 0 };
+          byMonth[mKey].sold += sp; byMonth[mKey].purchase += pp; byMonth[mKey].count++;
+          if (!byYear[yKey]) byYear[yKey] = { invested: 0, sold: 0, purchase: 0, count: 0 };
+          byYear[yKey].sold += sp; byYear[yKey].purchase += pp; byYear[yKey].count++;
+        });
+
+        // Stats par sous-catégorie : quantité et marge
+        type CatStat = { count: number; margin: number; marginPct: number };
+        const byCat: Record<string, CatStat> = {};
+        soldProducts.forEach(p => {
+          const key = p.subcategory || p.categories[0] || 'autre';
+          const sp = p.soldPrice ?? p.price;
+          const pp = p.purchasePrice ?? 0;
+          if (!byCat[key]) byCat[key] = { count: 0, margin: 0, marginPct: 0 };
+          byCat[key].count++;
+          byCat[key].margin += sp - pp;
+        });
+        Object.keys(byCat).forEach(k => {
+          const sold = soldProducts.filter(p => (p.subcategory || p.categories[0] || 'autre') === k);
+          const totalSoldC = sold.reduce((s, p) => s + (p.soldPrice ?? p.price), 0);
+          byCat[k].marginPct = totalSoldC > 0 ? (byCat[k].margin / totalSoldC) * 100 : 0;
+        });
+        const byQty = Object.entries(byCat).sort((a, b) => b[1].count - a[1].count);
+        const byMargin = Object.entries(byCat).sort((a, b) => b[1].margin - a[1].margin);
+
+        const fmt2 = (n: number) => n.toFixed(2);
+        const months = Object.entries(byMonth).sort((a, b) => b[0].localeCompare(a[0]));
+        const years = Object.entries(byYear).sort((a, b) => b[0].localeCompare(a[0]));
+
+        return (
+          <div className={styles.section}>
+            {/* Totaux */}
+            <div className={styles.financeCards}>
+              <div className={styles.financeCard}>
+                <span className={styles.financeCardLabel}>Investi</span>
+                <span className={styles.financeCardValue}>{fmt2(totalInvested)} €</span>
+                <span className={styles.financeCardSub}>{allProducts.filter(p => p.purchasePrice).length} articles renseignés</span>
+              </div>
+              <div className={styles.financeCard}>
+                <span className={styles.financeCardLabel}>Encaissé</span>
+                <span className={styles.financeCardValue} style={{ color: '#1a9e6e' }}>{fmt2(totalSold)} €</span>
+                <span className={styles.financeCardSub}>{soldProducts.length} ventes</span>
+              </div>
+              <div className={`${styles.financeCard} ${profit >= 0 ? styles.financeCardProfit : styles.financeCardLoss}`}>
+                <span className={styles.financeCardLabel}>Bénéfice net</span>
+                <span className={styles.financeCardValue}>{profit >= 0 ? '+' : ''}{fmt2(profit)} €</span>
+                <span className={styles.financeCardSub}>sur les articles vendus</span>
+              </div>
+            </div>
+
+            {/* Par année */}
+            {years.length > 0 && (
+              <div className={styles.financeBlock}>
+                <h3 className={styles.financeBlockTitle}>Par année</h3>
+                <div className={styles.financeTable}>
+                  <div className={styles.financeTableHead}>
+                    <span>Année</span><span>Ventes</span><span>Encaissé</span><span>Bénéfice</span>
+                  </div>
+                  {years.map(([k, v]) => (
+                    <div key={k} className={styles.financeTableRow}>
+                      <span>{k}</span>
+                      <span>{v.count}</span>
+                      <span>{fmt2(v.sold)} €</span>
+                      <span style={{ color: v.sold - v.purchase >= 0 ? '#1a9e6e' : '#C83A20' }}>{v.sold - v.purchase >= 0 ? '+' : ''}{fmt2(v.sold - v.purchase)} €</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Par mois */}
+            {months.length > 0 && (
+              <div className={styles.financeBlock}>
+                <h3 className={styles.financeBlockTitle}>Par mois</h3>
+                <div className={styles.financeTable}>
+                  <div className={styles.financeTableHead}>
+                    <span>Mois</span><span>Ventes</span><span>Encaissé</span><span>Bénéfice</span>
+                  </div>
+                  {months.map(([k, v]) => {
+                    const [y, m] = k.split('-');
+                    const label = new Date(Number(y), Number(m) - 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+                    return (
+                      <div key={k} className={styles.financeTableRow}>
+                        <span style={{ textTransform: 'capitalize' }}>{label}</span>
+                        <span>{v.count}</span>
+                        <span>{fmt2(v.sold)} €</span>
+                        <span style={{ color: v.sold - v.purchase >= 0 ? '#1a9e6e' : '#C83A20' }}>{v.sold - v.purchase >= 0 ? '+' : ''}{fmt2(v.sold - v.purchase)} €</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Stats catégories */}
+            {byQty.length > 0 && (
+              <div className={styles.financeStatsGrid}>
+                <div className={styles.financeBlock}>
+                  <h3 className={styles.financeBlockTitle}>Top ventes — quantité</h3>
+                  {byQty.map(([k, v]) => (
+                    <div key={k} className={styles.financeStatRow}>
+                      <span className={styles.financeStatLabel}>{k}</span>
+                      <span className={styles.financeStatBar}><span style={{ width: `${(v.count / byQty[0][1].count) * 100}%` }} /></span>
+                      <span className={styles.financeStatVal}>{v.count}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className={styles.financeBlock}>
+                  <h3 className={styles.financeBlockTitle}>Top ventes — marge €</h3>
+                  {byMargin.map(([k, v]) => (
+                    <div key={k} className={styles.financeStatRow}>
+                      <span className={styles.financeStatLabel}>{k}</span>
+                      <span className={styles.financeStatBar}><span style={{ width: `${Math.max(0, (v.margin / byMargin[0][1].margin) * 100)}%`, background: '#1a9e6e' }} /></span>
+                      <span className={styles.financeStatVal} style={{ color: v.margin >= 0 ? '#1a9e6e' : '#C83A20' }}>{v.margin >= 0 ? '+' : ''}{fmt2(v.margin)} €</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {soldProducts.length === 0 && (
+              <p className={styles.empty}>Aucune vente enregistrée pour l&apos;instant.</p>
+            )}
+          </div>
+        );
+      })()}
+
+      {soldModal && (
+        <div className={styles.modalOverlay} onClick={() => setSoldModal(null)}>
+          <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
+            <h3 className={styles.modalTitle}>Confirmer la vente</h3>
+            <p className={styles.modalSub}>{soldModal.product.title.fr}</p>
+            <label className={styles.modalLabel}>Prix de vente réel (€)</label>
+            <input
+              className={styles.modalInput}
+              type="number"
+              step="0.01"
+              value={soldPriceInput}
+              onChange={(e) => setSoldPriceInput(e.target.value)}
+              autoFocus
+              onKeyDown={(e) => { if (e.key === 'Enter') confirmSold(); }}
+            />
+            <div className={styles.modalActions}>
+              <button className={styles.btnSecondary} onClick={() => setSoldModal(null)}>Annuler</button>
+              <button className={styles.btnSold} onClick={confirmSold}>Confirmer ✓</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {view === 'add-article' && (
         <>
@@ -900,8 +1103,10 @@ export default function AdminPage() {
             )}
             {step === 3 && (
               <div className={styles.stepField}>
-                <p className={styles.stepQ}>Le prix en € ? <span className={styles.stepRequired}>*</span></p>
+                <p className={styles.stepQ}>Le prix de vente en € ? <span className={styles.stepRequired}>*</span></p>
                 <input autoFocus className={styles.stepInput} type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="Ex: 25" onKeyDown={(e) => { if (e.key === 'Enter' && form.price) next(); }} />
+                <p className={styles.stepQ} style={{ marginTop: '1.25rem', fontSize: '0.9rem', opacity: 0.75 }}>Prix d&apos;achat en € ? <span style={{ fontSize: '0.7rem', opacity: 0.6 }}>admin uniquement</span></p>
+                <input className={styles.stepInput} type="number" step="0.01" value={form.purchasePrice} onChange={(e) => setForm({ ...form, purchasePrice: e.target.value })} placeholder="Ex: 8" onKeyDown={(e) => { if (e.key === 'Enter' && form.price) next(); }} />
                 <div className={styles.stepActions}>
                   <button className={styles.stepNext} disabled={!form.price} onClick={next}>Continuer →</button>
                 </div>

@@ -19,6 +19,10 @@ export type Product = {
   favorite?: boolean;
   favoriteText?: string;
   favoriteOrder?: number;
+  purchasePrice?: number;
+  sold?: boolean;
+  soldAt?: number;
+  soldPrice?: number;
 };
 
 export type Season = 'printemps' | 'ete' | 'automne' | 'hiver';

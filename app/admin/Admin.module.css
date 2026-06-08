@@ -1453,6 +1453,101 @@
 }
 .btnTrash:hover .trashLid { transform: rotate(45deg); }
 
+.btnSold {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background: #1a9e6e;
+  color: white;
+  border: 2px solid var(--dark);
+  border-radius: 8px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--dark);
+  transition: all 0.15s;
+}
+.btnSold:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--dark); background: #168059; }
+
+.soldBadge {
+  display: inline-block;
+  padding: 0.35rem 0.85rem;
+  background: rgba(26,158,110,0.12);
+  color: #1a9e6e;
+  border: 1.5px solid #1a9e6e;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(58,16,8,0.45);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalBox {
+  background: var(--white);
+  border: 2.5px solid var(--dark);
+  border-radius: 16px;
+  box-shadow: 6px 6px 0 var(--dark);
+  padding: 2rem;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modalTitle {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.modalSub {
+  font-size: 0.82rem;
+  color: var(--mid);
+  margin-top: -0.5rem;
+}
+
+.modalLabel {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.modalInput {
+  padding: 0.65rem 0.9rem;
+  border: 2px solid var(--dark);
+  border-radius: 8px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  background: var(--white);
+  color: var(--dark);
+  width: 100%;
+  box-sizing: border-box;
+}
+.modalInput:focus { outline: none; border-color: #1a9e6e; box-shadow: 0 0 0 3px rgba(26,158,110,0.15); }
+
+.modalActions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+.modalActions .btnSecondary { flex: 1; }
+.modalActions .btnSold { flex: 2; }
+
 @media (max-width: 600px) {
   .detailCard { grid-template-columns: 1fr; }
 }
@@ -1508,6 +1603,21 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--mid);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.editLabelAdmin {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5ECEC0;
+  background: rgba(94,206,192,0.12);
+  border: 1px solid #5ECEC0;
+  border-radius: 10px;
+  padding: 0.1rem 0.45rem;
 }
 
 .editInput {
@@ -1564,4 +1674,157 @@
   .productRow { grid-template-columns: 26px 44px 1fr; }
   .productStats { display: none; }
   .productActions { flex-direction: row; flex-wrap: wrap; }
+}
+
+/* ── Finances ────────────────────────────────────────────────────────────── */
+.btnFinances {
+  padding: 0.55rem 1.1rem;
+  background: transparent;
+  border: 2px solid #1a9e6e;
+  border-radius: 8px;
+  color: #1a9e6e;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btnFinances:hover { background: #1a9e6e; color: white; }
+
+.financeCards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.financeCard {
+  background: var(--white);
+  border: 2.5px solid var(--dark);
+  border-radius: 14px;
+  box-shadow: 4px 4px 0 var(--dark);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.financeCardProfit { border-color: #1a9e6e; box-shadow: 4px 4px 0 #1a9e6e; }
+.financeCardLoss   { border-color: #C83A20; box-shadow: 4px 4px 0 #C83A20; }
+
+.financeCardLabel {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mid);
+}
+
+.financeCardValue {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--dark);
+  line-height: 1;
+}
+
+.financeCardSub {
+  font-size: 0.7rem;
+  color: var(--light);
+}
+
+.financeBlock {
+  background: var(--white);
+  border: 2px solid rgba(58,16,8,0.1);
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.financeBlockTitle {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--mid);
+  margin-bottom: 1rem;
+}
+
+.financeTable { display: flex; flex-direction: column; gap: 0.4rem; }
+
+.financeTableHead {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr;
+  gap: 0.5rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--light);
+  padding-bottom: 0.5rem;
+  border-bottom: 1.5px solid rgba(58,16,8,0.08);
+}
+
+.financeTableRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1.5fr;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--dark);
+  padding: 0.4rem 0;
+  border-bottom: 1px solid rgba(58,16,8,0.05);
+}
+
+.financeStatsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.financeStatRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+
+.financeStatLabel {
+  font-size: 0.78rem;
+  color: var(--dark);
+  min-width: 80px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.financeStatBar {
+  flex: 1;
+  height: 6px;
+  background: rgba(58,16,8,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.financeStatBar span {
+  display: block;
+  height: 100%;
+  background: var(--coral);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.financeStatVal {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--dark);
+  min-width: 28px;
+  text-align: right;
+}
+
+@media (max-width: 600px) {
+  .financeCards { grid-template-columns: 1fr; }
+  .financeStatsGrid { grid-template-columns: 1fr; }
+  .financeTableHead, .financeTableRow { grid-template-columns: 1.5fr 0.7fr 1.2fr 1.2fr; font-size: 0.72rem; }
 }
