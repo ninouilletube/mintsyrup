@@ -16,7 +16,7 @@ export default async function ProjetPage() {
           <div className={styles.layout}>
             <div className={styles.photoWrap}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/nina.jpeg" alt="Nina" className={styles.photo} />
+              <img src="/nina - copie.png" alt="Nina" className={styles.photo} />
             </div>
             <div className={styles.content}>
               {bio ? (
