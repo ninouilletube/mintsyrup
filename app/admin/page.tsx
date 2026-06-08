@@ -287,15 +287,6 @@ export default function AdminPage() {
     const isNowFav = !!editForm.favorite;
     const favOrder = isNowFav ? (wasAlreadyFav ? editingProduct.favoriteOrder : Date.now()) : undefined;
 
-    // Si on ajoute un nouveau favori, enlever le plus ancien si déjà 3
-    if (isNowFav && !wasAlreadyFav) {
-      const currentFavs = products.filter(p => p.favorite && p.id !== editingProduct.id);
-      if (currentFavs.length >= 4) {
-        const oldest = [...currentFavs].sort((a, b) => (a.favoriteOrder ?? 0) - (b.favoriteOrder ?? 0))[0];
-        updateProduct({ ...oldest, favorite: undefined, favoriteText: undefined, favoriteOrder: undefined });
-      }
-    }
-
     updateProduct({
       ...editingProduct,
       brand: editForm.brand || null,
@@ -360,14 +351,6 @@ export default function AdminPage() {
       favoriteText: form.favoriteText || undefined,
       favoriteOrder: form.favorite ? Date.now() : undefined,
     });
-    // FIFO: enlever le plus ancien si > 3
-    if (form.favorite) {
-      const currentFavs = products.filter(p => p.favorite);
-      if (currentFavs.length >= 4) {
-        const oldest = [...currentFavs].sort((a, b) => (a.favoriteOrder ?? 0) - (b.favoriteOrder ?? 0))[0];
-        updateProduct({ ...oldest, favorite: undefined, favoriteText: undefined, favoriteOrder: undefined });
-      }
-    }
     setSuccess(true);
     setTimeout(() => { setSuccess(false); setForm(emptyForm); setStep(0); setView('dashboard'); }, 1800);
   };

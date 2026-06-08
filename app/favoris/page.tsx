@@ -13,7 +13,8 @@ export default async function FavorisPage() {
   const allProducts = (await getData('products') as Product[] | null) ?? [];
   const products = allProducts
     .filter((p) => p.favorite && !p.hidden)
-    .sort((a, b) => (b.favoriteOrder ?? 0) - (a.favoriteOrder ?? 0));
+    .sort((a, b) => (b.favoriteOrder ?? 0) - (a.favoriteOrder ?? 0))
+    .slice(0, 4);
 
   return (
     <>
