@@ -1,15 +1,13 @@
 .overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  min-height: 100%;
+  position: relative;
+  margin-top: -100vh;
+  min-height: 100vh;
   z-index: 10;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   pointer-events: none;
-  padding: 5rem 2rem 2rem;
+  padding: 5rem 2rem 3rem;
 }
 
 .panelOpen {
