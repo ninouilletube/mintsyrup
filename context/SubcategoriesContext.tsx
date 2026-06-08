@@ -8,7 +8,7 @@ const LS_KEY = 'ms_subcategories';
 
 type SubcategoriesContextType = {
   subcategories: Subcategory[];
-  addSubcategory: (s: Omit<Subcategory, 'id'>) => void;
+  addSubcategory: (s: Omit<Subcategory, 'id'>) => string;
   deleteSubcategory: (id: string) => void;
 };
 
@@ -58,7 +58,11 @@ export function SubcategoriesProvider({ children }: { children: React.ReactNode 
     setData('subcategories', items).catch(() => {});
   };
 
-  const addSubcategory    = (s: Omit<Subcategory, 'id'>) => save([...subcategories, { ...s, id: Date.now().toString() }]);
+  const addSubcategory = (s: Omit<Subcategory, 'id'>): string => {
+    const id = Date.now().toString();
+    save([...subcategories, { ...s, id }]);
+    return id;
+  };
   const deleteSubcategory = (id: string)                  => save(subcategories.filter((s) => s.id !== id));
 
   if (!loaded) return null;

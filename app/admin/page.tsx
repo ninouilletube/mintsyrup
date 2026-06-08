@@ -662,8 +662,8 @@ export default function AdminPage() {
                         ))}
                         {editAddingSubFor === catId ? (
                           <div className={styles.inlineSubInput}>
-                            <input autoFocus className={styles.inlineInput} value={editNewSubLabel} onChange={(e) => setEditNewSubLabel(e.target.value)} placeholder="Nom..." onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (editNewSubLabel.trim()) addSubcategory({ label: editNewSubLabel.trim(), parentCategory: catId }); setEditNewSubLabel(''); setEditAddingSubFor(null); } if (e.key === 'Escape') { setEditNewSubLabel(''); setEditAddingSubFor(null); } }} />
-                            <button type="button" className={styles.inlineConfirm} onClick={() => { if (editNewSubLabel.trim()) addSubcategory({ label: editNewSubLabel.trim(), parentCategory: catId }); setEditNewSubLabel(''); setEditAddingSubFor(null); }}>✓</button>
+                            <input autoFocus className={styles.inlineInput} value={editNewSubLabel} onChange={(e) => setEditNewSubLabel(e.target.value)} placeholder="Nom..." onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (editNewSubLabel.trim()) { const id = addSubcategory({ label: editNewSubLabel.trim(), parentCategory: catId }); setEditForm(f => ({ ...f, subcategory: id })); } setEditNewSubLabel(''); setEditAddingSubFor(null); } if (e.key === 'Escape') { setEditNewSubLabel(''); setEditAddingSubFor(null); } }} />
+                            <button type="button" className={styles.inlineConfirm} onClick={() => { if (editNewSubLabel.trim()) { const id = addSubcategory({ label: editNewSubLabel.trim(), parentCategory: catId }); setEditForm(f => ({ ...f, subcategory: id })); } setEditNewSubLabel(''); setEditAddingSubFor(null); }}>✓</button>
                             <button type="button" className={styles.inlineCancel} onClick={() => { setEditNewSubLabel(''); setEditAddingSubFor(null); }}>×</button>
                           </div>
                         ) : (
@@ -913,8 +913,8 @@ export default function AdminPage() {
                           ))}
                           {addingSubFor === catId ? (
                             <div className={styles.inlineSubInput}>
-                              <input autoFocus className={styles.inlineInput} value={newSubLabel} onChange={(e) => setNewSubLabel(e.target.value)} placeholder="Nom..." onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (newSubLabel.trim()) addSubcategory({ label: newSubLabel.trim(), parentCategory: catId }); setNewSubLabel(''); setAddingSubFor(null); } if (e.key === 'Escape') { setNewSubLabel(''); setAddingSubFor(null); } }} />
-                              <button type="button" className={styles.inlineConfirm} onClick={() => { if (newSubLabel.trim()) addSubcategory({ label: newSubLabel.trim(), parentCategory: catId }); setNewSubLabel(''); setAddingSubFor(null); }}>✓</button>
+                              <input autoFocus className={styles.inlineInput} value={newSubLabel} onChange={(e) => setNewSubLabel(e.target.value)} placeholder="Nom..." onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (newSubLabel.trim()) { const id = addSubcategory({ label: newSubLabel.trim(), parentCategory: catId }); setForm(f => ({ ...f, subcategory: id })); } setNewSubLabel(''); setAddingSubFor(null); } if (e.key === 'Escape') { setNewSubLabel(''); setAddingSubFor(null); } }} />
+                              <button type="button" className={styles.inlineConfirm} onClick={() => { if (newSubLabel.trim()) { const id = addSubcategory({ label: newSubLabel.trim(), parentCategory: catId }); setForm(f => ({ ...f, subcategory: id })); } setNewSubLabel(''); setAddingSubFor(null); }}>✓</button>
                               <button type="button" className={styles.inlineCancel} onClick={() => { setNewSubLabel(''); setAddingSubFor(null); }}>×</button>
                             </div>
                           ) : (
