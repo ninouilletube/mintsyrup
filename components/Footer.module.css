@@ -21,6 +21,11 @@
   font-size: 2rem;
   color: var(--orange);
   line-height: 1;
+  transition: color 0.2s;
+}
+
+.logoRow:hover .logo {
+  color: #5ECEC0;
 }
 
 .projetTag {
