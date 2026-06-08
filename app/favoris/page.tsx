@@ -9,7 +9,9 @@ export const revalidate = 60;
 
 export default async function FavorisPage() {
   const allProducts = (await getData('products') as Product[] | null) ?? [];
-  const products = allProducts.filter((p) => p.favorite && !p.hidden);
+  const products = allProducts
+    .filter((p) => p.favorite && !p.hidden)
+    .sort((a, b) => (b.favoriteOrder ?? 0) - (a.favoriteOrder ?? 0));
 
   return (
     <>

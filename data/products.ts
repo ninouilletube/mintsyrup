@@ -18,6 +18,7 @@ export type Product = {
   hidden?: boolean;
   favorite?: boolean;
   favoriteText?: string;
+  favoriteOrder?: number;
 };
 
 export type Season = 'printemps' | 'ete' | 'automne' | 'hiver';
