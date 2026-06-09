@@ -39,7 +39,7 @@
     border-bottom: 0.5px solid var(--border);
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 16px;
   }
 
   .logo {
@@ -64,6 +64,34 @@
   }
   .nav-tab.active { background: var(--ink); color: var(--white); border-color: var(--ink); }
   .nav-tab:hover:not(.active) { border-color: var(--mint); color: var(--ink); }
+
+  /* Bouton mode édition */
+  .edit-mode-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 7px 14px;
+    border-radius: 99px;
+    font-size: 13px;
+    cursor: pointer;
+    border: 0.5px solid var(--border);
+    background: transparent;
+    color: var(--ink-soft);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .edit-mode-btn:hover { border-color: var(--mint-dark); color: var(--mint-dark); }
+  .edit-mode-btn.active {
+    background: var(--mint-dark); color: var(--white);
+    border-color: var(--mint-dark);
+  }
+
+  .edit-mode-banner {
+    display: none;
+    background: var(--mint-dark); color: var(--white);
+    text-align: center; font-size: 12px; padding: 7px;
+    letter-spacing: 0.04em;
+  }
+  .edit-mode-banner.visible { display: block; }
 
   .page { display: none; }
   .page.active { display: block; }
@@ -90,38 +118,19 @@
     border-radius: var(--radius);
     padding: 20px 22px;
   }
-
-  .card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
   .card-title {
     font-size: 11px;
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--ink-soft);
+    margin-bottom: 14px;
   }
-  .edit-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-    color: var(--ink-soft);
-    border-radius: 6px;
-    transition: all 0.15s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 1;
-  }
-  .edit-btn:hover { color: var(--mint-dark); background: var(--mint-light); }
-  .edit-btn.active { color: var(--mint-dark); background: var(--mint-light); }
 
+  /* Pills */
   .pill-grid { display: flex; flex-wrap: wrap; gap: 8px; }
   .pill {
+    display: inline-flex; align-items: center; gap: 0;
     padding: 7px 13px;
     border: 0.5px solid var(--border);
     border-radius: 99px;
@@ -135,6 +144,58 @@
   .pill:hover { border-color: var(--mint); color: var(--ink); }
   .pill.selected-radio { background: var(--mint-dark); border-color: var(--mint-dark); color: var(--white); }
   .pill.selected-check { background: var(--mint-light); border-color: var(--mint); color: var(--mint-dark); font-weight: 500; }
+
+  /* Bouton × dans chaque pill — caché par défaut */
+  .pill-del {
+    display: none;
+    background: none; border: none;
+    color: inherit; cursor: pointer;
+    font-size: 15px; line-height: 1;
+    margin-left: 6px; padding: 0;
+    opacity: 0.55; transition: opacity 0.15s;
+  }
+  .pill-del:hover { opacity: 1; }
+
+  /* Mode édition */
+  body.editing .pill {
+    cursor: default;
+    opacity: 0.75;
+  }
+  body.editing .pill:hover {
+    border-color: var(--border);
+    color: var(--ink-mid);
+    background: var(--white);
+  }
+  body.editing .pill.selected-radio { background: var(--mint-dark); border-color: var(--mint-dark); color: var(--white); opacity: 0.75; }
+  body.editing .pill.selected-check { background: var(--mint-light); border-color: var(--mint); color: var(--mint-dark); opacity: 0.75; }
+  body.editing .pill-del { display: inline; }
+  body.editing .add-section-row { display: flex; }
+
+  /* Ligne d'ajout par section — cachée par défaut */
+  .add-section-row {
+    display: none;
+    gap: 8px; align-items: center;
+    margin-top: 12px; padding-top: 12px;
+    border-top: 0.5px solid var(--border);
+  }
+  .add-section-row input[type="text"] {
+    flex: 1; padding: 6px 10px; border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 13px; font-family: "DM Sans", sans-serif;
+    color: var(--ink); background: var(--cream); outline: none; min-width: 0;
+  }
+  .add-section-row input[type="text"]:focus { border-color: var(--mint); }
+  .add-section-row input[type="number"] {
+    width: 68px; padding: 6px 10px; border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 13px; font-family: "DM Sans", sans-serif;
+    color: var(--ink); background: var(--cream); outline: none;
+  }
+  .add-section-row input[type="number"]:focus { border-color: var(--mint); }
+  .add-section-btn {
+    padding: 6px 14px; background: var(--mint-dark); color: var(--white);
+    border: none; border-radius: var(--radius-sm); font-size: 12px;
+    font-family: "DM Sans", sans-serif; cursor: pointer; white-space: nowrap; transition: opacity 0.15s;
+  }
+  .add-section-btn:hover { opacity: 0.85; }
 
   .achat-row { display: flex; align-items: center; gap: 10px; }
   .achat-row input[type="number"] {
@@ -159,11 +220,8 @@
   .img-upload-area {
     border: 1.5px dashed var(--border);
     border-radius: var(--radius);
-    padding: 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.15s;
-    position: relative;
+    padding: 24px; text-align: center; cursor: pointer;
+    transition: border-color 0.15s; position: relative;
   }
   .img-upload-area:hover { border-color: var(--mint); }
   .img-upload-area input { display: none; }
@@ -229,52 +287,6 @@
   }
   .toast.show { opacity: 1; }
 
-  /* ── EDIT PANEL ── */
-  .edit-panel {
-    display: none; margin-top: 14px; padding-top: 14px;
-    border-top: 0.5px solid var(--border);
-  }
-  .edit-panel.open { display: block; }
-
-  .edit-pills-list {
-    display: flex; flex-direction: column; gap: 4px; margin-bottom: 12px;
-  }
-  .edit-pill-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 7px 10px;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--cream);
-    font-size: 13px; color: var(--ink-mid);
-  }
-  .edit-pill-row span { flex: 1; }
-  .edit-pill-del {
-    background: none; border: none; cursor: pointer;
-    color: var(--ink-soft); font-size: 16px; line-height: 1;
-    padding: 0 0 0 8px; transition: color 0.15s; flex-shrink: 0;
-  }
-  .edit-pill-del:hover { color: #C83A20; }
-
-  .edit-add-row { display: flex; gap: 8px; align-items: center; margin-top: 4px; }
-  .edit-add-row input[type="text"] {
-    flex: 1; padding: 6px 10px; border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm); font-size: 13px; font-family: "DM Sans", sans-serif;
-    color: var(--ink); background: var(--white); outline: none; min-width: 0;
-  }
-  .edit-add-row input[type="text"]:focus { border-color: var(--mint); }
-  .edit-add-row input[type="number"] {
-    width: 68px; padding: 6px 10px; border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm); font-size: 13px; font-family: "DM Sans", sans-serif;
-    color: var(--ink); background: var(--white); outline: none;
-  }
-  .edit-add-row input[type="number"]:focus { border-color: var(--mint); }
-  .edit-add-btn {
-    padding: 6px 14px; background: var(--mint-dark); color: var(--white);
-    border: none; border-radius: var(--radius-sm); font-size: 12px;
-    font-family: "DM Sans", sans-serif; cursor: pointer; white-space: nowrap; transition: opacity 0.15s;
-  }
-  .edit-add-btn:hover { opacity: 0.85; }
-
   /* ── MON STOCK ── */
   .stock-page { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
   .stock-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
@@ -288,11 +300,7 @@
   .stock-empty strong { display: block; font-size: 18px; color: var(--ink-mid); margin-bottom: 8px; }
 
   .stock-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
-
-  .stock-card {
-    background: var(--white); border: 0.5px solid var(--border);
-    border-radius: var(--radius); overflow: hidden; position: relative;
-  }
+  .stock-card { background: var(--white); border: 0.5px solid var(--border); border-radius: var(--radius); overflow: hidden; position: relative; }
   .stock-card-img { width: 100%; height: 180px; object-fit: cover; background: var(--cream); display: flex; align-items: center; justify-content: center; }
   .stock-card-img img { width: 100%; height: 100%; object-fit: cover; }
   .stock-card-img-placeholder { width: 100%; height: 180px; background: var(--cream); display: flex; align-items: center; justify-content: center; }
@@ -321,12 +329,20 @@
 </head>
 <body>
 
+<div class="edit-mode-banner" id="edit-banner">✏ Mode édition — clique sur × pour supprimer un critère, ou ajoute-en un nouveau</div>
+
 <header>
   <div class="logo">mint<span>syrup</span></div>
   <nav class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('calc', event)">Calculateur</button>
     <button class="nav-tab" onclick="showPage('stock', event)">Mon stock <span id="stock-count-badge"></span></button>
   </nav>
+  <button class="edit-mode-btn" id="edit-mode-btn" onclick="toggleEditMode()">
+    <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M13.586 3.586a2 2 0 112.828 2.828l-9.5 9.5-3.914.586.586-3.914 9.5-9.5z"/>
+    </svg>
+    Modifier
+  </button>
 </header>
 
 <!-- PAGE CALCULATEUR -->
@@ -335,12 +351,12 @@
   <div class="sections">
 
     <div class="card">
-      <div class="card-header"><div class="card-title">Nom de l'article</div></div>
+      <div class="card-title">Nom de l'article</div>
       <input type="text" id="nom" class="nom-input" placeholder="ex: Jupe midi daim prune La Redoute">
     </div>
 
     <div class="card">
-      <div class="card-header"><div class="card-title">Photo</div></div>
+      <div class="card-title">Photo</div>
       <div class="img-upload-area" id="upload-area" onclick="document.getElementById('img-input').click()">
         <input type="file" id="img-input" accept="image/*" onchange="handleImage(event)">
         <img id="img-preview" class="img-preview" alt="aperçu">
@@ -355,7 +371,7 @@
     </div>
 
     <div class="card">
-      <div class="card-header"><div class="card-title">Prix d'achat</div></div>
+      <div class="card-title">Prix d'achat</div>
       <div class="achat-row">
         <input type="number" id="achat" min="0" step="0.5" placeholder="0">
         <span>€ payés</span>
@@ -363,285 +379,186 @@
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Type d'article — base du prix</div>
-        <button class="edit-btn" onclick="toggleEdit('type', this)" title="Modifier les critères">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13.586 3.586a2 2 0 112.828 2.828l-9.5 9.5-3.914.586.586-3.914 9.5-9.5z"/>
-          </svg>
-        </button>
-      </div>
+      <div class="card-title">Type d'article — base du prix</div>
       <div class="pill-grid" id="type">
-        <div class="pill" data-group="type" data-val="5">Sans valeur (5€)</div>
-        <div class="pill" data-group="type" data-val="8">Fast fashion (8€)</div>
-        <div class="pill" data-group="type" data-val="10">Fast fashion mid (10€)</div>
-        <div class="pill" data-group="type" data-val="12">Fast fashion premium (12€)</div>
-        <div class="pill" data-group="type" data-val="15">Marque ok (15€)</div>
-        <div class="pill" data-group="type" data-val="18">Marque cool (18€)</div>
-        <div class="pill" data-group="type" data-val="20">Vintage (20€)</div>
-        <div class="pill" data-group="type" data-val="25">Vintage premium (25€)</div>
-        <div class="pill" data-group="type" data-val="30">Ultra rare (30€)</div>
+        <div class="pill" data-group="type" data-val="5">Sans valeur (5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="8">Fast fashion (8€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="10">Fast fashion mid (10€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="12">Fast fashion premium (12€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="15">Marque ok (15€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="18">Marque cool (18€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="20">Vintage (20€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="25">Vintage premium (25€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="30">Ultra rare (30€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
-      <div class="edit-panel" id="edit-type">
-        <div class="edit-pills-list" id="edit-list-type"></div>
-        <div class="edit-add-row">
-          <input type="text" id="edit-nom-type" placeholder="Nom du critère">
-          <input type="number" id="edit-val-type" placeholder="€" step="1">
-          <button class="edit-add-btn" onclick="addCustomPill('type', false)">Ajouter</button>
-        </div>
+      <div class="add-section-row">
+        <input type="text" id="add-nom-type" placeholder="Nouveau critère">
+        <input type="number" id="add-val-type" placeholder="€" step="1">
+        <button class="add-section-btn" onclick="addCustomPill('type', false)">+</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Catégorie</div>
-        <button class="edit-btn" onclick="toggleEdit('categorie', this)" title="Modifier les critères">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13.586 3.586a2 2 0 112.828 2.828l-9.5 9.5-3.914.586.586-3.914 9.5-9.5z"/>
-          </svg>
-        </button>
-      </div>
+      <div class="card-title">Catégorie</div>
       <div class="pill-grid" id="categorie">
-        <div class="pill" data-group="categorie" data-val="0">Top (+0€)</div>
-        <div class="pill" data-group="categorie" data-val="0">Accessoire (+0€)</div>
-        <div class="pill" data-group="categorie" data-val="2">Cardigan (+2€)</div>
-        <div class="pill" data-group="categorie" data-val="2">Short (+2€)</div>
-        <div class="pill" data-group="categorie" data-val="3">Jean (+3€)</div>
-        <div class="pill" data-group="categorie" data-val="3">Jupe (+3€)</div>
-        <div class="pill" data-group="categorie" data-val="3">Layer (+3€)</div>
-        <div class="pill" data-group="categorie" data-val="4">Robe (+4€)</div>
-        <div class="pill" data-group="categorie" data-val="4">Veste (+4€)</div>
-        <div class="pill" data-group="categorie" data-val="4">Chaussures (+4€)</div>
-        <div class="pill" data-group="categorie" data-val="4">Sac (+4€)</div>
-        <div class="pill" data-group="categorie" data-val="5">Manteau (+5€)</div>
+        <div class="pill" data-group="categorie" data-val="0">Top (+0€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="0">Accessoire (+0€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="2">Cardigan (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="2">Short (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="3">Jean (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="3">Jupe (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="3">Layer (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="4">Robe (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="4">Veste (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="4">Chaussures (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="4">Sac (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="5">Manteau (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
-      <div class="edit-panel" id="edit-categorie">
-        <div class="edit-pills-list" id="edit-list-categorie"></div>
-        <div class="edit-add-row">
-          <input type="text" id="edit-nom-categorie" placeholder="Nom du critère">
-          <input type="number" id="edit-val-categorie" placeholder="€" step="1">
-          <button class="edit-add-btn" onclick="addCustomPill('categorie', false)">Ajouter</button>
-        </div>
+      <div class="add-section-row">
+        <input type="text" id="add-nom-categorie" placeholder="Nouveau critère">
+        <input type="number" id="add-val-categorie" placeholder="€" step="1">
+        <button class="add-section-btn" onclick="addCustomPill('categorie', false)">+</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">État</div>
-        <button class="edit-btn" onclick="toggleEdit('etat', this)" title="Modifier les critères">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13.586 3.586a2 2 0 112.828 2.828l-9.5 9.5-3.914.586.586-3.914 9.5-9.5z"/>
-          </svg>
-        </button>
-      </div>
+      <div class="card-title">État</div>
       <div class="pill-grid" id="etat">
-        <div class="pill" data-group="etat" data-val="-2">Mauvais (-2€)</div>
-        <div class="pill" data-group="etat" data-val="1">Satisfaisant (+1€)</div>
-        <div class="pill" data-group="etat" data-val="2">Bon état (+2€)</div>
-        <div class="pill" data-group="etat" data-val="5">Neuf (+5€)</div>
+        <div class="pill" data-group="etat" data-val="-2">Mauvais (-2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="etat" data-val="1">Satisfaisant (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="etat" data-val="2">Bon état (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="etat" data-val="5">Neuf (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
-      <div class="edit-panel" id="edit-etat">
-        <div class="edit-pills-list" id="edit-list-etat"></div>
-        <div class="edit-add-row">
-          <input type="text" id="edit-nom-etat" placeholder="Nom du critère">
-          <input type="number" id="edit-val-etat" placeholder="€" step="1">
-          <button class="edit-add-btn" onclick="addCustomPill('etat', false)">Ajouter</button>
-        </div>
+      <div class="add-section-row">
+        <input type="text" id="add-nom-etat" placeholder="Nouveau critère">
+        <input type="number" id="add-val-etat" placeholder="€" step="1">
+        <button class="add-section-btn" onclick="addCustomPill('etat', false)">+</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Matière</div>
-        <button class="edit-btn" onclick="toggleEdit('matiere', this)" title="Modifier les critères">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13.586 3.586a2 2 0 112.828 2.828l-9.5 9.5-3.914.586.586-3.914 9.5-9.5z"/>
-          </svg>
-        </button>
-      </div>
+      <div class="card-title">Matière</div>
       <div class="pill-grid" id="matiere">
-        <div class="pill" data-group="matiere" data-val="0">Synthétique bof (+0€)</div>
-        <div class="pill" data-group="matiere" data-val="2">Synthétique quali (+2€)</div>
-        <div class="pill" data-group="matiere" data-val="3">Mélange fibres naturelles bof (+3€)</div>
-        <div class="pill" data-group="matiere" data-val="4">Mélange quali (+4€)</div>
-        <div class="pill" data-group="matiere" data-val="5">100% naturel (+5€)</div>
-        <div class="pill" data-group="matiere" data-val="10">Cuir (+10€)</div>
-        <div class="pill" data-group="matiere" data-val="15">Daim (+15€)</div>
+        <div class="pill" data-group="matiere" data-val="0">Synthétique bof (+0€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="2">Synthétique quali (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="3">Mélange fibres naturelles bof (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="4">Mélange quali (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="5">100% naturel (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="10">Cuir (+10€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="15">Daim (+15€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
-      <div class="edit-panel" id="edit-matiere">
-        <div class="edit-pills-list" id="edit-list-matiere"></div>
-        <div class="edit-add-row">
-          <input type="text" id="edit-nom-matiere" placeholder="Nom du critère">
-          <input type="number" id="edit-val-matiere" placeholder="€" step="1">
-          <button class="edit-add-btn" onclick="addCustomPill('matiere', false)">Ajouter</button>
-        </div>
+      <div class="add-section-row">
+        <input type="text" id="add-nom-matiere" placeholder="Nouveau critère">
+        <input type="number" id="add-val-matiere" placeholder="€" step="1">
+        <button class="add-section-btn" onclick="addCustomPill('matiere', false)">+</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Taille</div>
-        <button class="edit-btn" onclick="toggleEdit('taille', this)" title="Modifier les critères">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13.586 3.586a2 2 0 112.828 2.828l-9.5 9.5-3.914.586.586-3.914 9.5-9.5z"/>
-          </svg>
-        </button>
-      </div>
+      <div class="card-title">Taille</div>
       <div class="pill-grid" id="taille">
-        <div class="pill" data-group="taille" data-val="-2">Grande taille (-2€)</div>
-        <div class="pill" data-group="taille" data-val="0">Taille moyenne (+0€)</div>
-        <div class="pill" data-group="taille" data-val="1">S (+1€)</div>
-        <div class="pill" data-group="taille" data-val="2">XS (+2€)</div>
+        <div class="pill" data-group="taille" data-val="-2">Grande taille (-2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="taille" data-val="0">Taille moyenne (+0€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="taille" data-val="1">S (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="taille" data-val="2">XS (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
-      <div class="edit-panel" id="edit-taille">
-        <div class="edit-pills-list" id="edit-list-taille"></div>
-        <div class="edit-add-row">
-          <input type="text" id="edit-nom-taille" placeholder="Nom du critère">
-          <input type="number" id="edit-val-taille" placeholder="€" step="1">
-          <button class="edit-add-btn" onclick="addCustomPill('taille', false)">Ajouter</button>
-        </div>
+      <div class="add-section-row">
+        <input type="text" id="add-nom-taille" placeholder="Nouveau critère">
+        <input type="number" id="add-val-taille" placeholder="€" step="1">
+        <button class="add-section-btn" onclick="addCustomPill('taille', false)">+</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Coupe <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
-        <button class="edit-btn" onclick="toggleEdit('coupe', this)" title="Modifier les critères">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13.586 3.586a2 2 0 112.828 2.828l-9.5 9.5-3.914.586.586-3.914 9.5-9.5z"/>
-          </svg>
-        </button>
-      </div>
+      <div class="card-title">Coupe <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
       <div class="pill-grid" id="coupe">
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Cache-cœur (+2€)</div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Jupe midi (+2€)</div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Dos nu (+2€)</div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Épaules dénudées (+2€)</div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Manches évasées (+2€)</div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Babydoll (+2€)</div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Asymétrique (+2€)</div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Ajusté (+2€)</div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Pantacourt (+2€)</div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Hanches ajustées (+2€)</div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Cache-cœur (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Jupe midi (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Dos nu (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Épaules dénudées (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Manches évasées (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Babydoll (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Asymétrique (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Ajusté (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Pantacourt (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Hanches ajustées (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
-      <div class="edit-panel" id="edit-coupe">
-        <div class="edit-pills-list" id="edit-list-coupe"></div>
-        <div class="edit-add-row">
-          <input type="text" id="edit-nom-coupe" placeholder="Nom du critère">
-          <input type="number" id="edit-val-coupe" placeholder="€" step="1">
-          <button class="edit-add-btn" onclick="addCustomPill('coupe', true)">Ajouter</button>
-        </div>
+      <div class="add-section-row">
+        <input type="text" id="add-nom-coupe" placeholder="Nouveau critère">
+        <input type="number" id="add-val-coupe" placeholder="€" step="1">
+        <button class="add-section-btn" onclick="addCustomPill('coupe', true)">+</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Couleur signature <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
-        <button class="edit-btn" onclick="toggleEdit('couleur', this)" title="Modifier les critères">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13.586 3.586a2 2 0 112.828 2.828l-9.5 9.5-3.914.586.586-3.914 9.5-9.5z"/>
-          </svg>
-        </button>
-      </div>
+      <div class="card-title">Couleur signature <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
       <div class="pill-grid" id="couleur">
-        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Turquoise (+3€)</div>
-        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Prune (+3€)</div>
-        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Magenta (+3€)</div>
-        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Jaune beurre (+3€)</div>
-        <div class="pill" data-group="couleur" data-multi="1" data-val="2">Pistache (+2€)</div>
-        <div class="pill" data-group="couleur" data-multi="1" data-val="2">Burgundy (+2€)</div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Turquoise (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Prune (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Magenta (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Jaune beurre (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="2">Pistache (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="2">Burgundy (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
-      <div class="edit-panel" id="edit-couleur">
-        <div class="edit-pills-list" id="edit-list-couleur"></div>
-        <div class="edit-add-row">
-          <input type="text" id="edit-nom-couleur" placeholder="Nom du critère">
-          <input type="number" id="edit-val-couleur" placeholder="€" step="1">
-          <button class="edit-add-btn" onclick="addCustomPill('couleur', true)">Ajouter</button>
-        </div>
+      <div class="add-section-row">
+        <input type="text" id="add-nom-couleur" placeholder="Nouveau critère">
+        <input type="number" id="add-val-couleur" placeholder="€" step="1">
+        <button class="add-section-btn" onclick="addCustomPill('couleur', true)">+</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Détails & effets <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
-        <button class="edit-btn" onclick="toggleEdit('details', this)" title="Modifier les critères">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13.586 3.586a2 2 0 112.828 2.828l-9.5 9.5-3.914.586.586-3.914 9.5-9.5z"/>
-          </svg>
-        </button>
-      </div>
+      <div class="card-title">Détails & effets <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
       <div class="pill-grid" id="details">
-        <div class="pill" data-group="details" data-multi="1" data-val="4">Œillets (+4€)</div>
-        <div class="pill" data-group="details" data-multi="1" data-val="4">Sequins (+4€)</div>
-        <div class="pill" data-group="details" data-multi="1" data-val="6">Broderies (+6€)</div>
-        <div class="pill" data-group="details" data-multi="1" data-val="6">Perles (+6€)</div>
-        <div class="pill" data-group="details" data-multi="1" data-val="4">Velours côtelé (+4€)</div>
-        <div class="pill" data-group="details" data-multi="1" data-val="2">Drapé (+2€)</div>
-        <div class="pill" data-group="details" data-multi="1" data-val="2">Transparence (+2€)</div>
+        <div class="pill" data-group="details" data-multi="1" data-val="4">Œillets (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="4">Sequins (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="6">Broderies (+6€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="6">Perles (+6€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="4">Velours côtelé (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="2">Drapé (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="2">Transparence (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
-      <div class="edit-panel" id="edit-details">
-        <div class="edit-pills-list" id="edit-list-details"></div>
-        <div class="edit-add-row">
-          <input type="text" id="edit-nom-details" placeholder="Nom du critère">
-          <input type="number" id="edit-val-details" placeholder="€" step="1">
-          <button class="edit-add-btn" onclick="addCustomPill('details', true)">Ajouter</button>
-        </div>
+      <div class="add-section-row">
+        <input type="text" id="add-nom-details" placeholder="Nouveau critère">
+        <input type="number" id="add-val-details" placeholder="€" step="1">
+        <button class="add-section-btn" onclick="addCustomPill('details', true)">+</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Motif <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
-        <button class="edit-btn" onclick="toggleEdit('motif', this)" title="Modifier les critères">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13.586 3.586a2 2 0 112.828 2.828l-9.5 9.5-3.914.586.586-3.914 9.5-9.5z"/>
-          </svg>
-        </button>
-      </div>
+      <div class="card-title">Motif <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
       <div class="pill-grid" id="motif">
-        <div class="pill" data-group="motif" data-multi="1" data-val="4">Rayé (+4€)</div>
-        <div class="pill" data-group="motif" data-multi="1" data-val="5">Pois (+5€)</div>
-        <div class="pill" data-group="motif" data-multi="1" data-val="4">Paisley (+4€)</div>
-        <div class="pill" data-group="motif" data-multi="1" data-val="4">Fleuri (+4€)</div>
-        <div class="pill" data-group="motif" data-multi="1" data-val="5">Fun (+5€)</div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="4">Rayé (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="5">Pois (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="4">Paisley (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="4">Fleuri (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="5">Fun (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
-      <div class="edit-panel" id="edit-motif">
-        <div class="edit-pills-list" id="edit-list-motif"></div>
-        <div class="edit-add-row">
-          <input type="text" id="edit-nom-motif" placeholder="Nom du critère">
-          <input type="number" id="edit-val-motif" placeholder="€" step="1">
-          <button class="edit-add-btn" onclick="addCustomPill('motif', true)">Ajouter</button>
-        </div>
+      <div class="add-section-row">
+        <input type="text" id="add-nom-motif" placeholder="Nouveau critère">
+        <input type="number" id="add-val-motif" placeholder="€" step="1">
+        <button class="add-section-btn" onclick="addCustomPill('motif', true)">+</button>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">
-        <div class="card-title">Style <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
-        <button class="edit-btn" onclick="toggleEdit('style', this)" title="Modifier les critères">
-          <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M13.586 3.586a2 2 0 112.828 2.828l-9.5 9.5-3.914.586.586-3.914 9.5-9.5z"/>
-          </svg>
-        </button>
-      </div>
+      <div class="card-title">Style <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
       <div class="pill-grid" id="style">
-        <div class="pill" data-group="style" data-multi="1" data-val="2">Edgy (+2€)</div>
-        <div class="pill" data-group="style" data-multi="1" data-val="2">Très féminin (+2€)</div>
-        <div class="pill" data-group="style" data-multi="1" data-val="2">Bohème (+2€)</div>
-        <div class="pill" data-group="style" data-multi="1" data-val="2">Y2K (+2€)</div>
-        <div class="pill" data-group="style" data-multi="1" data-val="2">70's (+2€)</div>
-        <div class="pill" data-group="style" data-multi="1" data-val="2">Cottage (+2€)</div>
-        <div class="pill" data-group="style" data-multi="1" data-val="3">Sirène (+3€)</div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Edgy (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Très féminin (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Bohème (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Y2K (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">70's (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Cottage (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="3">Sirène (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
-      <div class="edit-panel" id="edit-style">
-        <div class="edit-pills-list" id="edit-list-style"></div>
-        <div class="edit-add-row">
-          <input type="text" id="edit-nom-style" placeholder="Nom du critère">
-          <input type="number" id="edit-val-style" placeholder="€" step="1">
-          <button class="edit-add-btn" onclick="addCustomPill('style', true)">Ajouter</button>
-        </div>
+      <div class="add-section-row">
+        <input type="text" id="add-nom-style" placeholder="Nouveau critère">
+        <input type="number" id="add-val-style" placeholder="€" step="1">
+        <button class="add-section-btn" onclick="addCustomPill('style', true)">+</button>
       </div>
     </div>
+
   </div>
 
   <div class="sticky-panel">
@@ -694,28 +611,27 @@ const sb = createClient(
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhuc2R6cnB6dmtxYXpta2pubmV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4ODgxODgsImV4cCI6MjA5NjQ2NDE4OH0.7IEbIhFd52MviweGQFj-mrBvdmfQNWgaCTu5zhSEVzE'
 );
 
-const radioGroups = ['type','categorie','etat','matiere','taille'];
 let currentImageData = null;
 let stock = [];
+let editMode = false;
 
-// ── Critères custom + suppressions, avec sync Supabase ──
 let customCriteria = JSON.parse(localStorage.getItem('mintsyrup-custom') || '{}');
 let deletedDefaults = JSON.parse(localStorage.getItem('mintsyrup-deleted') || '{}');
 
+// ── Sync Supabase ──
 async function syncCriteriaToSupabase() {
   try {
     await sb.from('mintsyrup_settings').upsert([
       { key: 'custom_criteria', value: customCriteria },
       { key: 'deleted_defaults', value: deletedDefaults },
     ], { onConflict: 'key' });
-  } catch(e) { /* table pas encore créée, on ignore */ }
+  } catch(e) {}
 }
 
 async function loadCriteriaFromSupabase() {
   try {
     const { data, error } = await sb.from('mintsyrup_settings')
-      .select('key, value')
-      .in('key', ['custom_criteria', 'deleted_defaults']);
+      .select('key, value').in('key', ['custom_criteria', 'deleted_defaults']);
     if (error || !data) return;
     data.forEach(row => {
       if (row.key === 'custom_criteria' && row.value) {
@@ -727,13 +643,30 @@ async function loadCriteriaFromSupabase() {
         localStorage.setItem('mintsyrup-deleted', JSON.stringify(deletedDefaults));
       }
     });
-  } catch(e) { /* ignore */ }
+  } catch(e) {}
 }
 
 function saveCriteria() {
   localStorage.setItem('mintsyrup-custom', JSON.stringify(customCriteria));
   localStorage.setItem('mintsyrup-deleted', JSON.stringify(deletedDefaults));
   syncCriteriaToSupabase();
+}
+
+// ── Mode édition ──
+function toggleEditMode() {
+  editMode = !editMode;
+  document.body.classList.toggle('editing', editMode);
+  const btn = document.getElementById('edit-mode-btn');
+  const banner = document.getElementById('edit-banner');
+  if (editMode) {
+    btn.classList.add('active');
+    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg> Terminer`;
+    banner.classList.add('visible');
+  } else {
+    btn.classList.remove('active');
+    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13.586 3.586a2 2 0 112.828 2.828l-9.5 9.5-3.914.586.586-3.914 9.5-9.5z"/></svg> Modifier`;
+    banner.classList.remove('visible');
+  }
 }
 
 // ── Navigation ──
@@ -747,7 +680,9 @@ function showPage(id, event) {
 
 // ── Pill interactions ──
 document.querySelectorAll('.pill').forEach(pill => {
-  pill.addEventListener('click', () => {
+  pill.addEventListener('click', (e) => {
+    if (editMode) return;
+    if (e.target.classList.contains('pill-del')) return;
     const group = pill.dataset.group;
     const isMulti = pill.dataset.multi === '1';
     if (isMulti) {
@@ -760,6 +695,27 @@ document.querySelectorAll('.pill').forEach(pill => {
     calc();
   });
 });
+
+// ── Supprimer un pill (défaut ou custom) ──
+function deletePill(e, btn) {
+  e.stopPropagation();
+  const pill = btn.closest('.pill');
+  const group = pill.dataset.group;
+  const isCustom = pill.dataset.custom;
+
+  if (isCustom) {
+    customCriteria[group] = (customCriteria[group] || []).filter(c => String(c.id) !== String(isCustom));
+  } else {
+    if (!deletedDefaults[group]) deletedDefaults[group] = [];
+    const key = pill.dataset.val + '|' + pill.textContent.replace('×', '').trim();
+    if (!deletedDefaults[group].includes(key)) deletedDefaults[group].push(key);
+  }
+
+  pill.classList.remove('selected-radio', 'selected-check');
+  pill.remove();
+  saveCriteria();
+  calc();
+}
 
 // ── Image ──
 function handleImage(e) {
@@ -811,11 +767,11 @@ function calc() {
     return;
   }
 
-  const cat = getRadioVal('categorie') || 0;
-  const etat = getRadioVal('etat') || 0;
-  const mat = getRadioVal('matiere') || 0;
+  const cat    = getRadioVal('categorie') || 0;
+  const etat   = getRadioVal('etat') || 0;
+  const mat    = getRadioVal('matiere') || 0;
   const taille = getRadioVal('taille') || 0;
-  const bonus = getMultiSum('coupe') + getMultiSum('couleur') + getMultiSum('details') + getMultiSum('motif') + getMultiSum('style');
+  const bonus  = getMultiSum('coupe') + getMultiSum('couleur') + getMultiSum('details') + getMultiSum('motif') + getMultiSum('style');
 
   const total = type + cat + etat + mat + taille + bonus + 5;
   const final = Math.max(total, 5);
@@ -844,6 +800,59 @@ function calc() {
 
 document.getElementById('achat').addEventListener('input', calc);
 
+// ── Ajouter un critère custom ──
+function addCustomPill(group, isMulti) {
+  const nomEl = document.getElementById('add-nom-' + group);
+  const valEl = document.getElementById('add-val-' + group);
+  const nom = nomEl.value.trim();
+  const val = parseFloat(valEl.value);
+  if (!nom || isNaN(val)) return;
+
+  if (!customCriteria[group]) customCriteria[group] = [];
+  const id = Date.now();
+  customCriteria[group].push({ id, nom, val, isMulti });
+  saveCriteria();
+
+  nomEl.value = '';
+  valEl.value = '';
+  addPillToGrid(group, { id, nom, val, isMulti });
+}
+
+function addPillToGrid(group, item) {
+  const grid = document.getElementById(group);
+  const sign = item.val >= 0 ? '+' : '';
+  const pill = document.createElement('div');
+  pill.className = 'pill';
+  pill.dataset.group = group;
+  pill.dataset.val = item.val;
+  pill.dataset.custom = item.id;
+  if (item.isMulti) pill.dataset.multi = '1';
+
+  const textNode = document.createTextNode(item.nom + ' (' + sign + item.val + '€)');
+  const delBtn = document.createElement('button');
+  delBtn.className = 'pill-del';
+  delBtn.textContent = '×';
+  delBtn.onclick = (e) => deletePill(e, delBtn);
+
+  pill.appendChild(textNode);
+  pill.appendChild(delBtn);
+
+  pill.addEventListener('click', (e) => {
+    if (editMode) return;
+    if (e.target.classList.contains('pill-del')) return;
+    if (item.isMulti) {
+      pill.classList.toggle('selected-check');
+    } else {
+      const alreadySelected = pill.classList.contains('selected-radio');
+      document.querySelectorAll('.pill[data-group="' + group + '"]').forEach(p => p.classList.remove('selected-radio'));
+      if (!alreadySelected) pill.classList.add('selected-radio');
+    }
+    calc();
+  });
+
+  grid.appendChild(pill);
+}
+
 // ── Save to Supabase ──
 async function saveArticle() {
   const type = getRadioVal('type');
@@ -853,10 +862,10 @@ async function saveArticle() {
   btn.disabled = true;
   btn.textContent = 'Enregistrement…';
 
-  const achat = parseFloat(document.getElementById('achat').value) || 0;
-  const price = parseInt(document.getElementById('result-price').textContent);
-  const nom = document.getElementById('nom').value.trim() || 'Article sans nom';
-  const tier = document.getElementById('tier-badge').textContent;
+  const achat  = parseFloat(document.getElementById('achat').value) || 0;
+  const price  = parseInt(document.getElementById('result-price').textContent);
+  const nom    = document.getElementById('nom').value.trim() || 'Article sans nom';
+  const tier   = document.getElementById('tier-badge').textContent;
   const margin = Math.round(price - achat - price * 0.08);
 
   const { error } = await sb.from('mintsyrup_stock').insert([{
@@ -876,7 +885,6 @@ async function saveArticle() {
   resetAll();
 }
 
-// ── Delete from Supabase ──
 async function deleteArticle(id) {
   await sb.from('mintsyrup_stock').delete().eq('id', id);
   stock = stock.filter(a => a.id !== id);
@@ -896,7 +904,6 @@ function updateBadge() {
   b.textContent = stock.length > 0 ? ' (' + stock.length + ')' : '';
 }
 
-// ── Load stock from Supabase ──
 async function loadStock() {
   const { data, error } = await sb.from('mintsyrup_stock').select('*').order('created_at', { ascending: false });
   if (!error) stock = data || [];
@@ -909,10 +916,9 @@ async function loadAndRenderStock() {
   renderStock();
 }
 
-// ── Render stock ──
 function renderStock() {
   const container = document.getElementById('stock-content');
-  const summary = document.getElementById('stock-summary');
+  const summary   = document.getElementById('stock-summary');
 
   if (stock.length === 0) {
     container.innerHTML = '<div class="stock-empty"><strong>Aucune pièce pour l\'instant</strong>Ajoute des articles depuis le calculateur.</div>';
@@ -920,9 +926,9 @@ function renderStock() {
     return;
   }
 
-  const totalCA = stock.reduce((s, a) => s + a.price, 0);
+  const totalCA     = stock.reduce((s, a) => s + a.price, 0);
   const totalMargin = stock.reduce((s, a) => s + a.margin, 0);
-  const totalAchat = stock.reduce((s, a) => s + (a.achat || 0), 0);
+  const totalAchat  = stock.reduce((s, a) => s + (a.achat || 0), 0);
 
   summary.innerHTML = `
     <div class="stock-metric"><div class="stock-metric-val">${stock.length}</div><div class="stock-metric-lbl">pièces</div></div>
@@ -953,7 +959,6 @@ function renderStock() {
   `).join('') + '</div>';
 }
 
-// ── Reset ──
 function resetAll() {
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected-radio','selected-check'));
   document.getElementById('achat').value = '';
@@ -967,132 +972,13 @@ function resetAll() {
   document.getElementById('save-btn').textContent = 'Ajouter au stock';
 }
 
-// ── Edit panel ──
-function toggleEdit(group, btn) {
-  const panel = document.getElementById('edit-' + group);
-  const isOpen = panel.classList.contains('open');
-  // fermer tous les panels ouverts
-  document.querySelectorAll('.edit-panel.open').forEach(p => p.classList.remove('open'));
-  document.querySelectorAll('.edit-btn.active').forEach(b => b.classList.remove('active'));
-  if (!isOpen) {
-    panel.classList.add('open');
-    btn.classList.add('active');
-    renderEditList(group);
-  }
-}
-
-function renderEditList(group) {
-  const list = document.getElementById('edit-list-' + group);
-  if (!list) return;
-
-  const pills = document.querySelectorAll('.pill[data-group="' + group + '"]');
-  let html = '';
-
-  pills.forEach(pill => {
-    const isCustom = pill.dataset.custom;
-    const label = pill.textContent;
-    if (isCustom) {
-      html += `<div class="edit-pill-row"><span>${label}</span><button class="edit-pill-del" onclick="removeCustomPill('${group}', ${isCustom})" title="Supprimer">×</button></div>`;
-    } else {
-      const key = pill.dataset.val + '|' + pill.textContent;
-      html += `<div class="edit-pill-row" id="eprow-${CSS.escape(key)}"><span>${label}</span><button class="edit-pill-del" onclick="removeDefaultPill('${group}', this, '${escapeAttr(key)}')" title="Supprimer">×</button></div>`;
-    }
-  });
-
-  list.innerHTML = html || '<p style="font-size:12px;color:var(--ink-soft);margin-bottom:8px">Aucun critère.</p>';
-}
-
-function escapeAttr(s) {
-  return s.replace(/'/g, "\\'");
-}
-
-// ── Supprimer un critère par défaut ──
-function removeDefaultPill(group, btn, key) {
-  if (!deletedDefaults[group]) deletedDefaults[group] = [];
-  if (!deletedDefaults[group].includes(key)) deletedDefaults[group].push(key);
-  saveCriteria();
-
-  // Trouver et cacher le pill correspondant
-  const pills = document.querySelectorAll('.pill[data-group="' + group + '"]');
-  pills.forEach(pill => {
-    if (!pill.dataset.custom) {
-      const k = pill.dataset.val + '|' + pill.textContent;
-      if (k === key) {
-        pill.classList.remove('selected-radio', 'selected-check');
-        pill.style.display = 'none';
-      }
-    }
-  });
-
-  // Retirer la ligne du panneau
-  btn.closest('.edit-pill-row').remove();
-  calc();
-}
-
-// ── Ajouter un critère custom ──
-function addCustomPill(group, isMulti) {
-  const nomEl = document.getElementById('edit-nom-' + group);
-  const valEl = document.getElementById('edit-val-' + group);
-  const nom = nomEl.value.trim();
-  const val = parseFloat(valEl.value);
-  if (!nom || isNaN(val)) return;
-
-  if (!customCriteria[group]) customCriteria[group] = [];
-  const id = Date.now();
-  customCriteria[group].push({ id, nom, val, isMulti });
-  saveCriteria();
-
-  nomEl.value = '';
-  valEl.value = '';
-
-  addPillToGrid(group, { id, nom, val, isMulti });
-  renderEditList(group);
-}
-
-function addPillToGrid(group, item) {
-  const grid = document.getElementById(group);
-  const sign = item.val >= 0 ? '+' : '';
-  const pill = document.createElement('div');
-  pill.className = 'pill';
-  pill.dataset.group = group;
-  pill.dataset.val = item.val;
-  pill.dataset.custom = item.id;
-  if (item.isMulti) pill.dataset.multi = '1';
-  pill.textContent = item.nom + ' (' + sign + item.val + '€)';
-  pill.addEventListener('click', () => {
-    if (item.isMulti) {
-      pill.classList.toggle('selected-check');
-    } else {
-      const alreadySelected = pill.classList.contains('selected-radio');
-      document.querySelectorAll('.pill[data-group="' + group + '"]').forEach(p => p.classList.remove('selected-radio'));
-      if (!alreadySelected) pill.classList.add('selected-radio');
-    }
-    calc();
-  });
-  grid.appendChild(pill);
-}
-
-// ── Supprimer un critère custom ──
-function removeCustomPill(group, id) {
-  customCriteria[group] = (customCriteria[group] || []).filter(c => c.id !== id);
-  saveCriteria();
-  const pill = document.querySelector('.pill[data-custom="' + id + '"]');
-  if (pill) {
-    pill.classList.remove('selected-radio', 'selected-check');
-    pill.remove();
-  }
-  renderEditList(group);
-  calc();
-}
-
-// ── Appliquer suppressions et custom au chargement ──
+// ── Appliquer suppressions et customs au chargement ──
 function applyDeletedDefaults() {
   Object.entries(deletedDefaults).forEach(([group, keys]) => {
-    const pills = document.querySelectorAll('.pill[data-group="' + group + '"]');
-    pills.forEach(pill => {
+    document.querySelectorAll('.pill[data-group="' + group + '"]').forEach(pill => {
       if (!pill.dataset.custom) {
-        const k = pill.dataset.val + '|' + pill.textContent;
-        if (keys.includes(k)) pill.style.display = 'none';
+        const k = pill.dataset.val + '|' + pill.textContent.replace('×', '').trim();
+        if (keys.includes(k)) pill.remove();
       }
     });
   });
@@ -1104,7 +990,6 @@ function restoreCustomCriteria() {
   });
 }
 
-// ── Init ──
 async function init() {
   await loadCriteriaFromSupabase();
   applyDeletedDefaults();
