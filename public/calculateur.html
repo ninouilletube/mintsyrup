@@ -1300,18 +1300,25 @@ function openTicket(id, isSold) {
   const added = a.created_at ? new Date(a.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
 
   const b = a.breakdown;
+  const fmtVal = (v) => (v > 0 ? '+' : '') + v + '€';
   const breakdownHtml = b ? `
     <hr class="ticket-divider">
     <div class="ticket-breakdown">
       ${b.type?.label    ? `<div class="ticket-breakdown-row"><span class="lbl">${b.type.label}</span><span class="val">${b.type.val}€</span></div>` : ''}
-      ${b.categorie?.label && b.categorie.val !== 0 ? `<div class="ticket-breakdown-row"><span class="lbl">${b.categorie.label}</span><span class="val">${b.categorie.val > 0 ? '+' : ''}${b.categorie.val}€</span></div>` : ''}
-      ${b.etat?.label && b.etat.val !== 0 ? `<div class="ticket-breakdown-row"><span class="lbl">${b.etat.label}</span><span class="val">${b.etat.val > 0 ? '+' : ''}${b.etat.val}€</span></div>` : ''}
-      ${b.matiere?.label && b.matiere.val !== 0 ? `<div class="ticket-breakdown-row"><span class="lbl">${b.matiere.label}</span><span class="val">+${b.matiere.val}€</span></div>` : ''}
-      ${b.taille?.label && b.taille.val !== 0 ? `<div class="ticket-breakdown-row"><span class="lbl">${b.taille.label}</span><span class="val">${b.taille.val > 0 ? '+' : ''}${b.taille.val}€</span></div>` : ''}
-      ${(b.bonus || []).map(x => `<div class="ticket-breakdown-row"><span class="lbl">${x.label}</span><span class="val" style="color:var(--mint-dark)">bonus</span></div>`).join('')}
+      ${b.categorie?.label ? `<div class="ticket-breakdown-row"><span class="lbl">${b.categorie.label}</span><span class="val">${fmtVal(b.categorie.val)}</span></div>` : ''}
+      ${b.etat?.label      ? `<div class="ticket-breakdown-row"><span class="lbl">${b.etat.label}</span><span class="val">${fmtVal(b.etat.val)}</span></div>` : ''}
+      ${b.matiere?.label   ? `<div class="ticket-breakdown-row"><span class="lbl">${b.matiere.label}</span><span class="val">${fmtVal(b.matiere.val)}</span></div>` : ''}
+      ${b.taille?.label    ? `<div class="ticket-breakdown-row"><span class="lbl">${b.taille.label}</span><span class="val">${fmtVal(b.taille.val)}</span></div>` : ''}
+      ${(b.bonus || []).map(x => {
+        const m = x.label.match(/\(([+-]?\d+)€\)/);
+        const v = m ? parseInt(m[1]) : null;
+        return `<div class="ticket-breakdown-row"><span class="lbl">${x.label}</span><span class="val" style="color:var(--mint-dark)">${v !== null ? fmtVal(v) : 'bonus'}</span></div>`;
+      }).join('')}
       <div class="ticket-breakdown-row"><span class="lbl">Temps de travail</span><span class="val">+5€</span></div>
       <div class="ticket-breakdown-total"><span>Total</span><span>${a.price}€</span></div>
-    </div>` : '';
+    </div>`
+  : `<hr class="ticket-divider">
+     <div style="font-size:12px;color:var(--ink-soft);padding:4px 0;font-style:italic;">Détail non disponible — supprime et re-ajoute l'article pour l'avoir.</div>`;
 
   document.getElementById('ticket-content').innerHTML = `
     <div class="ticket-img-col">
