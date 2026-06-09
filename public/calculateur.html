@@ -603,9 +603,10 @@
     <div class="card">
       <div class="card-title">Saison <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— facultatif, n'influence pas le prix</span></div>
       <div class="saison-pill-grid">
-        <div class="saison-pill" onclick="selectSaison('Printemps/Été', this)">Printemps/Été</div>
-        <div class="saison-pill" onclick="selectSaison('Automne/Hiver', this)">Automne/Hiver</div>
-        <div class="saison-pill" onclick="selectSaison('Mi-saison', this)">Mi-saison</div>
+        <div class="saison-pill" onclick="selectSaison('Printemps', this)">Printemps</div>
+        <div class="saison-pill" onclick="selectSaison('Été', this)">Été</div>
+        <div class="saison-pill" onclick="selectSaison('Automne', this)">Automne</div>
+        <div class="saison-pill" onclick="selectSaison('Hiver', this)">Hiver</div>
       </div>
     </div>
 
@@ -877,9 +878,10 @@
     <div class="edit-field">
       <label class="edit-label">Saison</label>
       <div class="saison-pill-grid" id="edit-saison-pills">
-        <div class="saison-pill" onclick="selectEditSaison('Printemps/Été', this)">Printemps/Été</div>
-        <div class="saison-pill" onclick="selectEditSaison('Automne/Hiver', this)">Automne/Hiver</div>
-        <div class="saison-pill" onclick="selectEditSaison('Mi-saison', this)">Mi-saison</div>
+        <div class="saison-pill" onclick="selectEditSaison('Printemps', this)">Printemps</div>
+        <div class="saison-pill" onclick="selectEditSaison('Été', this)">Été</div>
+        <div class="saison-pill" onclick="selectEditSaison('Automne', this)">Automne</div>
+        <div class="saison-pill" onclick="selectEditSaison('Hiver', this)">Hiver</div>
       </div>
     </div>
 
@@ -932,8 +934,8 @@ const TIERS = ['all', 'Accessible', 'Mid-range', 'Premium'];
 const TIER_LABELS = { all: 'Tous', 'Accessible': 'Accessible', 'Mid-range': 'Mid-range', 'Premium': 'Premium' };
 const tierClass = { 'Accessible': 'sc-accessible', 'Mid-range': 'sc-mid', 'Premium': 'sc-premium' };
 const ticketTierClass = { 'Accessible': 'tier-accessible', 'Mid-range': 'tier-mid', 'Premium': 'tier-premium' };
-const SEASONS = ['Printemps/Été', 'Automne/Hiver', 'Mi-saison'];
-const SEASON_LABELS = { 'Printemps/Été': 'Printemps/Été', 'Automne/Hiver': 'Automne/Hiver', 'Mi-saison': 'Mi-saison' };
+const SEASONS = ['Printemps', 'Été', 'Automne', 'Hiver'];
+const SEASON_LABELS = { 'Printemps': 'Printemps', 'Été': 'Été', 'Automne': 'Automne', 'Hiver': 'Hiver' };
 
 let customCriteria = JSON.parse(localStorage.getItem('mintsyrup-custom') || '{}');
 let deletedDefaults = JSON.parse(localStorage.getItem('mintsyrup-deleted') || '{}');
@@ -1344,7 +1346,6 @@ function renderStock() {
           <div class="stock-card-margin">~${a.margin}€ net</div>
         </div>
         ${a.achat > 0 ? `<div class="stock-card-achat">Acheté ${parseFloat(a.achat).toFixed(2)}€</div>` : ''}
-        ${getSaisons(a).length ? `<div style="margin-top:6px;display:flex;gap:4px;flex-wrap:wrap">${getSaisons(a).map(s => `<span class="saison-badge">${s}</span>`).join('')}</div>` : ''}
       </div>
       <button class="stock-card-sold-btn" onclick="event.stopPropagation();openSoldModal(${a.id}, '${a.nom.replace(/'/g,"\\'")}', ${a.price})">Vendu ✓</button>
     </div>
@@ -1455,7 +1456,6 @@ function renderArchives() {
                 <div style="font-size:12px;color:${benef >= 0 ? '#1a9e6e' : '#C83A20'}">${benef >= 0 ? '+' : ''}${fmt(benef)}€</div>
               </div>
               ${date ? `<div class="archive-card-date">${date}</div>` : ''}
-              ${getSaisons(a).length ? `<div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap">${getSaisons(a).map(s => `<span class="saison-badge">${s}</span>`).join('')}</div>` : ''}
             </div>
           </div>`;
       }).join('')}</div>`;
