@@ -519,9 +519,9 @@
 <header>
   <div class="logo">mint<span>syrup</span></div>
   <nav class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('calc', event)">Calculateur</button>
-    <button class="nav-tab" onclick="showPage('stock', event)">Mon stock <span id="stock-count-badge"></span></button>
-    <button class="nav-tab" onclick="showPage('archives', event)">Archives <span id="archive-count-badge"></span></button>
+    <button class="nav-tab" data-page="calc" onclick="showPage('calc')">Calculateur</button>
+    <button class="nav-tab" data-page="stock" onclick="showPage('stock')">Mon stock <span id="stock-count-badge"></span></button>
+    <button class="nav-tab" data-page="archives" onclick="showPage('archives')">Archives <span id="archive-count-badge"></span></button>
   </nav>
   <button class="edit-mode-btn" id="edit-mode-btn" onclick="toggleEditMode()">
     <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -532,7 +532,7 @@
 </header>
 
 <!-- PAGE CALCULATEUR -->
-<div id="page-calc" class="page active">
+<div id="page-calc" class="page">
 <div class="layout">
   <div class="sections">
 
@@ -959,11 +959,13 @@ function toggleEditMode() {
 }
 
 // ── Navigation ──
-function showPage(id, event) {
+function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('page-' + id).classList.add('active');
-  event.target.classList.add('active');
+  const tab = document.querySelector(`.nav-tab[data-page="${id}"]`);
+  if (tab) tab.classList.add('active');
+  history.replaceState(null, '', '#' + id);
   if (id === 'stock') loadAndRenderStock();
   if (id === 'archives') loadAndRenderArchives();
 }
@@ -1631,7 +1633,9 @@ async function init() {
   await loadCriteriaFromSupabase();
   applyDeletedDefaults();
   restoreCustomCriteria();
-  loadStock();
+  const hash = window.location.hash.replace('#', '');
+  const page = ['calc', 'stock', 'archives'].includes(hash) ? hash : 'calc';
+  showPage(page);
 }
 
 init();
