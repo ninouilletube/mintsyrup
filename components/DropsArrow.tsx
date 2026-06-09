@@ -8,8 +8,8 @@ export default function DropsArrow() {
   if (activeCategory !== 'drops' && activeCategory !== null) return null;
   return (
     <>
-      <PageArrow href="/favoris" label="Mes favoris" direction="left" />
-      <PageArrow href="/projet" label="Le projet" direction="right" />
+      <PageArrow href="/projet" label="Le projet" direction="left" />
+      <PageArrow href="/favoris" label="Mes favoris" direction="right" />
     </>
   );
 }

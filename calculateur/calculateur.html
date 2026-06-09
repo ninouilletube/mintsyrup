@@ -1764,7 +1764,7 @@ async function saveEdit() {
   const newMargin = newPrice !== undefined ? Math.round(newPrice - achat - newPrice * 0.08) : undefined;
 
   const { error } = await sb.from('mintsyrup_stock').update({
-    nom: nom || undefined,
+    nom: nom || 'Article sans nom',
     achat,
     saison,
     image: editImageData,
@@ -1775,11 +1775,19 @@ async function saveEdit() {
 
   if (error) { showToast('Erreur — ' + (error.message || error.code)); return; }
 
+  const savedId = editArticleId;
   await loadStock();
   const page = document.getElementById('page-stock').classList.contains('active') ? 'stock' : 'archives';
   if (page === 'stock') renderStock(); else renderArchives();
   updateBadge(); updateArchiveBadge();
   closeEditModal();
+
+  // Rafraîchir le ticket si encore ouvert
+  if (document.getElementById('ticket-modal').style.display !== 'none') {
+    const updated = stock.find(s => s.id === savedId);
+    if (updated) openTicket(updated.id, !!updated.sold);
+  }
+
   showToast('Article modifié ✓');
 }
 
