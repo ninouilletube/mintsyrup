@@ -830,6 +830,9 @@
       <div class="stock-summary" id="stock-summary"></div>
     </div>
     <div id="stock-content"><div class="loading-overlay">Chargement…</div></div>
+    <div style="text-align:center;padding:32px 0 8px">
+      <button onclick="resetStock()" style="padding:8px 18px;background:transparent;border:0.5px solid rgba(200,58,32,0.3);border-radius:99px;font-size:12px;font-family:'DM Sans',sans-serif;color:#C83A20;cursor:pointer;transition:all 0.15s" onmouseover="this.style.background='rgba(200,58,32,0.08)'" onmouseout="this.style.background='transparent'">Réinitialiser le stock</button>
+    </div>
   </div>
 </div>
 
@@ -837,6 +840,9 @@
 <div id="page-archives" class="page">
   <div class="archive-page">
     <div id="archive-content"><div class="loading-overlay">Chargement…</div></div>
+    <div style="text-align:center;padding:32px 0 8px">
+      <button onclick="resetArchives()" style="padding:8px 18px;background:transparent;border:0.5px solid rgba(200,58,32,0.3);border-radius:99px;font-size:12px;font-family:'DM Sans',sans-serif;color:#C83A20;cursor:pointer;transition:all 0.15s" onmouseover="this.style.background='rgba(200,58,32,0.08)'" onmouseout="this.style.background='transparent'">Réinitialiser les archives</button>
+    </div>
   </div>
 </div>
 
@@ -924,6 +930,8 @@ let stockFilter = 'all';
 let archiveFilter = 'all';
 let stockSeasonFilter = 'all';
 let archiveSeasonFilter = 'all';
+let stockSort = 'date-desc';
+let archiveSort = 'date-desc';
 let selectedSaisonVal = [];
 let editArticleId = null;
 let editImageData = null;
@@ -1302,15 +1310,37 @@ function seasonFilterBar(current, setter) {
   `).join('')}</div>`;
 }
 
+const SORT_OPTIONS = [
+  { key: 'date-desc', label: 'Récent' },
+  { key: 'date-asc',  label: 'Ancien' },
+  { key: 'price-asc', label: 'Prix ↑' },
+  { key: 'price-desc',label: 'Prix ↓' },
+];
+
+function sortBar(current, setter) {
+  return `<div class="filter-bar" style="margin-top:-8px">${SORT_OPTIONS.map(o => `
+    <button class="filter-pill ${current === o.key ? 'active' : ''}" onclick="${setter}('${o.key}')">${o.label}</button>
+  `).join('')}</div>`;
+}
+
+function applySort(arr, sortKey) {
+  return [...arr].sort((a, b) => {
+    if (sortKey === 'date-asc')  return new Date(a.created_at) - new Date(b.created_at);
+    if (sortKey === 'price-asc') return a.price - b.price;
+    if (sortKey === 'price-desc')return b.price - a.price;
+    return new Date(b.created_at) - new Date(a.created_at); // date-desc default
+  });
+}
+
 function renderStock() {
   const container = document.getElementById('stock-content');
   const summary   = document.getElementById('stock-summary');
   const active    = stock.filter(a => !a.sold);
-  const filtered  = active.filter(a => {
+  const filtered  = applySort(active.filter(a => {
     const tierOk   = stockFilter === 'all' || a.tier === stockFilter;
     const seasonOk = stockSeasonFilter === 'all' || getSaisons(a).includes(stockSeasonFilter);
     return tierOk && seasonOk;
-  });
+  }), stockSort);
 
   if (active.length === 0) {
     container.innerHTML = '<div class="stock-empty"><strong>Aucune pièce pour l\'instant</strong>Ajoute des articles depuis le calculateur.</div>';
@@ -1351,11 +1381,12 @@ function renderStock() {
     </div>
   `).join('') + '</div>';
 
-  container.innerHTML = filterBar(stockFilter, 'setStockFilter') + seasonFilterBar(stockSeasonFilter, 'setStockSeasonFilter') + cards;
+  container.innerHTML = filterBar(stockFilter, 'setStockFilter') + seasonFilterBar(stockSeasonFilter, 'setStockSeasonFilter') + sortBar(stockSort, 'setStockSort') + cards;
 }
 
 function setStockFilter(f) { stockFilter = f; renderStock(); }
 function setStockSeasonFilter(f) { stockSeasonFilter = f; renderStock(); }
+function setStockSort(s) { stockSort = s; renderStock(); }
 
 function resetAll() {
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected-radio','selected-check'));
@@ -1419,11 +1450,11 @@ async function loadAndRenderArchives() {
 function renderArchives() {
   const container = document.getElementById('archive-content');
   const sold     = stock.filter(a => a.sold);
-  const filtered = sold.filter(a => {
+  const filtered = applySort(sold.filter(a => {
     const tierOk   = archiveFilter === 'all' || a.tier === archiveFilter;
     const seasonOk = archiveSeasonFilter === 'all' || getSaisons(a).includes(archiveSeasonFilter);
     return tierOk && seasonOk;
-  });
+  }), archiveSort);
 
   if (sold.length === 0) {
     container.innerHTML = '<div class="stock-empty"><strong>Aucune vente pour l\'instant</strong>Les articles vendus apparaîtront ici.</div>';
@@ -1470,11 +1501,39 @@ function renderArchives() {
     </div>
     ${filterBar(archiveFilter, 'setArchiveFilter')}
     ${seasonFilterBar(archiveSeasonFilter, 'setArchiveSeasonFilter')}
+    ${sortBar(archiveSort, 'setArchiveSort')}
     ${cards}`;
 }
 
 function setArchiveFilter(f) { archiveFilter = f; renderArchives(); }
 function setArchiveSeasonFilter(f) { archiveSeasonFilter = f; renderArchives(); }
+function setArchiveSort(s) { archiveSort = s; renderArchives(); }
+
+async function resetStock() {
+  const active = stock.filter(a => !a.sold);
+  if (active.length === 0) return;
+  if (!confirm(`Supprimer définitivement les ${active.length} article(s) du stock ? Cette action est irréversible.`)) return;
+  const ids = active.map(a => a.id);
+  const { error } = await sb.from('mintsyrup_stock').delete().in('id', ids);
+  if (error) { showToast('Erreur — ' + (error.message || error.code)); return; }
+  await loadStock();
+  renderStock();
+  updateBadge();
+  showToast('Stock réinitialisé');
+}
+
+async function resetArchives() {
+  const sold = stock.filter(a => a.sold);
+  if (sold.length === 0) return;
+  if (!confirm(`Supprimer définitivement les ${sold.length} archive(s) ? Cette action est irréversible.`)) return;
+  const ids = sold.map(a => a.id);
+  const { error } = await sb.from('mintsyrup_stock').delete().in('id', ids);
+  if (error) { showToast('Erreur — ' + (error.message || error.code)); return; }
+  await loadStock();
+  renderArchives();
+  updateArchiveBadge();
+  showToast('Archives réinitialisées');
+}
 
 // ── Ticket de caisse ──
 function openTicket(id, isSold) {
