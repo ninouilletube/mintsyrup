@@ -873,7 +873,7 @@ async function saveArticle() {
   }]);
 
   if (error) {
-    alert('Erreur Supabase:\n' + JSON.stringify(error, null, 2));
+    showToast('Erreur — ' + (error.message || error.code));
     btn.disabled = false;
     btn.textContent = 'Ajouter au stock';
     return;
