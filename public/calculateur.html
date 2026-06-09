@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mintsyrup — Calculateur de prix</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :root {
+    --mint: #7ECFB3;
+    --mint-light: #E8F7F2;
+    --mint-dark: #2A7A60;
+    --syrup: #C97B4B;
+    --syrup-light: #FAF0E8;
+    --ink: #1A1A18;
+    --ink-mid: #5A5A55;
+    --ink-soft: #9A9A92;
+    --cream: #FAF8F3;
+    --white: #FFFFFF;
+    --border: rgba(26,26,24,0.10);
+    --radius: 12px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  header {
+    padding: 28px 32px 20px;
+    border-bottom: 0.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .back-link {
+    font-size: 13px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.15s;
+  }
+  .back-link:hover { color: var(--ink); }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .logo span { color: var(--mint-dark); font-style: italic; }
+
+  .nav-tabs { display: flex; gap: 4px; margin-left: auto; }
+  .nav-tab {
+    padding: 7px 18px;
+    border-radius: 99px;
+    font-size: 13px;
+    cursor: pointer;
+    border: 0.5px solid var(--border);
+    background: transparent;
+    color: var(--ink-soft);
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.15s;
+  }
+  .nav-tab.active {
+    background: var(--ink);
+    color: var(--white);
+    border-color: var(--ink);
+  }
+  .nav-tab:hover:not(.active) { border-color: var(--mint); color: var(--ink); }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .layout {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (max-width: 720px) {
+    .layout { grid-template-columns: 1fr; }
+    .sticky-panel { position: static !important; }
+  }
+
+  .sections { display: flex; flex-direction: column; gap: 16px; }
+
+  .card {
+    background: var(--white);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+
+  .pill-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill {
+    padding: 7px 13px;
+    border: 0.5px solid var(--border);
+    border-radius: 99px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    color: var(--ink-mid);
+    background: var(--white);
+  }
+  .pill:hover { border-color: var(--mint); color: var(--ink); }
+  .pill.selected-radio { background: var(--mint-dark); border-color: var(--mint-dark); color: var(--white); }
+  .pill.selected-check { background: var(--mint-light); border-color: var(--mint); color: var(--mint-dark); font-weight: 500; }
+
+  .achat-row { display: flex; align-items: center; gap: 10px; }
+  .achat-row input[type="number"] {
+    width: 100px; padding: 8px 12px;
+    border: 0.5px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 15px; font-family: 'DM Sans', sans-serif;
+    color: var(--ink); background: var(--cream); outline: none;
+    transition: border-color 0.15s;
+  }
+  .achat-row input[type="number"]:focus { border-color: var(--mint); }
+  .achat-row span { font-size: 14px; color: var(--ink-soft); }
+
+  .nom-input {
+    width: 100%; padding: 8px 12px;
+    border: 0.5px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 14px; font-family: 'DM Sans', sans-serif;
+    color: var(--ink); background: var(--cream); outline: none;
+    transition: border-color 0.15s;
+  }
+  .nom-input:focus { border-color: var(--mint); }
+
+  .img-upload-area {
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s;
+    position: relative;
+  }
+  .img-upload-area:hover { border-color: var(--mint); }
+  .img-upload-area input { display: none; }
+  .img-upload-area p { font-size: 13px; color: var(--ink-soft); margin-top: 8px; }
+  .img-preview {
+    width: 100%; max-height: 200px; object-fit: cover;
+    border-radius: var(--radius-sm); display: none;
+  }
+  .img-remove {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--ink); color: var(--white);
+    border: none; border-radius: 99px; width: 24px; height: 24px;
+    font-size: 14px; cursor: pointer; display: none;
+    align-items: center; justify-content: center; line-height: 1;
+  }
+
+  .sticky-panel { position: sticky; top: 24px; }
+  .result-card {
+    background: var(--ink); border-radius: var(--radius);
+    padding: 28px 24px; color: var(--white);
+  }
+  .result-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.4); margin-bottom: 8px; }
+  .result-price { font-family: 'DM Serif Display', serif; font-size: 52px; line-height: 1; color: var(--mint); letter-spacing: -0.02em; margin-bottom: 4px; }
+
+  .result-breakdown { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+  .breakdown-row { display: flex; justify-content: space-between; font-size: 13px; color: rgba(255,255,255,0.55); padding-bottom: 8px; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
+  .breakdown-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .breakdown-row .val { color: rgba(255,255,255,0.85); font-weight: 500; }
+
+  .warning-banner {
+    margin-top: 16px; padding: 10px 14px;
+    background: rgba(201,123,75,0.2); border: 0.5px solid rgba(201,123,75,0.4);
+    border-radius: var(--radius-sm); font-size: 12px; color: #F0A870;
+    line-height: 1.5; display: none;
+  }
+  .warning-banner.visible { display: block; }
+
+  .tier-badge { display: inline-block; margin-top: 14px; padding: 4px 12px; border-radius: 99px; font-size: 11px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+  .tier-accessible { background: rgba(126,207,179,0.15); color: var(--mint); }
+  .tier-mid { background: rgba(126,207,179,0.25); color: #9ADEC8; }
+  .tier-premium { background: rgba(201,123,75,0.2); color: #E8A070; }
+
+  .save-btn {
+    width: 100%; margin-top: 16px; padding: 11px;
+    background: var(--mint-dark); border: none;
+    border-radius: var(--radius-sm); color: var(--white);
+    font-size: 13px; font-family: 'DM Sans', sans-serif;
+    font-weight: 500; cursor: pointer; transition: opacity 0.15s;
+  }
+  .save-btn:hover { opacity: 0.85; }
+  .save-btn:disabled { opacity: 0.35; cursor: default; }
+
+  .reset-btn {
+    width: 100%; margin-top: 8px; padding: 10px;
+    background: transparent; border: 0.5px solid rgba(255,255,255,0.15);
+    border-radius: var(--radius-sm); color: rgba(255,255,255,0.4);
+    font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.15s;
+  }
+  .reset-btn:hover { border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.7); }
+
+  .toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+    background: var(--mint-dark); color: var(--white);
+    padding: 10px 22px; border-radius: 99px; font-size: 13px;
+    opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 999;
+  }
+  .toast.show { opacity: 1; }
+
+  /* ── MON STOCK ── */
+  .stock-page { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+  .stock-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  .stock-title { font-family: 'DM Serif Display', serif; font-size: 22px; }
+  .stock-summary { display: flex; gap: 12px; flex-wrap: wrap; }
+  .stock-metric { background: var(--white); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 16px; text-align: center; }
+  .stock-metric-val { font-size: 18px; font-weight: 500; color: var(--ink); }
+  .stock-metric-lbl { font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+
+  .stock-empty { text-align: center; padding: 60px 20px; color: var(--ink-soft); font-size: 15px; }
+  .stock-empty strong { display: block; font-size: 18px; color: var(--ink-mid); margin-bottom: 8px; }
+
+  .stock-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+
+  .stock-card {
+    background: var(--white); border: 0.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; position: relative;
+  }
+  .stock-card-img { width: 100%; height: 180px; object-fit: cover; background: var(--cream); display: flex; align-items: center; justify-content: center; }
+  .stock-card-img img { width: 100%; height: 100%; object-fit: cover; }
+  .stock-card-img-placeholder { width: 100%; height: 180px; background: var(--cream); display: flex; align-items: center; justify-content: center; }
+  .stock-card-img-placeholder svg { opacity: 0.2; }
+  .stock-card-body { padding: 12px 14px; }
+  .stock-card-name { font-size: 13px; font-weight: 500; color: var(--ink); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .stock-card-prices { display: flex; justify-content: space-between; align-items: baseline; }
+  .stock-card-price { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--mint-dark); }
+  .stock-card-margin { font-size: 12px; color: var(--ink-soft); }
+  .stock-card-achat { font-size: 11px; color: var(--ink-soft); margin-top: 4px; }
+  .stock-card-delete {
+    position: absolute; top: 8px; right: 8px;
+    background: rgba(26,26,24,0.6); color: var(--white);
+    border: none; border-radius: 99px; width: 26px; height: 26px;
+    font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .stock-card:hover .stock-card-delete { opacity: 1; }
+  .stock-card-tier { position: absolute; top: 8px; left: 8px; padding: 3px 9px; border-radius: 99px; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }
+  .sc-accessible { background: rgba(234,243,222,0.9); color: #3B6D11; }
+  .sc-mid { background: rgba(230,241,251,0.9); color: #185FA5; }
+  .sc-premium { background: rgba(238,237,254,0.9); color: #3C3489; }
+
+  .loading-overlay {
+    text-align: center; padding: 40px 20px;
+    color: var(--ink-soft); font-size: 13px;
+  }
+
+  .edit-toggle {
+    margin-top: 12px; background: none; border: none;
+    font-size: 12px; color: var(--ink-soft); cursor: pointer;
+    font-family: "DM Sans", sans-serif; padding: 0;
+    display: flex; align-items: center; gap: 4px; transition: color 0.15s;
+  }
+  .edit-toggle:hover { color: var(--mint-dark); }
+  .edit-panel { display: none; margin-top: 12px; padding-top: 12px; border-top: 0.5px solid var(--border); }
+  .edit-panel.open { display: block; }
+  .edit-add-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+  .edit-add-row input[type="text"] {
+    flex: 1; padding: 6px 10px; border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 13px; font-family: "DM Sans", sans-serif;
+    color: var(--ink); background: var(--cream); outline: none; min-width: 0;
+  }
+  .edit-add-row input[type="text"]:focus { border-color: var(--mint); }
+  .edit-add-row input[type="number"] {
+    width: 68px; padding: 6px 10px; border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 13px; font-family: "DM Sans", sans-serif;
+    color: var(--ink); background: var(--cream); outline: none;
+  }
+  .edit-add-row input[type="number"]:focus { border-color: var(--mint); }
+  .edit-add-btn {
+    padding: 6px 14px; background: var(--mint-dark); color: var(--white);
+    border: none; border-radius: var(--radius-sm); font-size: 12px;
+    font-family: "DM Sans", sans-serif; cursor: pointer; white-space: nowrap; transition: opacity 0.15s;
+  }
+  .edit-add-btn:hover { opacity: 0.85; }
+  .custom-pills-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .custom-pill-item {
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 8px 4px 10px;
+    background: var(--syrup-light); border: 0.5px solid rgba(201,123,75,0.3);
+    border-radius: 99px; font-size: 12px; color: #7A4520;
+  }
+  .custom-pill-item button {
+    background: none; border: none; color: #7A4520; cursor: pointer;
+    font-size: 14px; line-height: 1; padding: 0; opacity: 0.45; transition: opacity 0.15s;
+  }
+  .custom-pill-item button:hover { opacity: 1; }
+  .edit-hint { font-size: 11px; color: var(--ink-soft); font-style: italic; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">mint<span>syrup</span></div>
+  <nav class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('calc', event)">Calculateur</button>
+    <button class="nav-tab" onclick="showPage('stock', event)">Mon stock <span id="stock-count-badge"></span></button>
+  </nav>
+</header>
+
+<!-- PAGE CALCULATEUR -->
+<div id="page-calc" class="page active">
+<div class="layout">
+  <div class="sections">
+
+    <div class="card">
+      <div class="card-title">Nom de l'article</div>
+      <input type="text" id="nom" class="nom-input" placeholder="ex: Jupe midi daim prune La Redoute">
+    </div>
+
+    <div class="card">
+      <div class="card-title">Photo</div>
+      <div class="img-upload-area" id="upload-area" onclick="document.getElementById('img-input').click()">
+        <input type="file" id="img-input" accept="image/*" onchange="handleImage(event)">
+        <img id="img-preview" class="img-preview" alt="aperçu">
+        <div id="upload-placeholder">
+          <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="#9A9A92" stroke-width="1.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+          </svg>
+          <p>Clique pour ajouter une photo</p>
+        </div>
+        <button class="img-remove" id="img-remove" onclick="removeImage(event)">×</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Prix d'achat</div>
+      <div class="achat-row">
+        <input type="number" id="achat" min="0" step="0.5" placeholder="0">
+        <span>€ payés</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Type d'article — base du prix</div>
+      <div class="pill-grid" id="type">
+        <div class="pill" data-group="type" data-val="5">Sans valeur (5€)</div>
+        <div class="pill" data-group="type" data-val="8">Fast fashion (8€)</div>
+        <div class="pill" data-group="type" data-val="10">Fast fashion mid (10€)</div>
+        <div class="pill" data-group="type" data-val="12">Fast fashion premium (12€)</div>
+        <div class="pill" data-group="type" data-val="15">Marque ok (15€)</div>
+        <div class="pill" data-group="type" data-val="18">Marque cool (18€)</div>
+        <div class="pill" data-group="type" data-val="20">Vintage (20€)</div>
+        <div class="pill" data-group="type" data-val="25">Vintage premium (25€)</div>
+        <div class="pill" data-group="type" data-val="30">Ultra rare (30€)</div>
+      </div>
+      <button class="edit-toggle" onclick="toggleEdit('type', this)">&#43; modifier les critères</button>
+      <div class="edit-panel" id="edit-type">
+        <div class="edit-hint">Nom du critère + montant en euros (peut être négatif)</div>
+        <div class="edit-add-row">
+          <input type="text" id="edit-nom-type" placeholder="Nom du critère">
+          <input type="number" id="edit-val-type" placeholder="€" step="1">
+          <button class="edit-add-btn" onclick="addCustomPill('type', false)">Ajouter</button>
+        </div>
+        <div class="custom-pills-list" id="custom-list-type"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Catégorie</div>
+      <div class="pill-grid" id="categorie">
+        <div class="pill" data-group="categorie" data-val="0">Top (+0€)</div>
+        <div class="pill" data-group="categorie" data-val="0">Accessoire (+0€)</div>
+        <div class="pill" data-group="categorie" data-val="2">Cardigan (+2€)</div>
+        <div class="pill" data-group="categorie" data-val="2">Short (+2€)</div>
+        <div class="pill" data-group="categorie" data-val="3">Jean (+3€)</div>
+        <div class="pill" data-group="categorie" data-val="3">Jupe (+3€)</div>
+        <div class="pill" data-group="categorie" data-val="3">Layer (+3€)</div>
+        <div class="pill" data-group="categorie" data-val="4">Robe (+4€)</div>
+        <div class="pill" data-group="categorie" data-val="4">Veste (+4€)</div>
+        <div class="pill" data-group="categorie" data-val="4">Chaussures (+4€)</div>
+        <div class="pill" data-group="categorie" data-val="4">Sac (+4€)</div>
+        <div class="pill" data-group="categorie" data-val="5">Manteau (+5€)</div>
+      </div>
+      <button class="edit-toggle" onclick="toggleEdit('categorie', this)">&#43; modifier les critères</button>
+      <div class="edit-panel" id="edit-categorie">
+        <div class="edit-hint">Nom du critère + montant en euros (peut être négatif)</div>
+        <div class="edit-add-row">
+          <input type="text" id="edit-nom-categorie" placeholder="Nom du critère">
+          <input type="number" id="edit-val-categorie" placeholder="€" step="1">
+          <button class="edit-add-btn" onclick="addCustomPill('categorie', false)">Ajouter</button>
+        </div>
+        <div class="custom-pills-list" id="custom-list-categorie"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">État</div>
+      <div class="pill-grid" id="etat">
+        <div class="pill" data-group="etat" data-val="-2">Mauvais (-2€)</div>
+        <div class="pill" data-group="etat" data-val="1">Satisfaisant (+1€)</div>
+        <div class="pill" data-group="etat" data-val="2">Bon état (+2€)</div>
+        <div class="pill" data-group="etat" data-val="5">Neuf (+5€)</div>
+      </div>
+      <button class="edit-toggle" onclick="toggleEdit('etat', this)">&#43; modifier les critères</button>
+      <div class="edit-panel" id="edit-etat">
+        <div class="edit-hint">Nom du critère + montant en euros (peut être négatif)</div>
+        <div class="edit-add-row">
+          <input type="text" id="edit-nom-etat" placeholder="Nom du critère">
+          <input type="number" id="edit-val-etat" placeholder="€" step="1">
+          <button class="edit-add-btn" onclick="addCustomPill('etat', false)">Ajouter</button>
+        </div>
+        <div class="custom-pills-list" id="custom-list-etat"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Matière</div>
+      <div class="pill-grid" id="matiere">
+        <div class="pill" data-group="matiere" data-val="0">Synthétique bof (+0€)</div>
+        <div class="pill" data-group="matiere" data-val="2">Synthétique quali (+2€)</div>
+        <div class="pill" data-group="matiere" data-val="3">Mélange fibres naturelles bof (+3€)</div>
+        <div class="pill" data-group="matiere" data-val="4">Mélange quali (+4€)</div>
+        <div class="pill" data-group="matiere" data-val="5">100% naturel (+5€)</div>
+        <div class="pill" data-group="matiere" data-val="10">Cuir (+10€)</div>
+        <div class="pill" data-group="matiere" data-val="15">Daim (+15€)</div>
+      </div>
+      <button class="edit-toggle" onclick="toggleEdit('matiere', this)">&#43; modifier les critères</button>
+      <div class="edit-panel" id="edit-matiere">
+        <div class="edit-hint">Nom du critère + montant en euros (peut être négatif)</div>
+        <div class="edit-add-row">
+          <input type="text" id="edit-nom-matiere" placeholder="Nom du critère">
+          <input type="number" id="edit-val-matiere" placeholder="€" step="1">
+          <button class="edit-add-btn" onclick="addCustomPill('matiere', false)">Ajouter</button>
+        </div>
+        <div class="custom-pills-list" id="custom-list-matiere"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Taille</div>
+      <div class="pill-grid" id="taille">
+        <div class="pill" data-group="taille" data-val="-2">Grande taille (-2€)</div>
+        <div class="pill" data-group="taille" data-val="0">Taille moyenne (+0€)</div>
+        <div class="pill" data-group="taille" data-val="1">S (+1€)</div>
+        <div class="pill" data-group="taille" data-val="2">XS (+2€)</div>
+      </div>
+      <button class="edit-toggle" onclick="toggleEdit('taille', this)">&#43; modifier les critères</button>
+      <div class="edit-panel" id="edit-taille">
+        <div class="edit-hint">Nom du critère + montant en euros (peut être négatif)</div>
+        <div class="edit-add-row">
+          <input type="text" id="edit-nom-taille" placeholder="Nom du critère">
+          <input type="number" id="edit-val-taille" placeholder="€" step="1">
+          <button class="edit-add-btn" onclick="addCustomPill('taille', false)">Ajouter</button>
+        </div>
+        <div class="custom-pills-list" id="custom-list-taille"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Coupe <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
+      <div class="pill-grid" id="coupe">
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Cache-cœur (+2€)</div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Jupe midi (+2€)</div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Dos nu (+2€)</div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Épaules dénudées (+2€)</div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Manches évasées (+2€)</div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Babydoll (+2€)</div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Asymétrique (+2€)</div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Ajusté (+2€)</div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Pantacourt (+2€)</div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Hanches ajustées (+2€)</div>
+      </div>
+      <button class="edit-toggle" onclick="toggleEdit('coupe', this)">&#43; modifier les critères</button>
+      <div class="edit-panel" id="edit-coupe">
+        <div class="edit-hint">Nom du critère + montant en euros (peut être négatif)</div>
+        <div class="edit-add-row">
+          <input type="text" id="edit-nom-coupe" placeholder="Nom du critère">
+          <input type="number" id="edit-val-coupe" placeholder="€" step="1">
+          <button class="edit-add-btn" onclick="addCustomPill('coupe', true)">Ajouter</button>
+        </div>
+        <div class="custom-pills-list" id="custom-list-coupe"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Couleur signature <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
+      <div class="pill-grid" id="couleur">
+        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Turquoise (+3€)</div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Prune (+3€)</div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Magenta (+3€)</div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Jaune beurre (+3€)</div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="2">Pistache (+2€)</div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="2">Burgundy (+2€)</div>
+      </div>
+      <button class="edit-toggle" onclick="toggleEdit('couleur', this)">&#43; modifier les critères</button>
+      <div class="edit-panel" id="edit-couleur">
+        <div class="edit-hint">Nom du critère + montant en euros (peut être négatif)</div>
+        <div class="edit-add-row">
+          <input type="text" id="edit-nom-couleur" placeholder="Nom du critère">
+          <input type="number" id="edit-val-couleur" placeholder="€" step="1">
+          <button class="edit-add-btn" onclick="addCustomPill('couleur', true)">Ajouter</button>
+        </div>
+        <div class="custom-pills-list" id="custom-list-couleur"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Détails & effets <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
+      <div class="pill-grid" id="details">
+        <div class="pill" data-group="details" data-multi="1" data-val="4">Œillets (+4€)</div>
+        <div class="pill" data-group="details" data-multi="1" data-val="4">Sequins (+4€)</div>
+        <div class="pill" data-group="details" data-multi="1" data-val="6">Broderies (+6€)</div>
+        <div class="pill" data-group="details" data-multi="1" data-val="6">Perles (+6€)</div>
+        <div class="pill" data-group="details" data-multi="1" data-val="4">Velours côtelé (+4€)</div>
+        <div class="pill" data-group="details" data-multi="1" data-val="2">Drapé (+2€)</div>
+        <div class="pill" data-group="details" data-multi="1" data-val="2">Transparence (+2€)</div>
+      </div>
+      <button class="edit-toggle" onclick="toggleEdit('details', this)">&#43; modifier les critères</button>
+      <div class="edit-panel" id="edit-details">
+        <div class="edit-hint">Nom du critère + montant en euros (peut être négatif)</div>
+        <div class="edit-add-row">
+          <input type="text" id="edit-nom-details" placeholder="Nom du critère">
+          <input type="number" id="edit-val-details" placeholder="€" step="1">
+          <button class="edit-add-btn" onclick="addCustomPill('details', true)">Ajouter</button>
+        </div>
+        <div class="custom-pills-list" id="custom-list-details"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Motif <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
+      <div class="pill-grid" id="motif">
+        <div class="pill" data-group="motif" data-multi="1" data-val="4">Rayé (+4€)</div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="5">Pois (+5€)</div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="4">Paisley (+4€)</div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="4">Fleuri (+4€)</div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="5">Fun (+5€)</div>
+      </div>
+      <button class="edit-toggle" onclick="toggleEdit('motif', this)">&#43; modifier les critères</button>
+      <div class="edit-panel" id="edit-motif">
+        <div class="edit-hint">Nom du critère + montant en euros (peut être négatif)</div>
+        <div class="edit-add-row">
+          <input type="text" id="edit-nom-motif" placeholder="Nom du critère">
+          <input type="number" id="edit-val-motif" placeholder="€" step="1">
+          <button class="edit-add-btn" onclick="addCustomPill('motif', true)">Ajouter</button>
+        </div>
+        <div class="custom-pills-list" id="custom-list-motif"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Style <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
+      <div class="pill-grid" id="style">
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Edgy (+2€)</div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Très féminin (+2€)</div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Bohème (+2€)</div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Y2K (+2€)</div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">70's (+2€)</div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Cottage (+2€)</div>
+        <div class="pill" data-group="style" data-multi="1" data-val="3">Sirène (+3€)</div>
+      </div>
+      <button class="edit-toggle" onclick="toggleEdit('style', this)">&#43; modifier les critères</button>
+      <div class="edit-panel" id="edit-style">
+        <div class="edit-hint">Nom du critère + montant en euros (peut être négatif)</div>
+        <div class="edit-add-row">
+          <input type="text" id="edit-nom-style" placeholder="Nom du critère">
+          <input type="number" id="edit-val-style" placeholder="€" step="1">
+          <button class="edit-add-btn" onclick="addCustomPill('style', true)">Ajouter</button>
+        </div>
+        <div class="custom-pills-list" id="custom-list-style"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sticky-panel">
+    <div class="result-card">
+      <div class="result-label">Prix de vente suggéré</div>
+      <div class="result-price" id="result-price">—</div>
+      <div id="tier-badge" class="tier-badge" style="display:none"></div>
+
+      <div class="result-breakdown" id="breakdown" style="display:none">
+        <div class="breakdown-row"><span>Base type</span><span class="val" id="bd-type">—</span></div>
+        <div class="breakdown-row"><span>Catégorie</span><span class="val" id="bd-cat">—</span></div>
+        <div class="breakdown-row"><span>État</span><span class="val" id="bd-etat">—</span></div>
+        <div class="breakdown-row"><span>Matière</span><span class="val" id="bd-mat">—</span></div>
+        <div class="breakdown-row"><span>Taille</span><span class="val" id="bd-taille">—</span></div>
+        <div class="breakdown-row"><span>Bonus</span><span class="val" id="bd-bonus">—</span></div>
+        <div class="breakdown-row" style="border-top:0.5px solid rgba(255,255,255,0.2);margin-top:4px;padding-top:10px;">
+          <span style="color:rgba(255,255,255,0.8)">Total</span>
+          <span class="val" id="bd-total">—</span>
+        </div>
+      </div>
+
+      <div class="warning-banner" id="warning">⚠︎ Prix inférieur à 2× le prix d'achat. Vérifie que tu couvres bien tes frais.</div>
+
+      <button class="save-btn" id="save-btn" onclick="saveArticle()" disabled>Ajouter au stock</button>
+      <button class="reset-btn" onclick="resetAll()">Tout réinitialiser</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- PAGE MON STOCK -->
+<div id="page-stock" class="page">
+  <div class="stock-page">
+    <div class="stock-header">
+      <div class="stock-title">Mon stock</div>
+      <div class="stock-summary" id="stock-summary"></div>
+    </div>
+    <div id="stock-content"><div class="loading-overlay">Chargement…</div></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── Supabase ──
+const { createClient } = supabase;
+const sb = createClient(
+  'https://xnsdzrpzvkqazmkjnnet.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhuc2R6cnB6dmtxYXpta2pubmV0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA4ODgxODgsImV4cCI6MjA5NjQ2NDE4OH0.7IEbIhFd52MviweGQFj-mrBvdmfQNWgaCTu5zhSEVzE'
+);
+
+const radioGroups = ['type','categorie','etat','matiere','taille'];
+let currentImageData = null;
+let stock = [];
+
+// ── Navigation ──
+function showPage(id, event) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'stock') loadAndRenderStock();
+}
+
+// ── Pill interactions ──
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', () => {
+    const group = pill.dataset.group;
+    const isMulti = pill.dataset.multi === '1';
+    if (isMulti) {
+      pill.classList.toggle('selected-check');
+    } else {
+      const alreadySelected = pill.classList.contains('selected-radio');
+      document.querySelectorAll(`.pill[data-group="${group}"]`).forEach(p => p.classList.remove('selected-radio'));
+      if (!alreadySelected) pill.classList.add('selected-radio');
+    }
+    calc();
+  });
+});
+
+// ── Image ──
+function handleImage(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    currentImageData = ev.target.result;
+    const preview = document.getElementById('img-preview');
+    preview.src = currentImageData;
+    preview.style.display = 'block';
+    document.getElementById('upload-placeholder').style.display = 'none';
+    const rm = document.getElementById('img-remove');
+    rm.style.display = 'flex';
+    rm.onclick = removeImage;
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage(e) {
+  e.stopPropagation();
+  currentImageData = null;
+  document.getElementById('img-preview').style.display = 'none';
+  document.getElementById('upload-placeholder').style.display = 'block';
+  document.getElementById('img-remove').style.display = 'none';
+  document.getElementById('img-input').value = '';
+}
+
+// ── Calc ──
+function getRadioVal(group) {
+  const sel = document.querySelector(`.pill[data-group="${group}"].selected-radio`);
+  return sel ? parseFloat(sel.dataset.val) : null;
+}
+function getMultiSum(group) {
+  return Array.from(document.querySelectorAll(`.pill[data-group="${group}"].selected-check`))
+    .reduce((s, p) => s + parseFloat(p.dataset.val), 0);
+}
+
+function calc() {
+  const achat = parseFloat(document.getElementById('achat').value) || 0;
+  const type = getRadioVal('type');
+
+  if (type === null) {
+    document.getElementById('result-price').textContent = '—';
+    document.getElementById('breakdown').style.display = 'none';
+    document.getElementById('tier-badge').style.display = 'none';
+    document.getElementById('warning').classList.remove('visible');
+    document.getElementById('save-btn').disabled = true;
+    return;
+  }
+
+  const cat = getRadioVal('categorie') || 0;
+  const etat = getRadioVal('etat') || 0;
+  const mat = getRadioVal('matiere') || 0;
+  const taille = getRadioVal('taille') || 0;
+  const bonus = getMultiSum('coupe') + getMultiSum('couleur') + getMultiSum('details') + getMultiSum('motif') + getMultiSum('style');
+
+  const total = type + cat + etat + mat + taille + bonus;
+  const final = Math.max(total, 5);
+
+  document.getElementById('result-price').textContent = final + '€';
+  document.getElementById('breakdown').style.display = 'flex';
+  document.getElementById('bd-type').textContent = type + '€';
+  document.getElementById('bd-cat').textContent = (cat >= 0 ? '+' : '') + cat + '€';
+  document.getElementById('bd-etat').textContent = etat !== 0 ? (etat > 0 ? '+' : '') + etat + '€' : '—';
+  document.getElementById('bd-mat').textContent = mat !== 0 ? '+' + mat + '€' : '—';
+  document.getElementById('bd-taille').textContent = (taille >= 0 ? '+' : '') + taille + '€';
+  document.getElementById('bd-bonus').textContent = bonus > 0 ? '+' + bonus + '€' : '—';
+  document.getElementById('bd-total').textContent = final + '€';
+
+  const badge = document.getElementById('tier-badge');
+  badge.style.display = 'inline-block';
+  if (final <= 20) { badge.textContent = 'Accessible'; badge.className = 'tier-badge tier-accessible'; }
+  else if (final <= 40) { badge.textContent = 'Mid-range'; badge.className = 'tier-badge tier-mid'; }
+  else { badge.textContent = 'Premium'; badge.className = 'tier-badge tier-premium'; }
+
+  const warn = document.getElementById('warning');
+  (achat > 0 && final < achat * 2) ? warn.classList.add('visible') : warn.classList.remove('visible');
+
+  document.getElementById('save-btn').disabled = false;
+}
+
+document.getElementById('achat').addEventListener('input', calc);
+
+// ── Save to Supabase ──
+async function saveArticle() {
+  const type = getRadioVal('type');
+  if (type === null) return;
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Enregistrement…';
+
+  const achat = parseFloat(document.getElementById('achat').value) || 0;
+  const price = parseInt(document.getElementById('result-price').textContent);
+  const nom = document.getElementById('nom').value.trim() || 'Article sans nom';
+  const tier = document.getElementById('tier-badge').textContent;
+  const margin = Math.round(price - achat - price * 0.08);
+
+  const { error } = await sb.from('mintsyrup_stock').insert([{
+    nom, price, achat, margin, tier, image: currentImageData
+  }]);
+
+  if (error) {
+    showToast('Erreur — vérifie la table Supabase');
+    btn.disabled = false;
+    btn.textContent = 'Ajouter au stock';
+    return;
+  }
+
+  await loadStock();
+  updateBadge();
+  showToast('Article ajouté au stock ✓');
+  resetAll();
+}
+
+// ── Delete from Supabase ──
+async function deleteArticle(id) {
+  await sb.from('mintsyrup_stock').delete().eq('id', id);
+  stock = stock.filter(a => a.id !== id);
+  renderStock();
+  updateBadge();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function updateBadge() {
+  const b = document.getElementById('stock-count-badge');
+  b.textContent = stock.length > 0 ? ' (' + stock.length + ')' : '';
+}
+
+// ── Load stock from Supabase ──
+async function loadStock() {
+  const { data, error } = await sb.from('mintsyrup_stock').select('*').order('created_at', { ascending: false });
+  if (!error) stock = data || [];
+  updateBadge();
+}
+
+async function loadAndRenderStock() {
+  document.getElementById('stock-content').innerHTML = '<div class="loading-overlay">Chargement…</div>';
+  await loadStock();
+  renderStock();
+}
+
+// ── Render stock ──
+function renderStock() {
+  const container = document.getElementById('stock-content');
+  const summary = document.getElementById('stock-summary');
+
+  if (stock.length === 0) {
+    container.innerHTML = '<div class="stock-empty"><strong>Aucune pièce pour l\'instant</strong>Ajoute des articles depuis le calculateur.</div>';
+    summary.innerHTML = '';
+    return;
+  }
+
+  const totalCA = stock.reduce((s, a) => s + a.price, 0);
+  const totalMargin = stock.reduce((s, a) => s + a.margin, 0);
+  const totalAchat = stock.reduce((s, a) => s + (a.achat || 0), 0);
+
+  summary.innerHTML = `
+    <div class="stock-metric"><div class="stock-metric-val">${stock.length}</div><div class="stock-metric-lbl">pièces</div></div>
+    <div class="stock-metric"><div class="stock-metric-val">${totalAchat.toFixed(0)}€</div><div class="stock-metric-lbl">investi</div></div>
+    <div class="stock-metric"><div class="stock-metric-val">${totalCA}€</div><div class="stock-metric-lbl">CA potentiel</div></div>
+    <div class="stock-metric"><div class="stock-metric-val">${totalMargin}€</div><div class="stock-metric-lbl">marge nette</div></div>
+  `;
+
+  const tierClass = { 'Accessible': 'sc-accessible', 'Mid-range': 'sc-mid', 'Premium': 'sc-premium' };
+
+  container.innerHTML = '<div class="stock-grid">' + stock.map(a => `
+    <div class="stock-card">
+      <span class="stock-card-tier ${tierClass[a.tier] || 'sc-mid'}">${a.tier}</span>
+      <button class="stock-card-delete" onclick="deleteArticle(${a.id})" title="Supprimer">×</button>
+      ${a.image
+        ? `<div class="stock-card-img"><img src="${a.image}" alt="${a.nom}"></div>`
+        : `<div class="stock-card-img-placeholder"><svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>`
+      }
+      <div class="stock-card-body">
+        <div class="stock-card-name">${a.nom}</div>
+        <div class="stock-card-prices">
+          <div class="stock-card-price">${a.price}€</div>
+          <div class="stock-card-margin">~${a.margin}€ net</div>
+        </div>
+        ${a.achat > 0 ? `<div class="stock-card-achat">Acheté ${parseFloat(a.achat).toFixed(2)}€</div>` : ''}
+      </div>
+    </div>
+  `).join('') + '</div>';
+}
+
+// ── Reset ──
+function resetAll() {
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected-radio','selected-check'));
+  document.getElementById('achat').value = '';
+  document.getElementById('nom').value = '';
+  removeImage({ stopPropagation: () => {} });
+  document.getElementById('result-price').textContent = '—';
+  document.getElementById('breakdown').style.display = 'none';
+  document.getElementById('tier-badge').style.display = 'none';
+  document.getElementById('warning').classList.remove('visible');
+  document.getElementById('save-btn').disabled = true;
+  document.getElementById('save-btn').textContent = 'Ajouter au stock';
+}
+
+// ── Custom criteria (localStorage) ──
+let customCriteria = JSON.parse(localStorage.getItem('mintsyrup-custom') || '{}');
+
+function toggleEdit(group, btn) {
+  const panel = document.getElementById('edit-' + group);
+  panel.classList.toggle('open');
+  btn.textContent = panel.classList.contains('open') ? '- fermer' : '+ modifier les critères';
+  renderCustomList(group);
+}
+
+function addCustomPill(group, isMulti) {
+  const nomEl = document.getElementById('edit-nom-' + group);
+  const valEl = document.getElementById('edit-val-' + group);
+  const nom = nomEl.value.trim();
+  const val = parseFloat(valEl.value);
+  if (!nom || isNaN(val)) return;
+
+  if (!customCriteria[group]) customCriteria[group] = [];
+  const id = Date.now();
+  customCriteria[group].push({ id, nom, val, isMulti });
+  localStorage.setItem('mintsyrup-custom', JSON.stringify(customCriteria));
+
+  nomEl.value = '';
+  valEl.value = '';
+
+  addPillToGrid(group, { id, nom, val, isMulti });
+  renderCustomList(group);
+}
+
+function addPillToGrid(group, item) {
+  const grid = document.getElementById(group);
+  const sign = item.val >= 0 ? '+' : '';
+  const pill = document.createElement('div');
+  pill.className = 'pill';
+  pill.dataset.group = group;
+  pill.dataset.val = item.val;
+  pill.dataset.custom = item.id;
+  if (item.isMulti) pill.dataset.multi = '1';
+  pill.textContent = item.nom + ' (' + sign + item.val + '€)';
+  pill.addEventListener('click', () => {
+    if (item.isMulti) {
+      pill.classList.toggle('selected-check');
+    } else {
+      const alreadySelected = pill.classList.contains('selected-radio');
+      document.querySelectorAll('.pill[data-group="' + group + '"]').forEach(p => p.classList.remove('selected-radio'));
+      if (!alreadySelected) pill.classList.add('selected-radio');
+    }
+    calc();
+  });
+  grid.appendChild(pill);
+}
+
+function removeCustomPill(group, id) {
+  customCriteria[group] = (customCriteria[group] || []).filter(c => c.id !== id);
+  localStorage.setItem('mintsyrup-custom', JSON.stringify(customCriteria));
+  const pill = document.querySelector('.pill[data-custom="' + id + '"]');
+  if (pill) pill.remove();
+  renderCustomList(group);
+  calc();
+}
+
+function renderCustomList(group) {
+  const list = document.getElementById('custom-list-' + group);
+  if (!list) return;
+  const items = customCriteria[group] || [];
+  if (items.length === 0) { list.innerHTML = ''; return; }
+  list.innerHTML = items.map(item => {
+    const sign = item.val >= 0 ? '+' : '';
+    return '<div class="custom-pill-item"><span>' + item.nom + ' (' + sign + item.val + '€)</span><button onclick="removeCustomPill(\'' + group + '\', ' + item.id + ')" title="Supprimer">×</button></div>';
+  }).join('');
+}
+
+function restoreCustomCriteria() {
+  Object.entries(customCriteria).forEach(([group, items]) => {
+    items.forEach(item => addPillToGrid(group, item));
+  });
+}
+
+// ── Init ──
+restoreCustomCriteria();
+loadStock();
+</script>
+</body>
+</html>

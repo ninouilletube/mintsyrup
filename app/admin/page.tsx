@@ -488,6 +488,9 @@ export default function AdminPage() {
                 <button className={styles.btnFinances} onClick={() => setView('finances')}>
                   €€€
                 </button>
+                <a href="/calculateur.html" target="_blank" rel="noopener noreferrer" className={styles.btnCalculateur}>
+                  Calculateur
+                </a>
               </div>
               {products.filter(p => p.hidden).length > 0 && (
                 <p className={styles.hiddenNote}>

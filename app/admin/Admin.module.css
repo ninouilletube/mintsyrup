@@ -1692,6 +1692,24 @@
 }
 .btnFinances:hover { background: #1a9e6e; color: white; }
 
+.btnCalculateur {
+  padding: 0.55rem 1.1rem;
+  background: transparent;
+  border: 2px solid var(--mint-dark, #2A7A60);
+  border-radius: 8px;
+  color: var(--mint-dark, #2A7A60);
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.btnCalculateur:hover { background: var(--mint-dark, #2A7A60); color: white; }
+
 .financeCards {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
