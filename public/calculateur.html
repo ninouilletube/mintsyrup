@@ -347,9 +347,14 @@
     width: 340px; max-width: 92vw; max-height: 90vh; overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0,0,0,0.15);
   }
-  .ticket-img { width: 100%; height: 200px; object-fit: cover; background: var(--cream); display: flex; align-items: center; justify-content: center; }
-  .ticket-img img { width: 100%; height: 100%; object-fit: cover; }
-  .ticket-img svg { opacity: 0.15; }
+  .ticket-img { width: 100%; background: var(--cream); display: flex; align-items: center; justify-content: center; min-height: 80px; }
+  .ticket-img img { width: 100%; height: auto; display: block; }
+  .ticket-img svg { opacity: 0.15; margin: 32px; }
+  .ticket-breakdown { margin-top: 12px; display: flex; flex-direction: column; gap: 3px; }
+  .ticket-breakdown-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-soft); padding: 3px 0; }
+  .ticket-breakdown-row .lbl { color: var(--ink-soft); }
+  .ticket-breakdown-row .val { color: var(--ink-mid); }
+  .ticket-breakdown-total { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: var(--ink); padding: 8px 0 0; border-top: 1px dashed var(--border); margin-top: 4px; }
   .ticket-body { padding: 20px 22px 24px; }
   .ticket-store { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); margin-bottom: 4px; }
   .ticket-name { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); margin-bottom: 16px; line-height: 1.25; }
@@ -1027,8 +1032,32 @@ async function saveArticle() {
   const tier   = document.getElementById('tier-badge').textContent;
   const margin = Math.round(price - achat - price * 0.08);
 
+  const pillLabel = (group) => {
+    const el = document.querySelector(`.pill[data-group="${group}"].selected-radio`);
+    return el ? el.textContent.replace('×','').trim() : null;
+  };
+  const multiLabels = (group) =>
+    Array.from(document.querySelectorAll(`.pill[data-group="${group}"].selected-check`))
+      .map(p => p.textContent.replace('×','').trim());
+
+  const breakdown = {
+    type:      { label: pillLabel('type'),      val: getRadioVal('type') || 0 },
+    categorie: { label: pillLabel('categorie'), val: getRadioVal('categorie') || 0 },
+    etat:      { label: pillLabel('etat'),      val: getRadioVal('etat') || 0 },
+    matiere:   { label: pillLabel('matiere'),   val: getRadioVal('matiere') || 0 },
+    taille:    { label: pillLabel('taille'),    val: getRadioVal('taille') || 0 },
+    bonus: [
+      ...multiLabels('coupe').map(l => ({ label: l, group: 'Coupe' })),
+      ...multiLabels('couleur').map(l => ({ label: l, group: 'Couleur' })),
+      ...multiLabels('details').map(l => ({ label: l, group: 'Détail' })),
+      ...multiLabels('motif').map(l => ({ label: l, group: 'Motif' })),
+      ...multiLabels('style').map(l => ({ label: l, group: 'Style' })),
+    ],
+    travail: 5,
+  };
+
   const { error } = await sb.from('mintsyrup_stock').insert([{
-    nom, price, achat, margin, tier, image: currentImageData
+    nom, price, achat, margin, tier, image: currentImageData, breakdown
   }]);
 
   if (error) {
@@ -1260,10 +1289,24 @@ function openTicket(id, isSold) {
   const date  = a.sold_at ? new Date(a.sold_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
   const added = a.created_at ? new Date(a.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : null;
 
+  const b = a.breakdown;
+  const breakdownHtml = b ? `
+    <hr class="ticket-divider">
+    <div class="ticket-breakdown">
+      ${b.type?.label    ? `<div class="ticket-breakdown-row"><span class="lbl">${b.type.label}</span><span class="val">${b.type.val}€</span></div>` : ''}
+      ${b.categorie?.label && b.categorie.val !== 0 ? `<div class="ticket-breakdown-row"><span class="lbl">${b.categorie.label}</span><span class="val">${b.categorie.val > 0 ? '+' : ''}${b.categorie.val}€</span></div>` : ''}
+      ${b.etat?.label && b.etat.val !== 0 ? `<div class="ticket-breakdown-row"><span class="lbl">${b.etat.label}</span><span class="val">${b.etat.val > 0 ? '+' : ''}${b.etat.val}€</span></div>` : ''}
+      ${b.matiere?.label && b.matiere.val !== 0 ? `<div class="ticket-breakdown-row"><span class="lbl">${b.matiere.label}</span><span class="val">+${b.matiere.val}€</span></div>` : ''}
+      ${b.taille?.label && b.taille.val !== 0 ? `<div class="ticket-breakdown-row"><span class="lbl">${b.taille.label}</span><span class="val">${b.taille.val > 0 ? '+' : ''}${b.taille.val}€</span></div>` : ''}
+      ${(b.bonus || []).map(x => `<div class="ticket-breakdown-row"><span class="lbl">${x.label}</span><span class="val" style="color:var(--mint-dark)">bonus</span></div>`).join('')}
+      <div class="ticket-breakdown-row"><span class="lbl">Temps de travail</span><span class="val">+5€</span></div>
+      <div class="ticket-breakdown-total"><span>Total</span><span>${a.price}€</span></div>
+    </div>` : '';
+
   document.getElementById('ticket-content').innerHTML = `
     ${a.image
       ? `<div class="ticket-img"><img src="${a.image}" alt="${a.nom}"></div>`
-      : `<div class="ticket-img" style="height:120px"><svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>`
+      : `<div class="ticket-img"><svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>`
     }
     <div class="ticket-body">
       <div class="ticket-store">mint<em>syrup</em></div>
@@ -1274,10 +1317,10 @@ function openTicket(id, isSold) {
       ${isSold
         ? `<div class="ticket-row"><span class="lbl">Prix affiché</span><span>${fmt(a.price)}€</span></div>
            <div class="ticket-row"><span class="lbl">Prix de vente réel</span><span style="color:#1a9e6e;font-weight:500">${fmt(sp)}€</span></div>
-           ${date ? `<div class="ticket-row"><span class="lbl">Date de vente</span><span>${date}</span></div>` : ''}`
-        : `<div class="ticket-row"><span class="lbl">Prix affiché</span><span>${fmt(a.price)}€</span></div>
-           ${added ? `<div class="ticket-row"><span class="lbl">Ajouté le</span><span>${added}</span></div>` : ''}`
+           ${date ? `<div class="ticket-row"><span class="lbl">Vendu le</span><span>${date}</span></div>` : ''}`
+        : `${added ? `<div class="ticket-row"><span class="lbl">Ajouté le</span><span>${added}</span></div>` : ''}`
       }
+      ${breakdownHtml}
       <hr class="ticket-divider">
       ${isSold
         ? `<div class="ticket-total-row">
