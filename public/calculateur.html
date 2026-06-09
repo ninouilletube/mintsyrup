@@ -463,6 +463,53 @@
     background: rgba(26,158,110,0.9); color: var(--white);
     padding: 3px 9px; border-radius: 99px; font-size: 10px; font-weight: 500; text-transform: uppercase;
   }
+
+  /* ── SAISON ── */
+  .saison-pill-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .saison-pill {
+    padding: 6px 14px; border-radius: 99px; font-size: 13px; cursor: pointer;
+    border: 0.5px solid var(--border); background: var(--white);
+    color: var(--ink-soft); font-family: 'DM Sans', sans-serif; transition: all 0.15s;
+    user-select: none;
+  }
+  .saison-pill:hover { border-color: var(--mint); color: var(--ink); }
+  .saison-pill.selected { background: var(--syrup-light); border-color: var(--syrup); color: #8B4E20; font-weight: 500; }
+  .saison-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 99px;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.03em;
+    background: var(--syrup-light); color: #8B4E20; border: 0.5px solid rgba(201,123,75,0.25);
+  }
+  .filter-pill.saison-active { background: var(--syrup-light); color: #8B4E20; border-color: var(--syrup); }
+
+  /* ── MODAL ÉDITION ARTICLE ── */
+  .edit-modal-box {
+    background: var(--white); border-radius: var(--radius);
+    padding: 28px 24px; width: 420px; max-width: 94vw; max-height: 90vh; overflow-y: auto;
+  }
+  .edit-modal-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 20px; }
+  .edit-field { margin-bottom: 16px; }
+  .edit-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); display: block; margin-bottom: 6px; }
+  .edit-input {
+    width: 100%; padding: 9px 12px; border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 14px; font-family: 'DM Sans', sans-serif;
+    color: var(--ink); background: var(--cream); outline: none; transition: border-color 0.15s;
+  }
+  .edit-input:focus { border-color: var(--mint); }
+  .edit-img-area {
+    border: 1.5px dashed var(--border); border-radius: var(--radius);
+    padding: 16px; text-align: center; cursor: pointer;
+    transition: border-color 0.15s; position: relative;
+  }
+  .edit-img-area:hover { border-color: var(--mint); }
+  .edit-img-area input { display: none; }
+  .edit-img-preview { width: 100%; max-height: 160px; object-fit: cover; border-radius: var(--radius-sm); display: none; }
+  .edit-img-placeholder { font-size: 12px; color: var(--ink-soft); padding: 8px 0; }
+  .edit-img-remove {
+    position: absolute; top: 8px; right: 8px;
+    background: var(--ink); color: var(--white); border: none;
+    border-radius: 99px; width: 22px; height: 22px; font-size: 13px;
+    cursor: pointer; display: none; align-items: center; justify-content: center;
+  }
 </style>
 </head>
 <body>
@@ -514,6 +561,15 @@
       <div class="achat-row">
         <input type="number" id="achat" min="0" step="0.5" placeholder="0">
         <span>€ payés</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Saison <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— facultatif, n'influence pas le prix</span></div>
+      <div class="saison-pill-grid">
+        <div class="saison-pill" onclick="selectSaison('Printemps/Été', this)">Printemps/Été</div>
+        <div class="saison-pill" onclick="selectSaison('Automne/Hiver', this)">Automne/Hiver</div>
+        <div class="saison-pill" onclick="selectSaison('Mi-saison', this)">Mi-saison</div>
       </div>
     </div>
 
@@ -767,6 +823,47 @@
   </div>
 </div>
 
+<!-- MODAL ÉDITION ARTICLE -->
+<div class="modal-overlay" id="edit-article-modal" style="display:none" onclick="closeEditModal()">
+  <div class="edit-modal-box" onclick="event.stopPropagation()">
+    <div class="edit-modal-title">Modifier l'article</div>
+
+    <div class="edit-field">
+      <label class="edit-label">Nom</label>
+      <input type="text" class="edit-input" id="edit-nom" placeholder="Nom de l'article">
+    </div>
+
+    <div class="edit-field">
+      <label class="edit-label">Prix d'achat (€)</label>
+      <input type="number" class="edit-input" id="edit-achat" min="0" step="0.5" placeholder="0">
+    </div>
+
+    <div class="edit-field">
+      <label class="edit-label">Saison</label>
+      <div class="saison-pill-grid" id="edit-saison-pills">
+        <div class="saison-pill" onclick="selectEditSaison('Printemps/Été', this)">Printemps/Été</div>
+        <div class="saison-pill" onclick="selectEditSaison('Automne/Hiver', this)">Automne/Hiver</div>
+        <div class="saison-pill" onclick="selectEditSaison('Mi-saison', this)">Mi-saison</div>
+      </div>
+    </div>
+
+    <div class="edit-field">
+      <label class="edit-label">Photo</label>
+      <div class="edit-img-area" id="edit-upload-area" onclick="document.getElementById('edit-img-input').click()">
+        <input type="file" id="edit-img-input" accept="image/*" onchange="handleEditImage(event)">
+        <img id="edit-img-preview" class="edit-img-preview" alt="aperçu">
+        <div id="edit-img-placeholder" class="edit-img-placeholder">Clique pour changer la photo</div>
+        <button class="edit-img-remove" id="edit-img-remove" onclick="removeEditImage(event)">×</button>
+      </div>
+    </div>
+
+    <div class="modal-actions" style="margin-top:8px">
+      <button class="modal-cancel" onclick="closeEditModal()">Annuler</button>
+      <button class="modal-confirm" onclick="saveEdit()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -782,11 +879,18 @@ let stock = [];
 let editMode = false;
 let stockFilter = 'all';
 let archiveFilter = 'all';
+let stockSeasonFilter = 'all';
+let archiveSeasonFilter = 'all';
+let selectedSaisonVal = null;
+let editArticleId = null;
+let editImageData = null;
 
 const TIERS = ['all', 'Accessible', 'Mid-range', 'Premium'];
 const TIER_LABELS = { all: 'Tous', 'Accessible': 'Accessible', 'Mid-range': 'Mid-range', 'Premium': 'Premium' };
 const tierClass = { 'Accessible': 'sc-accessible', 'Mid-range': 'sc-mid', 'Premium': 'sc-premium' };
 const ticketTierClass = { 'Accessible': 'tier-accessible', 'Mid-range': 'tier-mid', 'Premium': 'tier-premium' };
+const SEASONS = ['all', 'Printemps/Été', 'Automne/Hiver', 'Mi-saison'];
+const SEASON_LABELS = { all: 'Toutes saisons', 'Printemps/Été': 'PE', 'Automne/Hiver': 'AH', 'Mi-saison': 'Mi-saison' };
 
 let customCriteria = JSON.parse(localStorage.getItem('mintsyrup-custom') || '{}');
 let deletedDefaults = JSON.parse(localStorage.getItem('mintsyrup-deleted') || '{}');
@@ -823,6 +927,18 @@ function saveCriteria() {
   localStorage.setItem('mintsyrup-custom', JSON.stringify(customCriteria));
   localStorage.setItem('mintsyrup-deleted', JSON.stringify(deletedDefaults));
   syncCriteriaToSupabase();
+}
+
+// ── Saison ──
+function selectSaison(val, el) {
+  if (selectedSaisonVal === val) {
+    selectedSaisonVal = null;
+    document.querySelectorAll('.saison-pill-grid:not(#edit-saison-pills) .saison-pill').forEach(p => p.classList.remove('selected'));
+  } else {
+    selectedSaisonVal = val;
+    document.querySelectorAll('.saison-pill-grid:not(#edit-saison-pills) .saison-pill').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+  }
 }
 
 // ── Mode édition ──
@@ -1067,7 +1183,7 @@ async function saveArticle() {
   };
 
   const { error } = await sb.from('mintsyrup_stock').insert([{
-    nom, price, achat, margin, tier, image: currentImageData, breakdown
+    nom, price, achat, margin, tier, image: currentImageData, breakdown, saison: selectedSaisonVal
   }]);
 
   if (error) {
@@ -1122,9 +1238,15 @@ async function loadAndRenderStock() {
   renderStock();
 }
 
-function filterBar(current, setter, renderFn) {
+function filterBar(current, setter) {
   return `<div class="filter-bar">${TIERS.map(t => `
     <button class="filter-pill ${current === t ? 'active' : ''}" onclick="${setter}('${t}')">${TIER_LABELS[t]}</button>
+  `).join('')}</div>`;
+}
+
+function seasonFilterBar(current, setter) {
+  return `<div class="filter-bar" style="margin-top:-8px">${SEASONS.map(s => `
+    <button class="filter-pill ${current === s ? 'saison-active' : ''}" onclick="${setter}('${s}')">${SEASON_LABELS[s]}</button>
   `).join('')}</div>`;
 }
 
@@ -1132,7 +1254,11 @@ function renderStock() {
   const container = document.getElementById('stock-content');
   const summary   = document.getElementById('stock-summary');
   const active    = stock.filter(a => !a.sold);
-  const filtered  = stockFilter === 'all' ? active : active.filter(a => a.tier === stockFilter);
+  const filtered  = active.filter(a => {
+    const tierOk   = stockFilter === 'all' || a.tier === stockFilter;
+    const seasonOk = stockSeasonFilter === 'all' || a.saison === stockSeasonFilter;
+    return tierOk && seasonOk;
+  });
 
   if (active.length === 0) {
     container.innerHTML = '<div class="stock-empty"><strong>Aucune pièce pour l\'instant</strong>Ajoute des articles depuis le calculateur.</div>';
@@ -1168,15 +1294,17 @@ function renderStock() {
           <div class="stock-card-margin">~${a.margin}€ net</div>
         </div>
         ${a.achat > 0 ? `<div class="stock-card-achat">Acheté ${parseFloat(a.achat).toFixed(2)}€</div>` : ''}
+        ${a.saison ? `<div style="margin-top:6px"><span class="saison-badge">${a.saison}</span></div>` : ''}
       </div>
       <button class="stock-card-sold-btn" onclick="event.stopPropagation();openSoldModal(${a.id}, '${a.nom.replace(/'/g,"\\'")}', ${a.price})">Vendu ✓</button>
     </div>
   `).join('') + '</div>';
 
-  container.innerHTML = filterBar(stockFilter, 'setStockFilter', 'renderStock') + cards;
+  container.innerHTML = filterBar(stockFilter, 'setStockFilter') + seasonFilterBar(stockSeasonFilter, 'setStockSeasonFilter') + cards;
 }
 
 function setStockFilter(f) { stockFilter = f; renderStock(); }
+function setStockSeasonFilter(f) { stockSeasonFilter = f; renderStock(); }
 
 function resetAll() {
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected-radio','selected-check'));
@@ -1189,6 +1317,8 @@ function resetAll() {
   document.getElementById('warning').classList.remove('visible');
   document.getElementById('save-btn').disabled = true;
   document.getElementById('save-btn').textContent = 'Ajouter au stock';
+  selectedSaisonVal = null;
+  document.querySelectorAll('.saison-pill-grid:not(#edit-saison-pills) .saison-pill').forEach(p => p.classList.remove('selected'));
 }
 
 // ── Modal Vendu ──
@@ -1238,7 +1368,11 @@ async function loadAndRenderArchives() {
 function renderArchives() {
   const container = document.getElementById('archive-content');
   const sold     = stock.filter(a => a.sold);
-  const filtered = archiveFilter === 'all' ? sold : sold.filter(a => a.tier === archiveFilter);
+  const filtered = sold.filter(a => {
+    const tierOk   = archiveFilter === 'all' || a.tier === archiveFilter;
+    const seasonOk = archiveSeasonFilter === 'all' || a.saison === archiveSeasonFilter;
+    return tierOk && seasonOk;
+  });
 
   if (sold.length === 0) {
     container.innerHTML = '<div class="stock-empty"><strong>Aucune vente pour l\'instant</strong>Les articles vendus apparaîtront ici.</div>';
@@ -1271,6 +1405,7 @@ function renderArchives() {
                 <div style="font-size:12px;color:${benef >= 0 ? '#1a9e6e' : '#C83A20'}">${benef >= 0 ? '+' : ''}${fmt(benef)}€</div>
               </div>
               ${date ? `<div class="archive-card-date">${date}</div>` : ''}
+              ${a.saison ? `<div style="margin-top:5px"><span class="saison-badge">${a.saison}</span></div>` : ''}
             </div>
           </div>`;
       }).join('')}</div>`;
@@ -1283,11 +1418,13 @@ function renderArchives() {
       <div class="archive-stat"><div class="archive-stat-val green">${fmt(totalBenef)}€</div><div class="archive-stat-lbl">Bénéfice</div></div>
       <div class="archive-stat"><div class="archive-stat-val">${avgMarginPct}%</div><div class="archive-stat-lbl">Marge moy.</div></div>
     </div>
-    ${filterBar(archiveFilter, 'setArchiveFilter', 'renderArchives')}
+    ${filterBar(archiveFilter, 'setArchiveFilter')}
+    ${seasonFilterBar(archiveSeasonFilter, 'setArchiveSeasonFilter')}
     ${cards}`;
 }
 
 function setArchiveFilter(f) { archiveFilter = f; renderArchives(); }
+function setArchiveSeasonFilter(f) { archiveSeasonFilter = f; renderArchives(); }
 
 // ── Ticket de caisse ──
 function openTicket(id, isSold) {
@@ -1330,7 +1467,10 @@ function openTicket(id, isSold) {
     <div class="ticket-body">
       <div class="ticket-store">mint<em>syrup</em></div>
       <div class="ticket-name">${a.nom}</div>
-      ${a.tier ? `<span class="ticket-tier ${ticketTierClass[a.tier] || ''}">${a.tier}</span>` : ''}
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        ${a.tier ? `<span class="ticket-tier ${ticketTierClass[a.tier] || ''}" style="margin-bottom:0">${a.tier}</span>` : ''}
+        ${a.saison ? `<span class="saison-badge" style="padding:3px 10px;font-size:11px">${a.saison}</span>` : ''}
+      </div>
       <hr class="ticket-divider">
       ${a.achat > 0 ? `<div class="ticket-row"><span class="lbl">Prix d'achat</span><span>${fmt(a.achat)}€</span></div>` : ''}
       ${isSold
@@ -1357,7 +1497,10 @@ function openTicket(id, isSold) {
            </div>
            ${a.achat > 0 ? `<div class="ticket-benef">Marge estimée : ~${fmt(a.margin)}€ (${Math.round((a.margin / a.price) * 100)}%)</div>` : ''}`
       }
-      <button class="ticket-close" onclick="closeTicket()">Fermer</button>
+      <div style="display:flex;gap:8px;margin-top:auto;padding-top:14px">
+        <button onclick="openEditModal(${a.id})" style="flex:1;padding:9px;background:transparent;border:0.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--ink-soft);transition:all 0.15s" onmouseover="this.style.borderColor='var(--ink-soft)';this.style.color='var(--ink)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ink-soft)'">Modifier</button>
+        <button class="ticket-close" style="flex:2;margin-top:0;padding-top:9px;padding-bottom:9px" onclick="closeTicket()">Fermer</button>
+      </div>
     </div>`;
 
   document.getElementById('ticket-modal').style.display = 'flex';
@@ -1365,6 +1508,105 @@ function openTicket(id, isSold) {
 
 function closeTicket() {
   document.getElementById('ticket-modal').style.display = 'none';
+}
+
+// ── Édition article ──
+function openEditModal(id) {
+  const a = stock.find(s => s.id === id);
+  if (!a) return;
+  editArticleId = id;
+  editImageData = a.image || null;
+
+  document.getElementById('edit-nom').value = a.nom || '';
+  document.getElementById('edit-achat').value = a.achat || '';
+
+  // saison pills
+  document.querySelectorAll('#edit-saison-pills .saison-pill').forEach(p => {
+    p.classList.toggle('selected', p.textContent === a.saison);
+  });
+
+  // photo preview
+  const preview = document.getElementById('edit-img-preview');
+  const placeholder = document.getElementById('edit-img-placeholder');
+  const removeBtn = document.getElementById('edit-img-remove');
+  if (editImageData) {
+    preview.src = editImageData;
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+    removeBtn.style.display = 'flex';
+  } else {
+    preview.style.display = 'none';
+    placeholder.style.display = 'block';
+    removeBtn.style.display = 'none';
+  }
+
+  closeTicket();
+  document.getElementById('edit-article-modal').style.display = 'flex';
+}
+
+function selectEditSaison(val, el) {
+  const already = el.classList.contains('selected');
+  document.querySelectorAll('#edit-saison-pills .saison-pill').forEach(p => p.classList.remove('selected'));
+  if (!already) el.classList.add('selected');
+}
+
+function handleEditImage(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    editImageData = ev.target.result;
+    const preview = document.getElementById('edit-img-preview');
+    preview.src = editImageData;
+    preview.style.display = 'block';
+    document.getElementById('edit-img-placeholder').style.display = 'none';
+    document.getElementById('edit-img-remove').style.display = 'flex';
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeEditImage(e) {
+  e.stopPropagation();
+  editImageData = null;
+  document.getElementById('edit-img-preview').style.display = 'none';
+  document.getElementById('edit-img-placeholder').style.display = 'block';
+  document.getElementById('edit-img-remove').style.display = 'none';
+  document.getElementById('edit-img-input').value = '';
+}
+
+async function saveEdit() {
+  if (!editArticleId) return;
+  const nom   = document.getElementById('edit-nom').value.trim();
+  const achat = parseFloat(document.getElementById('edit-achat').value) || 0;
+  const saisonEl = document.querySelector('#edit-saison-pills .saison-pill.selected');
+  const saison = saisonEl ? saisonEl.textContent : null;
+
+  const btn = document.querySelector('#edit-article-modal .modal-confirm');
+  btn.disabled = true; btn.textContent = 'Enregistrement…';
+
+  const { error } = await sb.from('mintsyrup_stock').update({
+    nom: nom || undefined,
+    achat,
+    saison,
+    image: editImageData,
+  }).eq('id', editArticleId);
+
+  btn.disabled = false; btn.textContent = 'Enregistrer';
+
+  if (error) { showToast('Erreur — ' + (error.message || error.code)); return; }
+
+  await loadStock();
+  const page = document.getElementById('page-stock').classList.contains('active') ? 'stock' : 'archives';
+  if (page === 'stock') renderStock(); else renderArchives();
+  updateBadge(); updateArchiveBadge();
+  closeEditModal();
+  showToast('Article modifié ✓');
+}
+
+function closeEditModal() {
+  editArticleId = null;
+  document.getElementById('edit-article-modal').style.display = 'none';
+  document.getElementById('edit-img-input').value = '';
 }
 
 // ── Appliquer suppressions et customs au chargement ──
