@@ -325,6 +325,83 @@
   .sc-premium { background: rgba(238,237,254,0.9); color: #3C3489; }
 
   .loading-overlay { text-align: center; padding: 40px 20px; color: var(--ink-soft); font-size: 13px; }
+
+  /* ── BOUTON VENDU ── */
+  .stock-card-sold-btn {
+    width: calc(100% - 28px); margin: 0 14px 12px;
+    padding: 7px; background: transparent;
+    border: 0.5px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 12px; font-family: 'DM Sans', sans-serif;
+    color: var(--ink-soft); cursor: pointer; transition: all 0.15s;
+  }
+  .stock-card-sold-btn:hover { background: #1a9e6e; border-color: #1a9e6e; color: var(--white); }
+
+  /* ── MODAL VENDU ── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(26,26,24,0.5);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; backdrop-filter: blur(2px);
+  }
+  .modal-box {
+    background: var(--white); border-radius: var(--radius);
+    padding: 28px 24px; width: 320px; max-width: 90vw;
+  }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 4px; }
+  .modal-sub { font-size: 13px; color: var(--ink-soft); margin-bottom: 20px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .modal-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); display: block; margin-bottom: 6px; }
+  .modal-input {
+    width: 100%; padding: 10px 12px; border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm); font-size: 18px; font-family: 'DM Sans', sans-serif;
+    color: var(--ink); background: var(--cream); outline: none; margin-bottom: 16px;
+    transition: border-color 0.15s;
+  }
+  .modal-input:focus { border-color: var(--mint); }
+  .modal-actions { display: flex; gap: 8px; }
+  .modal-cancel {
+    flex: 1; padding: 10px; background: transparent;
+    border: 0.5px solid var(--border); border-radius: var(--radius-sm);
+    font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.15s;
+    color: var(--ink-soft);
+  }
+  .modal-cancel:hover { border-color: var(--ink-soft); color: var(--ink); }
+  .modal-confirm {
+    flex: 2; padding: 10px; background: #1a9e6e; border: none;
+    border-radius: var(--radius-sm); color: var(--white);
+    font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; transition: opacity 0.15s;
+  }
+  .modal-confirm:hover { opacity: 0.85; }
+
+  /* ── ARCHIVES ── */
+  .archive-page { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+  .archive-stats {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px; margin-bottom: 28px;
+  }
+  .archive-stat {
+    background: var(--white); border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 14px 16px;
+  }
+  .archive-stat-val { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--ink); }
+  .archive-stat-val.green { color: #1a9e6e; }
+  .archive-stat-lbl { font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 4px; }
+  .archive-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+  .archive-card {
+    background: var(--white); border: 0.5px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; position: relative; opacity: 0.85;
+  }
+  .archive-card-img { width: 100%; height: 150px; background: var(--cream); display: flex; align-items: center; justify-content: center; }
+  .archive-card-img img { width: 100%; height: 100%; object-fit: cover; }
+  .archive-card-img svg { opacity: 0.15; }
+  .archive-card-body { padding: 10px 12px; }
+  .archive-card-name { font-size: 12px; font-weight: 500; color: var(--ink-mid); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .archive-card-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; color: var(--ink-soft); }
+  .archive-card-sold-price { font-family: 'DM Serif Display', serif; font-size: 17px; color: #1a9e6e; }
+  .archive-card-date { font-size: 11px; color: var(--ink-soft); margin-top: 4px; }
+  .archive-sold-badge {
+    position: absolute; top: 8px; left: 8px;
+    background: rgba(26,158,110,0.9); color: var(--white);
+    padding: 3px 9px; border-radius: 99px; font-size: 10px; font-weight: 500; text-transform: uppercase;
+  }
 </style>
 </head>
 <body>
@@ -336,6 +413,7 @@
   <nav class="nav-tabs">
     <button class="nav-tab active" onclick="showPage('calc', event)">Calculateur</button>
     <button class="nav-tab" onclick="showPage('stock', event)">Mon stock <span id="stock-count-badge"></span></button>
+    <button class="nav-tab" onclick="showPage('archives', event)">Archives <span id="archive-count-badge"></span></button>
   </nav>
   <button class="edit-mode-btn" id="edit-mode-btn" onclick="toggleEditMode()">
     <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -601,6 +679,28 @@
   </div>
 </div>
 
+<!-- PAGE ARCHIVES -->
+<div id="page-archives" class="page">
+  <div class="archive-page">
+    <div id="archive-content"><div class="loading-overlay">Chargement…</div></div>
+  </div>
+</div>
+
+<!-- MODAL VENDU -->
+<div class="modal-overlay" id="sold-modal" style="display:none" onclick="closeSoldModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title">Vendu ✓</div>
+    <div class="modal-sub" id="modal-article-name">—</div>
+    <label class="modal-label">Prix de vente réel (€)</label>
+    <input type="number" class="modal-input" id="modal-price" step="0.5" min="0"
+      onkeydown="if(event.key==='Enter') confirmSold()">
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeSoldModal()">Annuler</button>
+      <button class="modal-confirm" onclick="confirmSold()">Confirmer la vente</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -676,6 +776,7 @@ function showPage(id, event) {
   document.getElementById('page-' + id).classList.add('active');
   event.target.classList.add('active');
   if (id === 'stock') loadAndRenderStock();
+  if (id === 'archives') loadAndRenderArchives();
 }
 
 // ── Pill interactions ──
@@ -900,14 +1001,22 @@ function showToast(msg) {
 }
 
 function updateBadge() {
+  const active = stock.filter(a => !a.sold);
   const b = document.getElementById('stock-count-badge');
-  b.textContent = stock.length > 0 ? ' (' + stock.length + ')' : '';
+  b.textContent = active.length > 0 ? ' (' + active.length + ')' : '';
+}
+
+function updateArchiveBadge() {
+  const sold = stock.filter(a => a.sold);
+  const b = document.getElementById('archive-count-badge');
+  b.textContent = sold.length > 0 ? ' (' + sold.length + ')' : '';
 }
 
 async function loadStock() {
   const { data, error } = await sb.from('mintsyrup_stock').select('*').order('created_at', { ascending: false });
   if (!error) stock = data || [];
   updateBadge();
+  updateArchiveBadge();
 }
 
 async function loadAndRenderStock() {
@@ -919,19 +1028,20 @@ async function loadAndRenderStock() {
 function renderStock() {
   const container = document.getElementById('stock-content');
   const summary   = document.getElementById('stock-summary');
+  const active    = stock.filter(a => !a.sold);
 
-  if (stock.length === 0) {
+  if (active.length === 0) {
     container.innerHTML = '<div class="stock-empty"><strong>Aucune pièce pour l\'instant</strong>Ajoute des articles depuis le calculateur.</div>';
     summary.innerHTML = '';
     return;
   }
 
-  const totalCA     = stock.reduce((s, a) => s + a.price, 0);
-  const totalMargin = stock.reduce((s, a) => s + a.margin, 0);
-  const totalAchat  = stock.reduce((s, a) => s + (a.achat || 0), 0);
+  const totalCA     = active.reduce((s, a) => s + a.price, 0);
+  const totalMargin = active.reduce((s, a) => s + a.margin, 0);
+  const totalAchat  = active.reduce((s, a) => s + (a.achat || 0), 0);
 
   summary.innerHTML = `
-    <div class="stock-metric"><div class="stock-metric-val">${stock.length}</div><div class="stock-metric-lbl">pièces</div></div>
+    <div class="stock-metric"><div class="stock-metric-val">${active.length}</div><div class="stock-metric-lbl">pièces</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalAchat.toFixed(0)}€</div><div class="stock-metric-lbl">investi</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalCA}€</div><div class="stock-metric-lbl">CA potentiel</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalMargin}€</div><div class="stock-metric-lbl">marge nette</div></div>
@@ -939,7 +1049,7 @@ function renderStock() {
 
   const tierClass = { 'Accessible': 'sc-accessible', 'Mid-range': 'sc-mid', 'Premium': 'sc-premium' };
 
-  container.innerHTML = '<div class="stock-grid">' + stock.map(a => `
+  container.innerHTML = '<div class="stock-grid">' + active.map(a => `
     <div class="stock-card">
       <span class="stock-card-tier ${tierClass[a.tier] || 'sc-mid'}">${a.tier}</span>
       <button class="stock-card-delete" onclick="deleteArticle(${a.id})" title="Supprimer">×</button>
@@ -955,6 +1065,7 @@ function renderStock() {
         </div>
         ${a.achat > 0 ? `<div class="stock-card-achat">Acheté ${parseFloat(a.achat).toFixed(2)}€</div>` : ''}
       </div>
+      <button class="stock-card-sold-btn" onclick="openSoldModal(${a.id}, '${a.nom.replace(/'/g,"\\'")}', ${a.price})">Vendu ✓</button>
     </div>
   `).join('') + '</div>';
 }
@@ -970,6 +1081,99 @@ function resetAll() {
   document.getElementById('warning').classList.remove('visible');
   document.getElementById('save-btn').disabled = true;
   document.getElementById('save-btn').textContent = 'Ajouter au stock';
+}
+
+// ── Modal Vendu ──
+let soldModalId = null;
+
+function openSoldModal(id, nom, price) {
+  soldModalId = id;
+  document.getElementById('modal-article-name').textContent = nom;
+  document.getElementById('modal-price').value = price;
+  document.getElementById('sold-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('modal-price').focus(), 50);
+}
+
+function closeSoldModal() {
+  soldModalId = null;
+  document.getElementById('sold-modal').style.display = 'none';
+}
+
+async function confirmSold() {
+  if (!soldModalId) return;
+  const soldPrice = parseFloat(document.getElementById('modal-price').value);
+  if (isNaN(soldPrice)) return;
+
+  const { error } = await sb.from('mintsyrup_stock').update({
+    sold: true,
+    sold_price: soldPrice,
+    sold_at: new Date().toISOString()
+  }).eq('id', soldModalId);
+
+  if (error) { showToast('Erreur — ' + (error.message || error.code)); return; }
+
+  closeSoldModal();
+  await loadStock();
+  renderStock();
+  updateBadge();
+  updateArchiveBadge();
+  showToast('Article marqué comme vendu ✓');
+}
+
+// ── Archives ──
+async function loadAndRenderArchives() {
+  document.getElementById('archive-content').innerHTML = '<div class="loading-overlay">Chargement…</div>';
+  await loadStock();
+  renderArchives();
+}
+
+function renderArchives() {
+  const container = document.getElementById('archive-content');
+  const sold = stock.filter(a => a.sold);
+
+  if (sold.length === 0) {
+    container.innerHTML = '<div class="stock-empty"><strong>Aucune vente pour l\'instant</strong>Les articles vendus apparaîtront ici.</div>';
+    return;
+  }
+
+  const totalRevenu  = sold.reduce((s, a) => s + (a.sold_price || a.price), 0);
+  const totalAchat   = sold.reduce((s, a) => s + (a.achat || 0), 0);
+  const totalBenef   = sold.reduce((s, a) => s + ((a.sold_price || a.price) - (a.achat || 0)), 0);
+  const avgMarginPct = totalRevenu > 0 ? Math.round((totalBenef / totalRevenu) * 100) : 0;
+
+  const fmt = (n) => n.toFixed(2).replace('.', ',');
+
+  container.innerHTML = `
+    <div class="archive-stats">
+      <div class="archive-stat"><div class="archive-stat-val">${sold.length}</div><div class="archive-stat-lbl">Ventes</div></div>
+      <div class="archive-stat"><div class="archive-stat-val green">${fmt(totalRevenu)}€</div><div class="archive-stat-lbl">Encaissé</div></div>
+      <div class="archive-stat"><div class="archive-stat-val">${fmt(totalAchat)}€</div><div class="archive-stat-lbl">Investi</div></div>
+      <div class="archive-stat"><div class="archive-stat-val green">${fmt(totalBenef)}€</div><div class="archive-stat-lbl">Bénéfice</div></div>
+      <div class="archive-stat"><div class="archive-stat-val">${avgMarginPct}%</div><div class="archive-stat-lbl">Marge moy.</div></div>
+    </div>
+    <div class="archive-grid">
+      ${sold.map(a => {
+        const sp = a.sold_price || a.price;
+        const benef = sp - (a.achat || 0);
+        const date = a.sold_at ? new Date(a.sold_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+        return `
+          <div class="archive-card">
+            <span class="archive-sold-badge">Vendu</span>
+            ${a.image
+              ? `<div class="archive-card-img"><img src="${a.image}" alt="${a.nom}"></div>`
+              : `<div class="archive-card-img"><svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>`
+            }
+            <div class="archive-card-body">
+              <div class="archive-card-name">${a.nom}</div>
+              <div class="archive-card-row">
+                <div class="archive-card-sold-price">${fmt(sp)}€</div>
+                <div style="font-size:12px;color:${benef >= 0 ? '#1a9e6e' : '#C83A20'}">${benef >= 0 ? '+' : ''}${fmt(benef)}€</div>
+              </div>
+              ${date ? `<div class="archive-card-date">${date}</div>` : ''}
+            </div>
+          </div>`;
+      }).join('')}
+    </div>`;
 }
 
 // ── Appliquer suppressions et customs au chargement ──
