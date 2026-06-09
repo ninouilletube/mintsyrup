@@ -344,36 +344,48 @@
   }
   .ticket-box {
     background: var(--white); border-radius: var(--radius);
-    width: 340px; max-width: 92vw; max-height: 90vh; overflow-y: auto;
+    width: 600px; max-width: 94vw; max-height: 88vh;
     box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    overflow: hidden; display: flex;
   }
-  .ticket-img { width: 100%; background: var(--cream); display: flex; align-items: center; justify-content: center; min-height: 80px; }
-  .ticket-img img { width: 100%; height: auto; display: block; }
-  .ticket-img svg { opacity: 0.15; margin: 32px; }
-  .ticket-breakdown { margin-top: 12px; display: flex; flex-direction: column; gap: 3px; }
-  .ticket-breakdown-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-soft); padding: 3px 0; }
+  .ticket-img-col {
+    width: 210px; flex-shrink: 0;
+    background: var(--cream);
+    display: flex; align-items: stretch;
+  }
+  .ticket-img-col img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ticket-img-col .ticket-img-placeholder {
+    width: 100%; display: flex; align-items: center; justify-content: center;
+  }
+  .ticket-img-col .ticket-img-placeholder svg { opacity: 0.15; }
+  .ticket-body {
+    flex: 1; overflow-y: auto;
+    padding: 22px 22px 20px;
+    display: flex; flex-direction: column;
+  }
+  .ticket-breakdown { margin-top: 8px; display: flex; flex-direction: column; gap: 2px; }
+  .ticket-breakdown-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-soft); padding: 2px 0; }
   .ticket-breakdown-row .lbl { color: var(--ink-soft); }
   .ticket-breakdown-row .val { color: var(--ink-mid); }
-  .ticket-breakdown-total { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: var(--ink); padding: 8px 0 0; border-top: 1px dashed var(--border); margin-top: 4px; }
-  .ticket-body { padding: 20px 22px 24px; }
+  .ticket-breakdown-total { display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; color: var(--ink); padding: 6px 0 0; border-top: 1px dashed var(--border); margin-top: 4px; }
   .ticket-store { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); margin-bottom: 4px; }
-  .ticket-name { font-family: 'DM Serif Display', serif; font-size: 20px; color: var(--ink); margin-bottom: 16px; line-height: 1.25; }
-  .ticket-divider { border: none; border-top: 1px dashed var(--border); margin: 12px 0; }
-  .ticket-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; padding: 4px 0; color: var(--ink-mid); }
+  .ticket-name { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--ink); margin-bottom: 12px; line-height: 1.25; }
+  .ticket-divider { border: none; border-top: 1px dashed var(--border); margin: 10px 0; }
+  .ticket-row { display: flex; justify-content: space-between; align-items: baseline; font-size: 13px; padding: 3px 0; color: var(--ink-mid); }
   .ticket-row .lbl { color: var(--ink-soft); }
-  .ticket-total-row { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 0 0; }
+  .ticket-total-row { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0 0; }
   .ticket-total-lbl { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
-  .ticket-total-val { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--mint-dark); }
+  .ticket-total-val { font-family: 'DM Serif Display', serif; font-size: 24px; color: var(--mint-dark); }
   .ticket-sold-val { color: #1a9e6e; }
-  .ticket-benef { text-align: center; margin-top: 12px; padding: 8px; background: #f0faf5; border-radius: var(--radius-sm); font-size: 13px; color: #1a9e6e; font-weight: 500; }
+  .ticket-benef { text-align: center; margin-top: 10px; padding: 7px; background: #f0faf5; border-radius: var(--radius-sm); font-size: 13px; color: #1a9e6e; font-weight: 500; }
   .ticket-benef.loss { background: #fdf0f0; color: #C83A20; }
   .ticket-close {
-    width: 100%; padding: 11px; margin-top: 16px; background: var(--cream);
+    width: 100%; padding: 10px; margin-top: auto; padding-top: 14px; background: var(--cream);
     border: 0.5px solid var(--border); border-radius: var(--radius-sm);
     font-size: 13px; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.15s; color: var(--ink-soft);
   }
   .ticket-close:hover { background: var(--ink); color: var(--white); border-color: var(--ink); }
-  .ticket-tier { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 12px; }
+  .ticket-tier { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 10px; }
 
   /* ── BOUTON VENDU ── */
   .stock-card-sold-btn {
@@ -737,9 +749,7 @@
 
 <!-- MODAL TICKET DE CAISSE -->
 <div class="ticket-overlay" id="ticket-modal" style="display:none" onclick="closeTicket()">
-  <div class="ticket-box" onclick="event.stopPropagation()">
-    <div id="ticket-content"></div>
-  </div>
+  <div class="ticket-box" id="ticket-content" onclick="event.stopPropagation()"></div>
 </div>
 
 <!-- MODAL VENDU -->
@@ -1304,10 +1314,12 @@ function openTicket(id, isSold) {
     </div>` : '';
 
   document.getElementById('ticket-content').innerHTML = `
-    ${a.image
-      ? `<div class="ticket-img"><img src="${a.image}" alt="${a.nom}"></div>`
-      : `<div class="ticket-img"><svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>`
-    }
+    <div class="ticket-img-col">
+      ${a.image
+        ? `<img src="${a.image}" alt="${a.nom}">`
+        : `<div class="ticket-img-placeholder"><svg width="36" height="36" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>`
+      }
+    </div>
     <div class="ticket-body">
       <div class="ticket-store">mint<em>syrup</em></div>
       <div class="ticket-name">${a.nom}</div>
