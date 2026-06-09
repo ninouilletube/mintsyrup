@@ -1760,23 +1760,39 @@ async function saveEdit() {
   const btn = document.querySelector('#edit-article-modal .modal-confirm');
   btn.disabled = true; btn.textContent = 'Enregistrement…';
 
-  const newPrice  = editBreakdown ? calcEditPrice() : undefined;
-  const newMargin = newPrice !== undefined ? Math.round(newPrice - achat - newPrice * 0.08) : undefined;
+  const newPrice  = editBreakdown ? calcEditPrice() : null;
+  const newMargin = newPrice !== null ? Math.round(newPrice - achat - newPrice * 0.08) : null;
 
-  const { error } = await sb.from('mintsyrup_stock').update({
+  const updateData = {
     nom: nom || 'Article sans nom',
     achat,
     saison,
     image: editImageData,
-    ...(editBreakdown ? { breakdown: editBreakdown, price: newPrice, margin: newMargin } : {}),
-  }).eq('id', editArticleId);
+  };
+  if (editBreakdown && newPrice !== null) {
+    updateData.breakdown = editBreakdown;
+    updateData.price = newPrice;
+    updateData.margin = newMargin;
+  }
+
+  const { data, error } = await sb.from('mintsyrup_stock')
+    .update(updateData)
+    .eq('id', editArticleId)
+    .select();
 
   btn.disabled = false; btn.textContent = 'Enregistrer';
 
   if (error) { showToast('Erreur — ' + (error.message || error.code)); return; }
+  if (!data || data.length === 0) {
+    showToast('Erreur — modification refusée (permissions Supabase)');
+    return;
+  }
 
   const savedId = editArticleId;
-  await loadStock();
+  // Mettre à jour le stock local directement avec les données retournées
+  const idx = stock.findIndex(s => s.id === savedId);
+  if (idx >= 0) stock[idx] = data[0];
+
   const page = document.getElementById('page-stock').classList.contains('active') ? 'stock' : 'archives';
   if (page === 'stock') renderStock(); else renderArchives();
   updateBadge(); updateArchiveBadge();
@@ -1788,7 +1804,7 @@ async function saveEdit() {
     if (updated) openTicket(updated.id, !!updated.sold);
   }
 
-  showToast('Article modifié ✓');
+  showToast(`Article modifié ✓ — prix : ${data[0].price}€`);
 }
 
 function closeEditModal() {
