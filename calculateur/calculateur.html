@@ -1788,10 +1788,8 @@ async function saveEdit() {
     return;
   }
 
-  const savedId = editArticleId;
-  // Mettre à jour le stock local directement avec les données retournées
-  const idx = stock.findIndex(s => s.id === savedId);
-  if (idx >= 0) stock[idx] = data[0];
+  const savedId = String(editArticleId);
+  await loadStock();
 
   const page = document.getElementById('page-stock').classList.contains('active') ? 'stock' : 'archives';
   if (page === 'stock') renderStock(); else renderArchives();
@@ -1800,11 +1798,11 @@ async function saveEdit() {
 
   // Rafraîchir le ticket si encore ouvert
   if (document.getElementById('ticket-modal').style.display !== 'none') {
-    const updated = stock.find(s => s.id === savedId);
+    const updated = stock.find(s => String(s.id) === savedId);
     if (updated) openTicket(updated.id, !!updated.sold);
   }
 
-  showToast(`Article modifié ✓ — prix : ${data[0].price}€`);
+  showToast('Article modifié ✓');
 }
 
 function closeEditModal() {
