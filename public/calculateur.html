@@ -889,8 +889,8 @@ const TIERS = ['all', 'Accessible', 'Mid-range', 'Premium'];
 const TIER_LABELS = { all: 'Tous', 'Accessible': 'Accessible', 'Mid-range': 'Mid-range', 'Premium': 'Premium' };
 const tierClass = { 'Accessible': 'sc-accessible', 'Mid-range': 'sc-mid', 'Premium': 'sc-premium' };
 const ticketTierClass = { 'Accessible': 'tier-accessible', 'Mid-range': 'tier-mid', 'Premium': 'tier-premium' };
-const SEASONS = ['all', 'Printemps/Été', 'Automne/Hiver', 'Mi-saison'];
-const SEASON_LABELS = { all: 'Toutes saisons', 'Printemps/Été': 'Printemps/Été', 'Automne/Hiver': 'Automne/Hiver', 'Mi-saison': 'Mi-saison' };
+const SEASONS = ['Printemps/Été', 'Automne/Hiver', 'Mi-saison'];
+const SEASON_LABELS = { 'Printemps/Été': 'Printemps/Été', 'Automne/Hiver': 'Automne/Hiver', 'Mi-saison': 'Mi-saison' };
 
 let customCriteria = JSON.parse(localStorage.getItem('mintsyrup-custom') || '{}');
 let deletedDefaults = JSON.parse(localStorage.getItem('mintsyrup-deleted') || '{}');
@@ -1246,7 +1246,7 @@ function filterBar(current, setter) {
 
 function seasonFilterBar(current, setter) {
   return `<div class="filter-bar" style="margin-top:-8px">${SEASONS.map(s => `
-    <button class="filter-pill ${current === s ? 'saison-active' : ''}" onclick="${setter}('${s}')">${SEASON_LABELS[s]}</button>
+    <button class="filter-pill ${current === s ? 'saison-active' : ''}" onclick="${setter}('${current === s ? 'all' : s}')">${SEASON_LABELS[s]}</button>
   `).join('')}</div>`;
 }
 
