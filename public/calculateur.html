@@ -336,6 +336,32 @@
   .filter-pill:hover { border-color: var(--mint); color: var(--ink); }
   .filter-pill.active { background: var(--ink); color: var(--white); border-color: var(--ink); }
 
+  /* ── BARRE FILTRES UNIFIÉE ── */
+  .filter-toolbar {
+    display: flex; align-items: stretch;
+    background: var(--white); border: 0.5px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 20px; overflow: hidden;
+  }
+  .filter-group { display: flex; flex-direction: column; gap: 8px; padding: 14px 20px; flex: 1; }
+  .filter-group + .filter-group { border-left: 0.5px solid var(--border); }
+  .filter-group-label {
+    font-size: 9px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ink-soft);
+  }
+  .filter-group-pills { display: flex; flex-wrap: wrap; gap: 4px; }
+  .fp {
+    padding: 4px 11px; border-radius: 99px; font-size: 12px; cursor: pointer;
+    border: 0.5px solid var(--border); background: transparent;
+    color: var(--ink-soft); font-family: 'DM Sans', sans-serif; transition: all 0.12s; line-height: 1.5;
+  }
+  .fp:hover { border-color: var(--mint); color: var(--ink); }
+  .fp.fp-on { background: var(--ink); color: var(--white); border-color: var(--ink); }
+  .fp.fp-season { background: var(--syrup-light); color: #8B4E20; border-color: var(--syrup); }
+  @media (max-width: 640px) {
+    .filter-toolbar { flex-direction: column; }
+    .filter-group + .filter-group { border-left: none; border-top: 0.5px solid var(--border); }
+  }
+
   /* ── TICKET DE CAISSE ── */
   .ticket-overlay {
     position: fixed; inset: 0; background: rgba(26,26,24,0.5);
@@ -1298,18 +1324,6 @@ async function loadAndRenderStock() {
   renderStock();
 }
 
-function filterBar(current, setter) {
-  return `<div class="filter-bar">${TIERS.map(t => `
-    <button class="filter-pill ${current === t ? 'active' : ''}" onclick="${setter}('${t}')">${TIER_LABELS[t]}</button>
-  `).join('')}</div>`;
-}
-
-function seasonFilterBar(current, setter) {
-  return `<div class="filter-bar" style="margin-top:-8px">${SEASONS.map(s => `
-    <button class="filter-pill ${current === s ? 'saison-active' : ''}" onclick="${setter}('${current === s ? 'all' : s}')">${SEASON_LABELS[s]}</button>
-  `).join('')}</div>`;
-}
-
 const SORT_OPTIONS = [
   { key: 'date-desc', label: 'Récent' },
   { key: 'date-asc',  label: 'Ancien' },
@@ -1317,10 +1331,35 @@ const SORT_OPTIONS = [
   { key: 'price-desc',label: 'Prix ↓' },
 ];
 
-function sortBar(current, setter) {
-  return `<div class="filter-bar" style="margin-top:-8px">${SORT_OPTIONS.map(o => `
-    <button class="filter-pill ${current === o.key ? 'active' : ''}" onclick="${setter}('${o.key}')">${o.label}</button>
-  `).join('')}</div>`;
+function filterBar(tierCur, tierSetter) {
+  return `<div class="filter-group">
+    <div class="filter-group-label">Gamme</div>
+    <div class="filter-group-pills">${TIERS.map(t =>
+      `<button class="fp ${tierCur === t ? 'fp-on' : ''}" onclick="${tierSetter}('${t}')">${TIER_LABELS[t]}</button>`
+    ).join('')}</div>
+  </div>`;
+}
+
+function seasonFilterBar(cur, setter) {
+  return `<div class="filter-group">
+    <div class="filter-group-label">Saison</div>
+    <div class="filter-group-pills">${SEASONS.map(s =>
+      `<button class="fp ${cur === s ? 'fp-season' : ''}" onclick="${setter}('${cur === s ? 'all' : s}')">${s}</button>`
+    ).join('')}</div>
+  </div>`;
+}
+
+function sortBar(cur, setter) {
+  return `<div class="filter-group">
+    <div class="filter-group-label">Trier</div>
+    <div class="filter-group-pills">${SORT_OPTIONS.map(o =>
+      `<button class="fp ${cur === o.key ? 'fp-on' : ''}" onclick="${setter}('${o.key}')">${o.label}</button>`
+    ).join('')}</div>
+  </div>`;
+}
+
+function toolbar(tier, tierSet, season, seasonSet, sort, sortSet) {
+  return `<div class="filter-toolbar">${filterBar(tier, tierSet)}${seasonFilterBar(season, seasonSet)}${sortBar(sort, sortSet)}</div>`;
 }
 
 function applySort(arr, sortKey) {
@@ -1381,7 +1420,7 @@ function renderStock() {
     </div>
   `).join('') + '</div>';
 
-  container.innerHTML = filterBar(stockFilter, 'setStockFilter') + seasonFilterBar(stockSeasonFilter, 'setStockSeasonFilter') + sortBar(stockSort, 'setStockSort') + cards;
+  container.innerHTML = toolbar(stockFilter, 'setStockFilter', stockSeasonFilter, 'setStockSeasonFilter', stockSort, 'setStockSort') + cards;
 }
 
 function setStockFilter(f) { stockFilter = f; renderStock(); }
@@ -1499,9 +1538,7 @@ function renderArchives() {
       <div class="archive-stat"><div class="archive-stat-val green">${fmt(totalBenef)}€</div><div class="archive-stat-lbl">Bénéfice</div></div>
       <div class="archive-stat"><div class="archive-stat-val">${avgMarginPct}%</div><div class="archive-stat-lbl">Marge moy.</div></div>
     </div>
-    ${filterBar(archiveFilter, 'setArchiveFilter')}
-    ${seasonFilterBar(archiveSeasonFilter, 'setArchiveSeasonFilter')}
-    ${sortBar(archiveSort, 'setArchiveSort')}
+    ${toolbar(archiveFilter, 'setArchiveFilter', archiveSeasonFilter, 'setArchiveSeasonFilter', archiveSort, 'setArchiveSort')}
     ${cards}`;
 }
 
