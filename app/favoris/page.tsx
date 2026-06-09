@@ -19,8 +19,8 @@ export default async function FavorisPage() {
   return (
     <>
       <Nav />
-      <PageArrow href="/projet" label="Le projet" direction="left" />
-      <RetourArrow direction="right" />
+      <RetourArrow direction="left" />
+      <PageArrow href="/projet" label="Le projet" direction="right" />
       <main className={styles.main}>
         <div className={styles.container}>
           <p className={styles.intro}>Je ne pouvais pas vous proposer ces fringues sans vous en dire plus sur ce qu&apos;elles m&apos;inspirent.</p>
