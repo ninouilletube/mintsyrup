@@ -160,8 +160,8 @@
 }
 
 .filterSizesFloat .filterSizeTag {
-  background: #FDE4EF;
-  box-shadow: 2px 2px 0 rgba(200,48,106,0.12);
+  background: rgba(240,168,32,0.3);
+  box-shadow: 2px 2px 0 rgba(58,24,8,0.08);
 }
 
 .filterSizesFloat .filterSizeTagActive {
@@ -171,20 +171,22 @@
 
 .filterSizeTag {
   padding: 0.18rem 0.55rem;
-  border: 1.5px solid #C8306A;
-  border-radius: 3px;
+  border: 1.5px solid var(--dark);
+  border-radius: 2px;
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.62rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: #C8306A;
-  background: #FDE4EF;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--dark);
+  background: rgba(240,168,32,0.3);
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
 }
 .filterSizeTag:hover {
-  background: #FBD0E4;
+  background: #FDE4EF;
+  border-color: #C8306A;
+  color: #C8306A;
 }
 .filterSizeTagActive {
   background: #C8306A;
