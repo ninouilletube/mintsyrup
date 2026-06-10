@@ -2129,6 +2129,36 @@ function renderEditCriteria() {
   // fixed travail row
   html += `<div class="edit-travail"><span>Temps de travail</span><span>+5€</span></div>`;
 
+  // adjustment
+  const adj = editBreakdown.adjustment || 0;
+  const adjBonus = adj > 0 ? adj : 0;
+  const adjMalus = adj < 0 ? -adj : 0;
+  html += `<div class="edit-travail" style="flex-direction:column;align-items:flex-start;gap:8px;padding-bottom:12px">
+    <span style="font-weight:600">Ajustement manuel</span>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <label style="font-size:10px;font-weight:600;color:var(--mint-dark);letter-spacing:0.04em;text-transform:uppercase">Bonus</label>
+        <div style="display:flex;align-items:center;gap:5px">
+          <button class="adj-btn" onclick="changeEditAdj('bonus',-1)">−</button>
+          <input type="number" id="edit-adj-bonus" value="${adjBonus}" min="0" max="50" step="1"
+            oninput="applyEditAdj()" style="width:48px;text-align:center;border:1px solid var(--border);border-radius:6px;padding:5px;font-size:13px;font-family:'DM Sans',sans-serif">
+          <button class="adj-btn" onclick="changeEditAdj('bonus',1)">+</button>
+          <span style="font-size:11px;color:var(--ink-soft)">€</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <label style="font-size:10px;font-weight:600;color:#C0392B;letter-spacing:0.04em;text-transform:uppercase">Malus</label>
+        <div style="display:flex;align-items:center;gap:5px">
+          <button class="adj-btn" onclick="changeEditAdj('malus',-1)">−</button>
+          <input type="number" id="edit-adj-malus" value="${adjMalus}" min="0" max="50" step="1"
+            oninput="applyEditAdj()" style="width:48px;text-align:center;border:1px solid var(--border);border-radius:6px;padding:5px;font-size:13px;font-family:'DM Sans',sans-serif">
+          <button class="adj-btn" onclick="changeEditAdj('malus',1)">+</button>
+          <span style="font-size:11px;color:var(--ink-soft)">€</span>
+        </div>
+      </div>
+    </div>
+  </div>`;
+
   // multi-select groups
   for (const g of EDIT_MULTI_GROUPS) {
     const opts = getGroupOptions(g.key);
@@ -2165,6 +2195,22 @@ function editSelectSingle(el) {
   editBreakdown[group] = { label: opts[idx].label, val: opts[idx].val };
   editExpandedGroup = null;
   renderEditCriteria();
+}
+
+function changeEditAdj(type, delta) {
+  const el = document.getElementById('edit-adj-' + type);
+  if (!el) return;
+  el.value = Math.max(0, Math.min(50, (parseFloat(el.value) || 0) + delta));
+  applyEditAdj();
+}
+
+function applyEditAdj() {
+  const b = Math.abs(parseFloat(document.getElementById('edit-adj-bonus')?.value) || 0);
+  const m = Math.abs(parseFloat(document.getElementById('edit-adj-malus')?.value) || 0);
+  editBreakdown.adjustment = b - m;
+  const price = calcEditPrice();
+  const el = document.querySelector('.edit-price-preview-val');
+  if (el) el.textContent = price !== null ? price + '€' : '—';
 }
 
 function editToggleBonus(el) {
