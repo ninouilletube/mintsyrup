@@ -980,6 +980,37 @@ const sb = createClient(
 
 let currentImageData = null;
 let stock = [];
+
+function compressImage(dataUrl, maxW = 1000, quality = 0.78) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      let { width: w, height: h } = img;
+      if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(c.toDataURL('image/jpeg', quality));
+    };
+    img.src = dataUrl;
+  });
+}
+
+async function imageForStorage(dataUrl) {
+  if (!dataUrl) return null;
+  const compressed = await compressImage(dataUrl);
+  try {
+    const res = await fetch(compressed);
+    const blob = await res.blob();
+    const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`;
+    const { data, error } = await sb.storage.from('stock-images').upload(filename, blob, { contentType: 'image/jpeg' });
+    if (error) throw error;
+    return sb.storage.from('stock-images').getPublicUrl(data.path).data.publicUrl;
+  } catch(e) {
+    console.warn('Storage upload failed, fallback base64', e);
+    return compressed;
+  }
+}
 let editMode = false;
 let stockFilter = 'all';
 let archiveFilter = 'all';
@@ -990,6 +1021,7 @@ let archiveSort = 'date-desc';
 let selectedSaisonVal = [];
 let editArticleId = null;
 let editImageData = null;
+let editImageChanged = false;
 let editBreakdown = null;
 let editExpandedGroup = null;
 
@@ -1462,8 +1494,9 @@ async function saveArticle() {
     travail: 5,
   };
 
+  const imageUrl = await imageForStorage(currentImageData);
   const { data: inserted, error } = await sb.from('mintsyrup_stock').insert([{
-    nom, price, achat, margin, tier, image: currentImageData, breakdown, saison: selectedSaisonVal.length > 0 ? selectedSaisonVal : null
+    nom, price, achat, margin, tier, image: imageUrl, breakdown, saison: selectedSaisonVal.length > 0 ? selectedSaisonVal : null
   }]).select();
 
   if (error) {
@@ -1518,7 +1551,27 @@ async function loadStock() {
 
 async function loadArticleImage(id) {
   const { data } = await sb.from('mintsyrup_stock').select('image').eq('id', id).single();
-  return data?.image || null;
+  const image = data?.image || null;
+  if (image) { const idx = stock.findIndex(s => s.id === id); if (idx !== -1) stock[idx].image = image; }
+  return image;
+}
+
+async function lazyLoadCardImages(ids) {
+  const BATCH = 6;
+  for (let i = 0; i < ids.length; i += BATCH) {
+    const batch = ids.slice(i, i + BATCH);
+    const { data } = await sb.from('mintsyrup_stock').select('id, image').in('id', batch);
+    if (!data) continue;
+    data.forEach(row => {
+      if (!row.image) return;
+      const idx = stock.findIndex(s => s.id === row.id);
+      if (idx !== -1) stock[idx].image = row.image;
+      const slot = document.getElementById(`card-img-${row.id}`);
+      if (!slot) return;
+      slot.innerHTML = `<img src="${row.image}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:inherit">`;
+      slot.style.background = 'none';
+    });
+  }
 }
 
 async function loadAndRenderStock() {
@@ -1612,9 +1665,7 @@ function renderStock() {
     <div class="stock-card" style="cursor:pointer" onclick="openTicket(${a.id}, false)">
       <span class="stock-card-tier ${tierClass[a.tier] || 'sc-mid'}">${a.tier}</span>
       <button class="stock-card-delete" onclick="event.stopPropagation();deleteArticle(${a.id})" title="Supprimer">×</button>
-      ${a.image
-        ? `<div class="stock-card-img"><img src="${a.image}" alt="${a.nom}"></div>`
-        : `<div class="stock-card-img-placeholder"><svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>`
+      <div class="stock-card-img-placeholder" id="card-img-${a.id}"><svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
       }
       <div class="stock-card-body">
         <div class="stock-card-name">${a.nom}</div>
@@ -1629,6 +1680,7 @@ function renderStock() {
   `).join('') + '</div>';
 
   container.innerHTML = toolbar(stockFilter, 'setStockFilter', stockSeasonFilter, 'setStockSeasonFilter', stockSort, 'setStockSort') + cards;
+  lazyLoadCardImages(filtered.map(a => a.id));
 }
 
 function setStockFilter(f) { stockFilter = f; renderStock(); }
@@ -1724,10 +1776,7 @@ function renderArchives() {
         return `
           <div class="archive-card" style="cursor:pointer" onclick="openTicket(${a.id}, true)">
             <span class="archive-sold-badge">Vendu</span>
-            ${a.image
-              ? `<div class="archive-card-img"><img src="${a.image}" alt="${a.nom}"></div>`
-              : `<div class="archive-card-img"><svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>`
-            }
+            <div class="archive-card-img" id="card-img-${a.id}"><svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg></div>
             <div class="archive-card-body">
               <div class="archive-card-name">${a.nom}</div>
               <div class="archive-card-row">
@@ -1749,6 +1798,7 @@ function renderArchives() {
     </div>
     ${toolbar(archiveFilter, 'setArchiveFilter', archiveSeasonFilter, 'setArchiveSeasonFilter', archiveSort, 'setArchiveSort')}
     ${cards}`;
+  lazyLoadCardImages(filtered.map(a => a.id));
 }
 
 function setArchiveFilter(f) { archiveFilter = f; renderArchives(); }
@@ -1996,6 +2046,7 @@ function openEditModal(id) {
   if (!a) return;
   editArticleId = id;
   editImageData = null;
+  editImageChanged = false;
   editExpandedGroup = null;
   editBreakdown = a.breakdown ? JSON.parse(JSON.stringify(a.breakdown)) : null;
 
@@ -2054,6 +2105,7 @@ function handleEditImage(e) {
   const reader = new FileReader();
   reader.onload = ev => {
     editImageData = ev.target.result;
+    editImageChanged = true;
     const preview = document.getElementById('edit-img-preview');
     preview.src = editImageData;
     preview.style.display = 'block';
@@ -2082,6 +2134,11 @@ async function saveEdit() {
   const btn = document.querySelector('#edit-article-modal .modal-confirm');
   btn.disabled = true; btn.textContent = 'Enregistrement…';
 
+  let imageToSave = editImageData;
+  if (editImageChanged && editImageData && editImageData.startsWith('data:')) {
+    imageToSave = await imageForStorage(editImageData);
+  }
+
   const newPrice  = editBreakdown ? calcEditPrice() : null;
   const newMargin = newPrice !== null ? Math.round(newPrice - achat - newPrice * 0.08) : null;
 
@@ -2089,7 +2146,7 @@ async function saveEdit() {
     nom: nom || 'Article sans nom',
     achat,
     saison,
-    image: editImageData,
+    image: imageToSave,
   };
   if (editBreakdown && newPrice !== null) {
     updateData.breakdown = editBreakdown;
