@@ -369,6 +369,12 @@
   .fp:hover { border-color: var(--mint); color: var(--ink); }
   .fp.fp-on { background: var(--ink); color: var(--white); border-color: var(--ink); }
   .fp.fp-season { background: var(--syrup-light); color: #8B4E20; border-color: var(--syrup); }
+  .fp.fp-status-scheduled { background: var(--syrup-light); color: #8B4E20; border-color: var(--syrup); }
+  .fp.fp-status-online { background: #E6F7F1; color: var(--mint-dark); border-color: var(--mint); }
+  .stock-card-status { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; padding: 2px 8px; border-radius: 99px; font-size: 10px; font-weight: 500; cursor: pointer; border: 1px solid; transition: all 0.15s; user-select: none; background: none; font-family: 'DM Sans', sans-serif; }
+  .stock-card-status.sc-status-none { background: var(--cream); color: var(--ink-soft); border-color: var(--border); }
+  .stock-card-status.sc-status-scheduled { background: var(--syrup-light); color: #8B4E20; border-color: var(--syrup); }
+  .stock-card-status.sc-status-online { background: #E6F7F1; color: var(--mint-dark); border-color: var(--mint); }
   @media (max-width: 640px) {
     .filter-toolbar { flex-direction: column; }
     .filter-group + .filter-group { border-left: none; border-top: 0.5px solid var(--border); }
@@ -1006,6 +1012,7 @@ let archiveFilter = 'all';
 let stockSeasonFilter = 'all';
 let archiveSeasonFilter = 'all';
 let stockSort = 'date-desc';
+let stockStatusFilter = 'all';
 let archiveSort = 'date-desc';
 let selectedSaisonVal = [];
 let editArticleId = null;
@@ -1535,7 +1542,7 @@ function updateArchiveBadge() {
   b.textContent = sold.length > 0 ? ' (' + sold.length + ')' : '';
 }
 
-const STOCK_COLS = 'id, nom, price, achat, margin, tier, breakdown, saison, sold, sold_price, sold_at, created_at, image';
+const STOCK_COLS = 'id, nom, price, achat, margin, tier, breakdown, saison, sold, sold_price, sold_at, created_at, image, status';
 
 async function migrateOldImages() {
   const { data: ids } = await sb.from('mintsyrup_stock').select('id');
@@ -1615,8 +1622,23 @@ function sortBar(cur, setter) {
   </div>`;
 }
 
+const STATUS_OPTIONS = [
+  { key: 'none',      label: 'Non programmé', cls: ''                    },
+  { key: 'scheduled', label: 'Programmé',     cls: 'fp-status-scheduled' },
+  { key: 'online',    label: 'En ligne',      cls: 'fp-status-online'    },
+];
+
+function statusFilterBar(cur) {
+  return `<div class="filter-group">
+    <div class="filter-group-label">Statut</div>
+    <div class="filter-group-pills">${STATUS_OPTIONS.map(o =>
+      `<button class="fp ${cur === o.key ? (o.cls || 'fp-on') : ''}" onclick="setStockStatusFilter('${cur === o.key ? 'all' : o.key}')">${o.label}</button>`
+    ).join('')}</div>
+  </div>`;
+}
+
 function toolbar(tier, tierSet, season, seasonSet, sort, sortSet) {
-  return `<div class="filter-toolbar">${filterBar(tier, tierSet)}${seasonFilterBar(season, seasonSet)}${sortBar(sort, sortSet)}</div>`;
+  return `<div class="filter-toolbar">${filterBar(tier, tierSet)}${seasonFilterBar(season, seasonSet)}${statusFilterBar(stockStatusFilter)}${sortBar(sort, sortSet)}</div>`;
 }
 
 function applySort(arr, sortKey) {
@@ -1635,7 +1657,8 @@ function renderStock() {
   const filtered  = applySort(active.filter(a => {
     const tierOk   = stockFilter === 'all' || a.tier === stockFilter;
     const seasonOk = stockSeasonFilter === 'all' || getSaisons(a).includes(stockSeasonFilter.normalize('NFC'));
-    return tierOk && seasonOk;
+    const statusOk = stockStatusFilter === 'all' || (stockStatusFilter === 'none' ? !a.status : a.status === stockStatusFilter);
+    return tierOk && seasonOk && statusOk;
   }), stockSort);
 
   if (active.length === 0) {
@@ -1672,6 +1695,7 @@ function renderStock() {
           <div class="stock-card-margin">${a.margin}€ net</div>
         </div>
         ${a.achat > 0 ? `<div class="stock-card-achat">Acheté ${parseFloat(a.achat).toFixed(2)}€</div>` : ''}
+        <button class="stock-card-status ${!a.status ? 'sc-status-none' : a.status === 'scheduled' ? 'sc-status-scheduled' : 'sc-status-online'}" onclick="event.stopPropagation();saveArticleStatus(${a.id})" title="Changer le statut">${!a.status ? '○ Non programmé' : a.status === 'scheduled' ? '◐ Programmé' : '● En ligne'}</button>
       </div>
       <button class="stock-card-sold-btn" onclick="event.stopPropagation();openSoldModal(${a.id}, '${a.nom.replace(/'/g,"\\'")}', ${a.price})">Vendu ✓</button>
     </div>
@@ -1683,6 +1707,17 @@ function renderStock() {
 function setStockFilter(f) { stockFilter = f; renderStock(); }
 function setStockSeasonFilter(f) { stockSeasonFilter = f; renderStock(); }
 function setStockSort(s) { stockSort = s; renderStock(); }
+function setStockStatusFilter(f) { stockStatusFilter = f; renderStock(); }
+
+async function saveArticleStatus(id) {
+  const idx = stock.findIndex(a => a.id === id);
+  if (idx === -1) return;
+  const cur = stock[idx].status;
+  const next = !cur ? 'scheduled' : cur === 'scheduled' ? 'online' : null;
+  stock[idx].status = next;
+  renderStock();
+  await sb.from('mintsyrup_stock').update({ status: next }).eq('id', id);
+}
 
 function resetAll() {
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('selected-radio','selected-check'));
