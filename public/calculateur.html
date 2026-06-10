@@ -1448,9 +1448,9 @@ async function saveArticle() {
     travail: 5,
   };
 
-  const { error } = await sb.from('mintsyrup_stock').insert([{
+  const { data: inserted, error } = await sb.from('mintsyrup_stock').insert([{
     nom, price, achat, margin, tier, image: currentImageData, breakdown, saison: selectedSaisonVal.length > 0 ? selectedSaisonVal : null
-  }]);
+  }]).select();
 
   if (error) {
     showToast('Erreur — ' + (error.message || error.code));
@@ -1459,7 +1459,7 @@ async function saveArticle() {
     return;
   }
 
-  await loadStock();
+  if (inserted && inserted.length > 0) stock.unshift(inserted[0]);
   updateBadge();
   showToast('Article ajouté au stock ✓');
   resetAll();
@@ -2066,7 +2066,9 @@ async function saveEdit() {
   }
 
   const savedId = String(editArticleId);
-  await loadStock();
+  const updatedRow = data[0];
+  const idx = stock.findIndex(s => String(s.id) === savedId);
+  if (idx !== -1) stock[idx] = updatedRow; else stock.unshift(updatedRow);
 
   const page = document.getElementById('page-stock').classList.contains('active') ? 'stock' : 'archives';
   if (page === 'stock') renderStock(); else renderArchives();
@@ -2075,8 +2077,7 @@ async function saveEdit() {
 
   // Rafraîchir le ticket si encore ouvert
   if (document.getElementById('ticket-modal').style.display !== 'none') {
-    const updated = stock.find(s => String(s.id) === savedId);
-    if (updated) openTicket(updated.id, !!updated.sold);
+    if (updatedRow) openTicket(updatedRow.id, !!updatedRow.sold);
   }
 
   showToast('Article modifié ✓');
