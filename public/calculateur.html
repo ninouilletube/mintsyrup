@@ -694,15 +694,15 @@
     <div class="card">
       <div class="card-title">État</div>
       <div class="pill-grid" id="etat">
-        <div class="pill" data-group="etat" data-val="-2">Mauvais (-2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="etat" data-val="1">Satisfaisant (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="etat" data-val="2">Bon état (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="etat" data-val="5">Neuf (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="etat" data-multi="1" data-val="-2">Mauvais (-2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="etat" data-multi="1" data-val="1">Satisfaisant (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="etat" data-multi="1" data-val="2">Bon état (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="etat" data-multi="1" data-val="5">Neuf (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
       <div class="add-section-row">
         <input type="text" id="add-nom-etat" placeholder="Nouveau critère">
         <input type="number" id="add-val-etat" placeholder="€" step="1">
-        <button class="add-section-btn" onclick="addCustomPill('etat', false)">+</button>
+        <button class="add-section-btn" onclick="addCustomPill('etat', true)">+</button>
       </div>
     </div>
 
@@ -1352,7 +1352,7 @@ function calc() {
   }
 
   const cat    = getRadioVal('categorie') || 0;
-  const etat   = getRadioVal('etat') || 0;
+  const etat   = getMultiSum('etat');
   const mat    = getRadioVal('matiere') || 0;
   const taille = getRadioVal('taille') || 0;
   const bonus  = getMultiSum('coupe') + getMultiSum('couleur') + getMultiSum('details') + getMultiSum('motif') + getMultiSum('style');
@@ -1470,7 +1470,7 @@ async function saveArticle() {
   const breakdown = {
     type:      { label: pillLabel('type'),      val: getRadioVal('type') || 0 },
     categorie: { label: pillLabel('categorie'), val: getRadioVal('categorie') || 0 },
-    etat:      { label: pillLabel('etat'),      val: getRadioVal('etat') || 0 },
+    etat:      { label: multiLabels('etat').join(', ') || null, val: getMultiSum('etat') },
     matiere:   { label: pillLabel('matiere'),   val: getRadioVal('matiere') || 0 },
     taille:    { label: pillLabel('taille'),    val: getRadioVal('taille') || 0 },
     bonus: [
