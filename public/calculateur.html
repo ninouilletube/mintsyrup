@@ -1359,7 +1359,7 @@ async function saveEditPill() {
     if (changed) {
       matchCount++;
       const newPrice = calcPriceFromBd(bd);
-      const newMargin = newPrice !== null ? Math.round(newPrice - (article.achat||0) - newPrice * 0.08) : article.margin;
+      const newMargin = newPrice !== null ? Math.round(newPrice - (article.achat||0)) : article.margin;
       const { error } = await sb.from('mintsyrup_stock').update({
         breakdown: bd, price: newPrice || article.price, margin: newMargin
       }).eq('id', article.id);
@@ -1562,7 +1562,7 @@ async function saveArticle() {
   const price  = parseInt(document.getElementById('result-price').textContent);
   const nom    = document.getElementById('nom').value.trim() || 'Article sans nom';
   const tier   = document.getElementById('tier-badge').textContent;
-  const margin = Math.round(price - achat - price * 0.08);
+  const margin = Math.round(price - achat);
 
   const pillLabel = (group) => {
     const el = document.querySelector(`.pill[data-group="${group}"].selected-radio`);
@@ -2326,7 +2326,7 @@ async function saveEdit() {
   }
 
   const newPrice  = editBreakdown ? calcEditPrice() : null;
-  const newMargin = newPrice !== null ? Math.round(newPrice - achat - newPrice * 0.08) : null;
+  const newMargin = newPrice !== null ? Math.round(newPrice - achat) : null;
 
   const updateData = {
     nom: nom || 'Article sans nom',
