@@ -1083,6 +1083,16 @@ function toggleEditMode() {
 }
 
 // ── Navigation ──
+let stockLoaded = false;
+let stockLoadingPromise = null;
+
+function ensureStockLoaded() {
+  if (!stockLoadingPromise) {
+    stockLoadingPromise = loadStock().then(() => { stockLoaded = true; updateBadge(); updateArchiveBadge(); });
+  }
+  return stockLoadingPromise;
+}
+
 function showPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -1090,8 +1100,8 @@ function showPage(id) {
   const tab = document.querySelector(`.nav-tab[data-page="${id}"]`);
   if (tab) tab.classList.add('active');
   history.replaceState(null, '', '#' + id);
-  if (id === 'stock') loadAndRenderStock();
-  if (id === 'archives') loadAndRenderArchives();
+  if (id === 'stock') { if (stockLoaded) renderStock(); else loadAndRenderStock(); }
+  if (id === 'archives') { if (stockLoaded) renderArchives(); else loadAndRenderArchives(); }
 }
 
 // ── Pill interactions ──
@@ -1501,7 +1511,7 @@ async function loadStock() {
 
 async function loadAndRenderStock() {
   document.getElementById('stock-content').innerHTML = '<div class="loading-overlay">Chargement…</div>';
-  await loadStock();
+  await ensureStockLoaded();
   renderStock();
 }
 
@@ -1653,7 +1663,8 @@ async function confirmSold() {
   if (error) { showToast('Erreur — ' + (error.message || error.code)); return; }
 
   closeSoldModal();
-  await loadStock();
+  const soldIdx = stock.findIndex(a => a.id === soldModalId);
+  if (soldIdx !== -1) stock[soldIdx] = { ...stock[soldIdx], sold: true, sold_price: soldPrice, sold_at: new Date().toISOString() };
   renderStock();
   updateBadge();
   updateArchiveBadge();
@@ -1663,7 +1674,7 @@ async function confirmSold() {
 // ── Archives ──
 async function loadAndRenderArchives() {
   document.getElementById('archive-content').innerHTML = '<div class="loading-overlay">Chargement…</div>';
-  await loadStock();
+  await ensureStockLoaded();
   renderArchives();
 }
 
@@ -1734,7 +1745,7 @@ async function resetStock() {
   const ids = active.map(a => a.id);
   const { error } = await sb.from('mintsyrup_stock').delete().in('id', ids);
   if (error) { showToast('Erreur — ' + (error.message || error.code)); return; }
-  await loadStock();
+  stock = stock.filter(a => a.sold);
   renderStock();
   updateBadge();
   showToast('Stock réinitialisé');
@@ -1747,7 +1758,7 @@ async function resetArchives() {
   const ids = sold.map(a => a.id);
   const { error } = await sb.from('mintsyrup_stock').delete().in('id', ids);
   if (error) { showToast('Erreur — ' + (error.message || error.code)); return; }
-  await loadStock();
+  stock = stock.filter(a => !a.sold);
   renderArchives();
   updateArchiveBadge();
   showToast('Archives réinitialisées');
@@ -2130,6 +2141,8 @@ async function init() {
   applyDeletedDefaults();
   restoreCustomCriteria();
   addEditButtons();
+  // Pré-charger le stock en background dès le démarrage
+  ensureStockLoaded();
   const hash = window.location.hash.replace('#', '');
   const page = ['calc', 'stock', 'archives'].includes(hash) ? hash : 'calc';
   showPage(page);
