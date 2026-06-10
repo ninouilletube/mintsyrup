@@ -1278,16 +1278,15 @@ async function saveEditPill() {
   // 2. Mettre à jour les articles du stock
   await ensureStockLoaded();
   const affected = stock.filter(a => !a.sold && a.breakdown);
-  const bd0 = affected.length > 0 ? (typeof affected[0].breakdown === 'string' ? JSON.parse(affected[0].breakdown) : affected[0].breakdown) : null;
-  showToast(`DEBUG — oldLabel: "${oldLabel}" | stock: ${stock.length} | avec bd: ${affected.length}${bd0 ? ` | bd.type.label: "${bd0.type?.label}"` : ''}`, 8000);
-  await new Promise(r => setTimeout(r, 8000));
+  const labelName = s => s ? s.replace(/\s*\([+-]?\d+(?:\.\d+)?€\)\s*$/, '').trim() : '';
+  const oldName = labelName(oldLabel);
   let updatedCount = 0;
   for (const article of affected) {
     const rawBd = typeof article.breakdown === 'string' ? JSON.parse(article.breakdown) : article.breakdown;
     const bd = JSON.parse(JSON.stringify(rawBd));
     let changed = false;
     for (const g of ['type','categorie','matiere','taille']) {
-      if (bd[g] && bd[g].label === oldLabel) {
+      if (bd[g] && labelName(bd[g].label) === oldName) {
         bd[g] = { label: newLabel, val: newVal };
         changed = true;
       }
@@ -1295,9 +1294,9 @@ async function saveEditPill() {
     // État est multi-select : le label est une chaîne jointe, on remplace le fragment
     if (bd.etat && bd.etat.label) {
       const parts = bd.etat.label.split(', ');
-      const idx = parts.indexOf(oldLabel);
+      const idx = parts.findIndex(p => labelName(p) === oldName);
       if (idx !== -1) {
-        const oldPartVal = parseFloat(oldLabel.match(/\(([+-]?\d+(?:\.\d+)?)€\)/)?.[1] || 0);
+        const oldPartVal = parseFloat(parts[idx].match(/\(([+-]?\d+(?:\.\d+)?)€\)/)?.[1] || 0);
         parts[idx] = newLabel;
         bd.etat = { label: parts.join(', '), val: bd.etat.val - oldPartVal + newVal };
         changed = true;
@@ -1305,7 +1304,7 @@ async function saveEditPill() {
     }
     if (bd.bonus) {
       bd.bonus = bd.bonus.map(b => {
-        if (b.label === oldLabel) { changed = true; return { ...b, label: newLabel }; }
+        if (labelName(b.label) === oldName) { changed = true; return { ...b, label: newLabel }; }
         return b;
       });
     }
@@ -1550,11 +1549,11 @@ async function deleteArticle(id) {
   updateBadge();
 }
 
-function showToast(msg, duration = 2200) {
+function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), duration);
+  setTimeout(() => t.classList.remove('show'), 2200);
 }
 
 function updateBadge() {
