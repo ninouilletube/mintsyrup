@@ -209,6 +209,14 @@
   }
   .add-section-btn:hover { opacity: 0.85; }
 
+  .adj-btn {
+    width: 28px; height: 28px; border: 1.5px solid var(--border);
+    border-radius: 6px; background: var(--white); cursor: pointer;
+    font-size: 16px; line-height: 1; display: flex; align-items: center; justify-content: center;
+    font-family: "DM Sans", sans-serif; transition: background 0.15s;
+  }
+  .adj-btn:hover { background: var(--cream); }
+
   .achat-row { display: flex; align-items: center; gap: 10px; }
   .achat-row input[type="number"] {
     width: 100px; padding: 8px 12px;
@@ -661,15 +669,16 @@
     <div class="card">
       <div class="card-title">Type d'article — base du prix</div>
       <div class="pill-grid" id="type">
-        <div class="pill" data-group="type" data-val="5">Sans valeur (5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="type" data-val="8">Fast fashion (8€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="type" data-val="10">Fast fashion mid (10€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="3">Sans valeur (3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="6">Fast fashion (6€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="9">Fast fashion mid (9€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="type" data-val="12">Fast fashion premium (12€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="type" data-val="15">Marque ok (15€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="type" data-val="18">Marque cool (18€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="type" data-val="20">Vintage (20€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="type" data-val="25">Vintage premium (25€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="type" data-val="30">Ultra rare (30€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="20">Marque cool (20€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="17">Vintage lambda (17€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="28">Vintage premium (28€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="42">Rare (42€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="type" data-val="55">Ultra rare (55€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
       <div class="add-section-row">
         <input type="text" id="add-nom-type" placeholder="Nouveau critère">
@@ -685,14 +694,15 @@
         <div class="pill" data-group="categorie" data-val="0">Accessoire (+0€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="categorie" data-val="2">Cardigan (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="categorie" data-val="2">Short (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="categorie" data-val="3">Jean (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="3">Pull (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="categorie" data-val="3">Jupe (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="categorie" data-val="3">Layer (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="categorie" data-val="4">Robe (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="categorie" data-val="4">Veste (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="categorie" data-val="4">Chaussures (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="categorie" data-val="4">Sac (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="categorie" data-val="5">Manteau (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="4">Pantalon (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="5">Chaussures (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="6">Robe (+6€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="7">Veste (+7€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="7">Sac (+7€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="categorie" data-val="9">Manteau (+9€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
       <div class="add-section-row">
         <input type="text" id="add-nom-categorie" placeholder="Nouveau critère">
@@ -704,8 +714,11 @@
     <div class="card">
       <div class="card-title">État</div>
       <div class="pill-grid" id="etat">
-        <div class="pill" data-group="etat" data-multi="1" data-val="-2">Mauvais (-2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="etat" data-multi="1" data-val="1">Satisfaisant (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="etat" data-multi="1" data-val="-5">Mauvais (-5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="etat" data-multi="1" data-val="-2">Légère usure (-2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="etat" data-multi="1" data-val="-2">Petits trous (-2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="etat" data-multi="1" data-val="-2">Petites tâches (-2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="etat" data-multi="1" data-val="0">Satisfaisant (+0€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="etat" data-multi="1" data-val="2">Bon état (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="etat" data-multi="1" data-val="5">Neuf (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
@@ -719,13 +732,15 @@
     <div class="card">
       <div class="card-title">Matière</div>
       <div class="pill-grid" id="matiere">
-        <div class="pill" data-group="matiere" data-val="0">Synthétique bof (+0€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="matiere" data-val="2">Synthétique quali (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="matiere" data-val="3">Mélange fibres naturelles bof (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="matiere" data-val="4">Mélange quali (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="matiere" data-val="5">100% naturel (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="-2">100% Synthétique (-2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="0">Synthétique quali (+0€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="1">Mélange fibres naturelles bof (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="2">Mélange quali (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="3">Rayonne/viscose/lyocell (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="4">100% coton/lin/laine (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="6">Soie/cachemire/alpaga (+6€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="matiere" data-val="10">Cuir (+10€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="matiere" data-val="15">Daim (+15€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="matiere" data-val="12">Daim (+12€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
       <div class="add-section-row">
         <input type="text" id="add-nom-matiere" placeholder="Nouveau critère">
@@ -737,7 +752,7 @@
     <div class="card">
       <div class="card-title">Taille</div>
       <div class="pill-grid" id="taille">
-        <div class="pill" data-group="taille" data-val="-2">Grande taille (-2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="taille" data-val="0">Grande taille (+0€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="taille" data-val="0">Taille moyenne (+0€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="taille" data-val="1">S (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="taille" data-val="2">XS (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
@@ -754,14 +769,15 @@
       <div class="pill-grid" id="coupe">
         <div class="pill" data-group="coupe" data-multi="1" data-val="2">Cache-cœur (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="coupe" data-multi="1" data-val="2">Jupe midi (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Dos nu (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Épaules dénudées (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Manches évasées (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="coupe" data-multi="1" data-val="2">Babydoll (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="coupe" data-multi="1" data-val="2">Asymétrique (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Ajusté (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Pantacourt (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="coupe" data-multi="1" data-val="2">Hanches ajustées (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="1">Dos nu (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="1">Épaules dénudées (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="1">Ajusté (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="1">Pantacourt (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="1">Hanches ajustées (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="1">Évasé (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="coupe" data-multi="1" data-val="1">Col bateau (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
       <div class="add-section-row">
         <input type="text" id="add-nom-coupe" placeholder="Nouveau critère">
@@ -771,14 +787,10 @@
     </div>
 
     <div class="card">
-      <div class="card-title">Couleur signature <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
+      <div class="card-title">Couleur <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
       <div class="pill-grid" id="couleur">
-        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Turquoise (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Prune (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Magenta (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="couleur" data-multi="1" data-val="3">Jaune beurre (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="couleur" data-multi="1" data-val="2">Pistache (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="couleur" data-multi="1" data-val="2">Burgundy (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="2">Couleur tendance (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="couleur" data-multi="1" data-val="1">Couleur appréciée (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
       <div class="add-section-row">
         <input type="text" id="add-nom-couleur" placeholder="Nouveau critère">
@@ -790,13 +802,19 @@
     <div class="card">
       <div class="card-title">Détails & effets <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
       <div class="pill-grid" id="details">
-        <div class="pill" data-group="details" data-multi="1" data-val="4">Œillets (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="details" data-multi="1" data-val="4">Sequins (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="details" data-multi="1" data-val="6">Broderies (+6€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="details" data-multi="1" data-val="6">Perles (+6€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="details" data-multi="1" data-val="4">Velours côtelé (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="details" data-multi="1" data-val="2">Drapé (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="4">Jacquard (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="3">Broderies (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="3">Perles (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="3">Fourrure (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="2">Dentelle (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="details" data-multi="1" data-val="2">Transparence (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="2">Velours côtelé (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="2">Drapé (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="2">Œillets (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="1">Boutons (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="1">Coutures apparentes (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="details" data-multi="1" data-val="1">Cordons (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
       <div class="add-section-row">
         <input type="text" id="add-nom-details" placeholder="Nouveau critère">
@@ -808,11 +826,13 @@
     <div class="card">
       <div class="card-title">Motif <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
       <div class="pill-grid" id="motif">
-        <div class="pill" data-group="motif" data-multi="1" data-val="4">Rayé (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="motif" data-multi="1" data-val="5">Pois (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="motif" data-multi="1" data-val="4">Paisley (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="motif" data-multi="1" data-val="4">Fleuri (+4€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="motif" data-multi="1" data-val="5">Fun (+5€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="2">Pois (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="2">Fun (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="2">Biche (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="2">Fleurs (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="2">Rayé (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="1">Paisley (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="motif" data-multi="1" data-val="1">Léopard (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
       <div class="add-section-row">
         <input type="text" id="add-nom-motif" placeholder="Nouveau critère">
@@ -824,18 +844,47 @@
     <div class="card">
       <div class="card-title">Style <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
       <div class="pill-grid" id="style">
-        <div class="pill" data-group="style" data-multi="1" data-val="2">Edgy (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="style" data-multi="1" data-val="2">Très féminin (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="style" data-multi="1" data-val="2">Bohème (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="style" data-multi="1" data-val="2">Y2K (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Très féminin (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Sirène (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="2">Trendy (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="style" data-multi="1" data-val="2">70's (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="style" data-multi="1" data-val="2">Cottage (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="style" data-multi="1" data-val="3">Sirène (+3€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="1">Edgy (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="1">Bohème (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="1">Cottage (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="1">90's (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="1">80's (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
+        <div class="pill" data-group="style" data-multi="1" data-val="1">Inspiration Asiatique (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
       <div class="add-section-row">
         <input type="text" id="add-nom-style" placeholder="Nouveau critère">
         <input type="number" id="add-val-style" placeholder="€" step="1">
         <button class="add-section-btn" onclick="addCustomPill('style', true)">+</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Ajustement manuel</div>
+      <p style="font-size:12px;color:var(--ink-soft);margin:0 0 12px">Si le prix calculé ne te semble pas juste, tu peux l'ajuster manuellement.</p>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px">
+          <label style="font-size:11px;font-weight:600;color:var(--mint-dark);letter-spacing:0.04em;text-transform:uppercase">Bonus</label>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button class="adj-btn" onclick="changeAdj('bonus', -1)">−</button>
+            <input type="number" id="adj-bonus" value="0" min="0" max="50" step="1" oninput="calc()" style="width:56px;text-align:center;border:1px solid var(--border);border-radius:6px;padding:6px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--white)">
+            <button class="adj-btn" onclick="changeAdj('bonus', 1)">+</button>
+            <span style="font-size:12px;color:var(--ink-soft)">€</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:120px">
+          <label style="font-size:11px;font-weight:600;color:#C0392B;letter-spacing:0.04em;text-transform:uppercase">Malus</label>
+          <div style="display:flex;align-items:center;gap:6px">
+            <button class="adj-btn" onclick="changeAdj('malus', -1)">−</button>
+            <input type="number" id="adj-malus" value="0" min="0" max="50" step="1" oninput="calc()" style="width:56px;text-align:center;border:1px solid var(--border);border-radius:6px;padding:6px;font-size:14px;font-family:'DM Sans',sans-serif;background:var(--white)">
+            <button class="adj-btn" onclick="changeAdj('malus', 1)">+</button>
+            <span style="font-size:12px;color:var(--ink-soft)">€</span>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -855,6 +904,7 @@
         <div class="breakdown-row"><span>Taille</span><span class="val" id="bd-taille">—</span></div>
         <div class="breakdown-row"><span>Bonus</span><span class="val" id="bd-bonus">—</span></div>
         <div class="breakdown-row"><span>Temps de travail</span><span class="val">+5€</span></div>
+        <div class="breakdown-row" id="bd-adj-row" style="display:none"><span>Ajustement</span><span class="val" id="bd-adj">—</span></div>
         <div class="breakdown-row" style="border-top:0.5px solid rgba(255,255,255,0.2);margin-top:4px;padding-top:10px;">
           <span style="color:rgba(255,255,255,0.8)">Total</span>
           <span class="val" id="bd-total">—</span>
@@ -1236,7 +1286,7 @@ function calcPriceFromBd(bd) {
     const m = b.label.match(/\(([+-]?\d+)€\)/);
     return s + (m ? parseInt(m[1]) : 0);
   }, 0);
-  return Math.max((bd.type?.val||0)+(bd.categorie?.val||0)+(bd.etat?.val||0)+(bd.matiere?.val||0)+(bd.taille?.val||0)+bonus+5, 5);
+  return Math.max((bd.type?.val||0)+(bd.categorie?.val||0)+(bd.etat?.val||0)+(bd.matiere?.val||0)+(bd.taille?.val||0)+bonus+(bd.adjustment||0)+5, 5);
 }
 
 async function saveEditPill() {
@@ -1393,8 +1443,11 @@ function calc() {
   const mat    = getRadioVal('matiere') || 0;
   const taille = getRadioVal('taille') || 0;
   const bonus  = getMultiSum('coupe') + getMultiSum('couleur') + getMultiSum('details') + getMultiSum('motif') + getMultiSum('style');
+  const adjBonus = Math.abs(parseFloat(document.getElementById('adj-bonus').value) || 0);
+  const adjMalus = Math.abs(parseFloat(document.getElementById('adj-malus').value) || 0);
+  const adjustment = adjBonus - adjMalus;
 
-  const total = type + cat + etat + mat + taille + bonus + 5;
+  const total = type + cat + etat + mat + taille + bonus + adjustment + 5;
   const final = Math.max(total, 5);
 
   document.getElementById('result-price').textContent = final + '€';
@@ -1402,9 +1455,16 @@ function calc() {
   document.getElementById('bd-type').textContent = type + '€';
   document.getElementById('bd-cat').textContent = (cat >= 0 ? '+' : '') + cat + '€';
   document.getElementById('bd-etat').textContent = etat !== 0 ? (etat > 0 ? '+' : '') + etat + '€' : '—';
-  document.getElementById('bd-mat').textContent = mat !== 0 ? '+' + mat + '€' : '—';
+  document.getElementById('bd-mat').textContent = mat !== 0 ? (mat >= 0 ? '+' : '') + mat + '€' : '—';
   document.getElementById('bd-taille').textContent = (taille >= 0 ? '+' : '') + taille + '€';
   document.getElementById('bd-bonus').textContent = bonus > 0 ? '+' + bonus + '€' : '—';
+  const adjRow = document.getElementById('bd-adj-row');
+  if (adjustment !== 0) {
+    adjRow.style.display = '';
+    document.getElementById('bd-adj').textContent = (adjustment > 0 ? '+' : '') + adjustment + '€';
+  } else {
+    adjRow.style.display = 'none';
+  }
   document.getElementById('bd-total').textContent = final + '€';
 
   const badge = document.getElementById('tier-badge');
@@ -1420,6 +1480,13 @@ function calc() {
 }
 
 document.getElementById('achat').addEventListener('input', calc);
+
+function changeAdj(type, delta) {
+  const el = document.getElementById('adj-' + type);
+  const cur = Math.abs(parseFloat(el.value) || 0);
+  el.value = Math.max(0, Math.min(50, cur + delta));
+  calc();
+}
 
 // ── Ajouter un critère custom ──
 function addCustomPill(group, isMulti) {
@@ -1518,6 +1585,11 @@ async function saveArticle() {
       ...multiLabels('style').map(l => ({ label: l, group: 'Style' })),
     ],
     travail: 5,
+    adjustment: (() => {
+      const b = Math.abs(parseFloat(document.getElementById('adj-bonus').value) || 0);
+      const m = Math.abs(parseFloat(document.getElementById('adj-malus').value) || 0);
+      return b - m;
+    })(),
   };
 
   const imageUrl = await imageForStorage(currentImageData);
@@ -1760,6 +1832,9 @@ function resetAll() {
   document.getElementById('warning').classList.remove('visible');
   document.getElementById('save-btn').disabled = true;
   document.getElementById('save-btn').textContent = 'Ajouter au stock';
+  document.getElementById('adj-bonus').value = '0';
+  document.getElementById('adj-malus').value = '0';
+  document.getElementById('bd-adj-row').style.display = 'none';
   selectedSaisonVal = [];
   document.querySelectorAll('.saison-pill-grid:not(#edit-saison-pills) .saison-pill').forEach(p => p.classList.remove('selected'));
 }
@@ -2014,7 +2089,7 @@ function calcEditPrice() {
   }, 0);
   return Math.max(
     (bd.type?.val||0) + (bd.categorie?.val||0) + (bd.etat?.val||0) +
-    (bd.matiere?.val||0) + (bd.taille?.val||0) + bonus + 5, 5
+    (bd.matiere?.val||0) + (bd.taille?.val||0) + bonus + (bd.adjustment||0) + 5, 5
   );
 }
 
