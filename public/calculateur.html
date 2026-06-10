@@ -1245,7 +1245,6 @@ async function saveEditPill() {
   const newVal = parseFloat(document.getElementById('edit-pill-val').value);
   if (!newNom || isNaN(newVal)) return;
 
-  try {
   const pill = editingPillEl;
   const group = pill.dataset.group;
   const isMulti = pill.dataset.multi === '1';
@@ -1329,19 +1328,7 @@ async function saveEditPill() {
 
   btn.disabled = false; btn.textContent = 'Enregistrer';
   closeEditPill();
-  if (updatedCount > 0) {
-    showToast(`Critère modifié — ${updatedCount} article(s) mis à jour`);
-  } else if (matchCount > 0) {
-    showToast(`${matchCount} article(s) trouvé(s) mais erreur Supabase — voir console`);
-  } else {
-    showToast(`Critère modifié ✓ (0 articles avec ce critère)`);
-  }
-  } catch(err) {
-    document.getElementById('edit-pill-confirm').disabled = false;
-    document.getElementById('edit-pill-confirm').textContent = 'Enregistrer';
-    showToast('Erreur — ' + (err?.message || String(err)));
-    console.error('[saveEditPill]', err);
-  }
+  showToast(updatedCount > 0 ? `Critère modifié — ${updatedCount} article(s) mis à jour` : 'Critère modifié ✓');
 }
 
 // ── Image ──
