@@ -1278,6 +1278,12 @@ async function saveEditPill() {
   // 2. Mettre à jour les articles du stock
   await ensureStockLoaded();
   const affected = stock.filter(a => !a.sold && a.breakdown);
+  console.log('[saveEditPill] oldLabel:', JSON.stringify(oldLabel));
+  console.log('[saveEditPill] stock total:', stock.length, '| avec breakdown:', affected.length);
+  if (affected.length > 0) {
+    const bd0 = affected[0].breakdown;
+    console.log('[saveEditPill] premier article breakdown:', JSON.stringify({ type: bd0.type, categorie: bd0.categorie, etat: bd0.etat, matiere: bd0.matiere, taille: bd0.taille }));
+  }
   let updatedCount = 0;
   for (const article of affected) {
     const bd = JSON.parse(JSON.stringify(article.breakdown));
