@@ -1279,8 +1279,8 @@ async function saveEditPill() {
   await ensureStockLoaded();
   const affected = stock.filter(a => !a.sold && a.breakdown);
   const bd0 = affected.length > 0 ? (typeof affected[0].breakdown === 'string' ? JSON.parse(affected[0].breakdown) : affected[0].breakdown) : null;
-  showToast(`DEBUG — oldLabel: "${oldLabel}" | stock: ${stock.length} | avec bd: ${affected.length}${bd0 ? ` | bd.type.label: "${bd0.type?.label}"` : ''}`);
-  await new Promise(r => setTimeout(r, 3500));
+  showToast(`DEBUG — oldLabel: "${oldLabel}" | stock: ${stock.length} | avec bd: ${affected.length}${bd0 ? ` | bd.type.label: "${bd0.type?.label}"` : ''}`, 8000);
+  await new Promise(r => setTimeout(r, 8000));
   let updatedCount = 0;
   for (const article of affected) {
     const rawBd = typeof article.breakdown === 'string' ? JSON.parse(article.breakdown) : article.breakdown;
@@ -1550,11 +1550,11 @@ async function deleteArticle(id) {
   updateBadge();
 }
 
-function showToast(msg) {
+function showToast(msg, duration = 2200) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+  setTimeout(() => t.classList.remove('show'), duration);
 }
 
 function updateBadge() {
