@@ -19,7 +19,7 @@ const SIZES = [
   'XS / 34 / 6',   'S / 36 / 8',
   'M / 38 / 10',   'L / 40 / 12',
   'XL / 42 / 14',  'XXL / 44 / 16',
-  'XXXL / 46 / 18','4XL / 48 / 20',
+  '3XL','4XL / 48 / 20',
 ];
 type Analytics = { total: number; days: Record<string, number> };
 type ArticleStats = Record<string, { views: number; vinted: number }>;

@@ -82,7 +82,7 @@ export default function ProductGrid() {
       ? [...visible.filter((p) => p.seasons?.includes(SEASON_TO_ID[getCurrentSeason()]))].sort((a, b) => b.id - a.id)
       : [...visible.filter((p) => p.categories.includes(activeCategory))].sort((a, b) => b.id - a.id);
 
-  const SIZE_ORDER = ['TU','XXXS / 30 / 2','XXS / 32 / 4','XS / 34 / 6','S / 36 / 8','M / 38 / 10','L / 40 / 12','XL / 42 / 14','XXL / 44 / 16','XXXL / 46 / 18','4XL / 48 / 20'];
+  const SIZE_ORDER = ['TU','XXXS / 30 / 2','XXS / 32 / 4','XS / 34 / 6','S / 36 / 8','M / 38 / 10','L / 40 / 12','XL / 42 / 14','XXL / 44 / 16','3XL','4XL / 48 / 20'];
 
   // Faceted filtering: each group is computed from products filtered by the OTHER active filters
   const forTypes = byCategory.filter((p) => {
