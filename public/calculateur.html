@@ -307,6 +307,10 @@
   .stock-metric { background: var(--white); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 16px; text-align: center; }
   .stock-metric-val { font-size: 18px; font-weight: 500; color: var(--ink); }
   .stock-metric-lbl { font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+  .stock-metric-scheduled { background: var(--syrup-light); border-color: var(--syrup); }
+  .stock-metric-scheduled .stock-metric-val { color: #8B4E20; }
+  .stock-metric-online { background: #E6F7F1; border-color: var(--mint); }
+  .stock-metric-online .stock-metric-val { color: var(--mint-dark); }
 
   .stock-empty { text-align: center; padding: 60px 20px; color: var(--ink-soft); font-size: 15px; }
   .stock-empty strong { display: block; font-size: 18px; color: var(--ink-mid); margin-bottom: 8px; }
@@ -1667,15 +1671,19 @@ function renderStock() {
     return;
   }
 
-  const totalCA     = active.reduce((s, a) => s + a.price, 0);
-  const totalMargin = active.reduce((s, a) => s + a.margin, 0);
-  const totalAchat  = active.reduce((s, a) => s + (a.achat || 0), 0);
+  const totalCA       = active.reduce((s, a) => s + a.price, 0);
+  const totalMargin   = active.reduce((s, a) => s + a.margin, 0);
+  const totalAchat    = active.reduce((s, a) => s + (a.achat || 0), 0);
+  const nbScheduled   = active.filter(a => a.status === 'scheduled').length;
+  const nbOnline      = active.filter(a => a.status === 'online').length;
 
   summary.innerHTML = `
     <div class="stock-metric"><div class="stock-metric-val">${active.length}</div><div class="stock-metric-lbl">pièces</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalAchat.toFixed(0)}€</div><div class="stock-metric-lbl">investi</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalCA}€</div><div class="stock-metric-lbl">CA potentiel</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalMargin}€</div><div class="stock-metric-lbl">marge nette</div></div>
+    <div class="stock-metric stock-metric-scheduled"><div class="stock-metric-val">${nbScheduled}</div><div class="stock-metric-lbl">programmé</div></div>
+    <div class="stock-metric stock-metric-online"><div class="stock-metric-val">${nbOnline}</div><div class="stock-metric-lbl">en ligne</div></div>
   `;
 
   const cards = filtered.length === 0
