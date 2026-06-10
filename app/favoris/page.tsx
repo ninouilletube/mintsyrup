@@ -22,13 +22,14 @@ export default async function FavorisPage() {
       <RetourArrow direction="left" />
       <PageArrow href="/projet" label="Le projet" direction="right" />
       <main className={styles.main}>
-        <span className={styles.postit}>Favoris</span>
         <div className={styles.container}>
           <p className={styles.intro}>Je ne pouvais pas vous proposer ces fringues sans vous en dire plus sur ce qu&apos;elles m&apos;inspirent.</p>
           {products.length === 0 ? (
             <p className={styles.empty}>Aucun favori pour l&apos;instant.</p>
           ) : (
-            <div className={styles.grid}>
+            <div className={styles.gridWrap}>
+              <span className={styles.postit}>Favoris</span>
+              <div className={styles.grid}>
               {products.map((p) => {
                 const img = p.images?.find(Boolean) ?? p.image ?? null;
                 return (
@@ -46,6 +47,7 @@ export default async function FavorisPage() {
                   </Link>
                 );
               })}
+            </div>
             </div>
           )}
         </div>
