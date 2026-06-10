@@ -1334,8 +1334,15 @@ function getRadioVal(group) {
   return sel ? parseFloat(sel.dataset.val) : null;
 }
 function getMultiSum(group) {
-  return Array.from(document.querySelectorAll(`.pill[data-group="${group}"].selected-check`))
-    .reduce((s, p) => s + parseFloat(p.dataset.val), 0);
+  return Array.from(document.querySelectorAll(
+    `.pill[data-group="${group}"].selected-check, .pill[data-group="${group}"].selected-radio`
+  )).reduce((s, p) => s + parseFloat(p.dataset.val), 0);
+}
+
+function getMultiLabels(group) {
+  return Array.from(document.querySelectorAll(
+    `.pill[data-group="${group}"].selected-check, .pill[data-group="${group}"].selected-radio`
+  )).map(p => p.textContent.replace(/[×✏]/g, '').trim());
 }
 
 function calc() {
@@ -1470,7 +1477,7 @@ async function saveArticle() {
   const breakdown = {
     type:      { label: pillLabel('type'),      val: getRadioVal('type') || 0 },
     categorie: { label: pillLabel('categorie'), val: getRadioVal('categorie') || 0 },
-    etat:      { label: multiLabels('etat').join(', ') || null, val: getMultiSum('etat') },
+    etat:      { label: getMultiLabels('etat').join(', ') || null, val: getMultiSum('etat') },
     matiere:   { label: pillLabel('matiere'),   val: getRadioVal('matiere') || 0 },
     taille:    { label: pillLabel('taille'),    val: getRadioVal('taille') || 0 },
     bonus: [
@@ -2197,10 +2204,20 @@ function applyDeletedDefaults() {
   });
 }
 
+const MULTI_GROUPS = ['coupe','couleur','details','motif','style','etat'];
+
 function restoreCustomCriteria() {
+  let needsSave = false;
   Object.entries(customCriteria).forEach(([group, items]) => {
-    items.forEach(item => addPillToGrid(group, item));
+    items.forEach(item => {
+      if (MULTI_GROUPS.includes(group) && !item.isMulti) {
+        item.isMulti = true;
+        needsSave = true;
+      }
+      addPillToGrid(group, item);
+    });
   });
+  if (needsSave) saveCriteria();
 }
 
 // Ajoute les boutons ✏ sur tous les pills par défaut
