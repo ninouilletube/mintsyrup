@@ -1674,12 +1674,15 @@ function renderStock() {
   const totalCA       = active.reduce((s, a) => s + a.price, 0);
   const totalMargin   = active.reduce((s, a) => s + a.margin, 0);
   const totalAchat    = active.reduce((s, a) => s + (a.achat || 0), 0);
+  const withAchat     = active.filter(a => a.achat > 0);
+  const avgAchat      = withAchat.length > 0 ? withAchat.reduce((s, a) => s + a.achat, 0) / withAchat.length : 0;
   const nbScheduled   = active.filter(a => a.status === 'scheduled').length;
   const nbOnline      = active.filter(a => a.status === 'online').length;
 
   summary.innerHTML = `
     <div class="stock-metric"><div class="stock-metric-val">${active.length}</div><div class="stock-metric-lbl">pièces</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalAchat.toFixed(0)}€</div><div class="stock-metric-lbl">investi</div></div>
+    <div class="stock-metric"><div class="stock-metric-val">${avgAchat.toFixed(2)}€</div><div class="stock-metric-lbl">achat moyen</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalCA}€</div><div class="stock-metric-lbl">CA potentiel</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalMargin}€</div><div class="stock-metric-lbl">marge nette</div></div>
     <div class="stock-metric stock-metric-scheduled"><div class="stock-metric-val">${nbScheduled}</div><div class="stock-metric-lbl">programmé</div></div>
