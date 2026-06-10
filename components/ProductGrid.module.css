@@ -165,7 +165,8 @@
 }
 
 .filterSizesFloat .filterSizeTagActive {
-  background: rgba(200,48,106,0.08);
+  background: #C8306A;
+  color: #fff;
 }
 
 .filterSizeTag {
@@ -187,9 +188,9 @@
   color: var(--dark);
 }
 .filterSizeTagActive {
-  background: rgba(200,48,106,0.1);
+  background: #C8306A;
   border-color: #C8306A;
-  color: #C8306A;
+  color: #fff;
 }
 
 .filterColors {
