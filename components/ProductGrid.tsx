@@ -7,6 +7,7 @@ import { useProducts } from '@/context/ProductsContext';
 import { useSubcategories } from '@/context/SubcategoriesContext';
 import { getCurrentSeason, SEASON_TO_ID, type SeasonKey } from '@/lib/season';
 import { getColor } from '@/data/colors';
+import { CATEGORIES } from '@/data/categories';
 import ProductCard from './ProductCard';
 import styles from './ProductGrid.module.css';
 
@@ -91,7 +92,16 @@ export default function ProductGrid() {
     if (filterColor && !p.tags?.includes(filterColor)) return false;
     return true;
   });
-  const availableTypeIds = [...new Set(forTypes.map((p) => p.subcategory).filter(Boolean))] as string[];
+  const availableTypeIds = ([...new Set(forTypes.map((p) => p.subcategory).filter(Boolean))] as string[])
+    .sort((a, b) => {
+      const subA = subcategories.find((s) => s.id === a);
+      const subB = subcategories.find((s) => s.id === b);
+      if (!subA || !subB) return 0;
+      const catA = CATEGORIES.findIndex((c) => c.id === subA.parentCategory);
+      const catB = CATEGORIES.findIndex((c) => c.id === subB.parentCategory);
+      if (catA !== catB) return catA - catB;
+      return subcategories.indexOf(subA) - subcategories.indexOf(subB);
+    });
 
   const forSizes = byCategory.filter((p) => {
     if (filterType && p.subcategory !== filterType) return false;
@@ -128,7 +138,7 @@ export default function ProductGrid() {
 
   return (
     <div className={styles.overlay}>
-      <div className={`${isDrops ? styles.panelOpen : styles.panel}${activeCategory === 'ete' ? ' ' + styles.panelSummer : ''}`} ref={panelRef}>
+      <div className={isDrops ? styles.panelOpen : styles.panel} ref={panelRef}>
 
         {activeCategory === 'ete' && (
           <p className={styles.eteLead}>SUMMER</p>
