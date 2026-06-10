@@ -128,13 +128,10 @@ export default function ProductGrid() {
 
   return (
     <div className={styles.overlay}>
-      <div className={isDrops ? styles.panelOpen : styles.panel} ref={panelRef}>
+      <div className={`${isDrops ? styles.panelOpen : styles.panel}${activeCategory === 'ete' ? ' ' + styles.panelSummer : ''}`} ref={panelRef}>
 
         {activeCategory === 'ete' && (
-          <p className={styles.eteLead}>
-            <span className={styles.eteLeadHandwriting}>SUMMER :</span>
-            {' '}Ma sélection pour cet été
-          </p>
+          <p className={styles.eteLead}>SUMMER</p>
         )}
 
         {hasSizeFilter && (
