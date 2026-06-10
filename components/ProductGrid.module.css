@@ -160,13 +160,14 @@
 }
 
 .filterSizesFloat .filterSizeTag {
-  background: rgba(240,168,32,0.3);
+  background: #FBE5BD;
   box-shadow: 2px 2px 0 rgba(58,24,8,0.08);
 }
 
 .filterSizesFloat .filterSizeTagActive {
-  background: #C8306A;
-  color: #fff;
+  background: #FDE4EF;
+  border-color: #C8306A;
+  color: #C8306A;
 }
 
 .filterSizeTag {
@@ -178,20 +179,15 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   color: var(--dark);
-  background: rgba(240,168,32,0.3);
+  background: #FBE5BD;
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
 }
-.filterSizeTag:hover {
+.filterSizeTagActive {
   background: #FDE4EF;
   border-color: #C8306A;
   color: #C8306A;
-}
-.filterSizeTagActive {
-  background: #C8306A;
-  border-color: #C8306A;
-  color: #fff;
 }
 
 .filterColors {
