@@ -1281,6 +1281,7 @@ async function saveEditPill() {
   const labelName = s => s ? s.replace(/\s*\([+-]?\d+(?:\.\d+)?€\)\s*$/, '').trim() : '';
   const oldName = labelName(oldLabel);
   let updatedCount = 0;
+  let matchCount = 0;
   for (const article of affected) {
     const rawBd = typeof article.breakdown === 'string' ? JSON.parse(article.breakdown) : article.breakdown;
     const bd = JSON.parse(JSON.stringify(rawBd));
@@ -1309,6 +1310,7 @@ async function saveEditPill() {
       });
     }
     if (changed) {
+      matchCount++;
       const newPrice = calcPriceFromBd(bd);
       const newMargin = newPrice !== null ? Math.round(newPrice - (article.achat||0) - newPrice * 0.08) : article.margin;
       const { error } = await sb.from('mintsyrup_stock').update({
@@ -1319,13 +1321,21 @@ async function saveEditPill() {
         article.price = newPrice || article.price;
         article.margin = newMargin;
         updatedCount++;
+      } else {
+        console.error('[saveEditPill] update error:', error);
       }
     }
   }
 
   btn.disabled = false; btn.textContent = 'Enregistrer';
   closeEditPill();
-  showToast(updatedCount > 0 ? `Critère modifié — ${updatedCount} article(s) mis à jour` : 'Critère modifié ✓');
+  if (updatedCount > 0) {
+    showToast(`Critère modifié — ${updatedCount} article(s) mis à jour`);
+  } else if (matchCount > 0) {
+    showToast(`${matchCount} article(s) trouvé(s) mais erreur Supabase — voir console`);
+  } else {
+    showToast(`Critère modifié ✓ (0 articles avec ce critère)`);
+  }
   } catch(err) {
     document.getElementById('edit-pill-confirm').disabled = false;
     document.getElementById('edit-pill-confirm').textContent = 'Enregistrer';
