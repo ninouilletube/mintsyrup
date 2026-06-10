@@ -1463,6 +1463,7 @@ async function saveArticle() {
   updateBadge();
   showToast('Article ajouté au stock ✓');
   resetAll();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 async function deleteArticle(id) {
