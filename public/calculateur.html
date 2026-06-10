@@ -1275,14 +1275,26 @@ async function saveEditPill() {
   saveCriteria();
 
   // 2. Mettre à jour les articles du stock
+  await ensureStockLoaded();
   const affected = stock.filter(a => !a.sold && a.breakdown);
   let updatedCount = 0;
   for (const article of affected) {
     const bd = JSON.parse(JSON.stringify(article.breakdown));
     let changed = false;
-    for (const g of ['type','categorie','etat','matiere','taille']) {
+    for (const g of ['type','categorie','matiere','taille']) {
       if (bd[g] && bd[g].label === oldLabel) {
         bd[g] = { label: newLabel, val: newVal };
+        changed = true;
+      }
+    }
+    // État est multi-select : le label est une chaîne jointe, on remplace le fragment
+    if (bd.etat && bd.etat.label) {
+      const parts = bd.etat.label.split(', ');
+      const idx = parts.indexOf(oldLabel);
+      if (idx !== -1) {
+        const oldPartVal = parseFloat(oldLabel.match(/\(([+-]?\d+(?:\.\d+)?)€\)/)?.[1] || 0);
+        parts[idx] = newLabel;
+        bd.etat = { label: parts.join(', '), val: bd.etat.val - oldPartVal + newVal };
         changed = true;
       }
     }
