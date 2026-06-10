@@ -1286,7 +1286,8 @@ async function saveEditPill() {
   }
   let updatedCount = 0;
   for (const article of affected) {
-    const bd = JSON.parse(JSON.stringify(article.breakdown));
+    const rawBd = typeof article.breakdown === 'string' ? JSON.parse(article.breakdown) : article.breakdown;
+    const bd = JSON.parse(JSON.stringify(rawBd));
     let changed = false;
     for (const g of ['type','categorie','matiere','taille']) {
       if (bd[g] && bd[g].label === oldLabel) {
