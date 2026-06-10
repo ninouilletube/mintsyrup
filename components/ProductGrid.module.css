@@ -172,17 +172,21 @@
 
 .filterSizeTag {
   padding: 0.18rem 0.55rem;
-  border: 1.5px solid var(--dark);
+  border: 1.5px solid rgba(58,24,8,0.35);
   border-radius: 2px;
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.62rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: var(--dark);
+  color: rgba(58,24,8,0.45);
   background: #FBE5BD;
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
+}
+.filterSizeTag:hover {
+  border-color: var(--dark);
+  color: var(--dark);
 }
 .filterSizeTagActive {
   background: #FDE4EF;
