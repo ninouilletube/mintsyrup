@@ -156,6 +156,18 @@
   }
   .pill-del:hover { opacity: 1; }
 
+  /* Bouton ✏ dans chaque pill — caché par défaut */
+  .pill-edit {
+    display: none;
+    background: none; border: none;
+    color: inherit; cursor: pointer;
+    font-size: 11px; line-height: 1;
+    margin-left: 5px; padding: 0;
+    opacity: 0.45; transition: opacity 0.15s;
+  }
+  .pill-edit:hover { opacity: 1; }
+  body.editing .pill-edit { display: inline; }
+
   /* Mode édition */
   body.editing .pill {
     cursor: default;
@@ -939,6 +951,23 @@
   </div>
 </div>
 
+<!-- MODAL ÉDITION CRITÈRE -->
+<div class="modal-overlay" id="edit-pill-modal" style="display:none" onclick="closeEditPill()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title">Modifier le critère</div>
+    <div class="modal-sub" id="edit-pill-group-label"></div>
+    <label class="modal-label">Nom</label>
+    <input type="text" class="modal-input" id="edit-pill-nom" placeholder="Nom du critère" style="font-size:15px">
+    <label class="modal-label">Montant (€)</label>
+    <input type="number" class="modal-input" id="edit-pill-val" step="0.5" placeholder="0" style="font-size:15px;margin-bottom:8px">
+    <div id="edit-pill-stock-info" style="display:none;font-size:12px;color:var(--mint-dark);background:var(--mint-light);border-radius:var(--radius-sm);padding:8px 11px;margin-bottom:16px;line-height:1.4"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeEditPill()">Annuler</button>
+      <button class="modal-confirm" id="edit-pill-confirm" onclick="saveEditPill()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
@@ -1072,6 +1101,11 @@ document.querySelectorAll('.pill').forEach(pill => {
   });
 });
 
+// ── Clé d'un pill (texte propre sans boutons) ──
+function pillKey(pill) {
+  return pill.dataset.val + '|' + pill.childNodes[0].textContent.trim();
+}
+
 // ── Supprimer un pill (défaut ou custom) ──
 function deletePill(e, btn) {
   e.stopPropagation();
@@ -1083,7 +1117,7 @@ function deletePill(e, btn) {
     customCriteria[group] = (customCriteria[group] || []).filter(c => String(c.id) !== String(isCustom));
   } else {
     if (!deletedDefaults[group]) deletedDefaults[group] = [];
-    const key = pill.dataset.val + '|' + pill.textContent.replace('×', '').trim();
+    const key = pillKey(pill);
     if (!deletedDefaults[group].includes(key)) deletedDefaults[group].push(key);
   }
 
@@ -1091,6 +1125,134 @@ function deletePill(e, btn) {
   pill.remove();
   saveCriteria();
   calc();
+}
+
+// ── Éditer un pill ──
+let editingPillEl = null;
+const GROUP_LABELS = {
+  type:'Type d\'article', categorie:'Catégorie', etat:'État',
+  matiere:'Matière', taille:'Taille', coupe:'Coupe',
+  couleur:'Couleur signature', details:'Détails & effets', motif:'Motif', style:'Style'
+};
+
+function pillLabelText(pill) {
+  return pill.childNodes[0].textContent.trim();
+}
+
+function openEditPill(e, btn) {
+  e.stopPropagation();
+  const pill = btn.closest('.pill');
+  editingPillEl = pill;
+  const fullLabel = pillLabelText(pill);
+  const nom = fullLabel.replace(/\s*\([+-]?\d+(\.\d+)?€\)$/, '').trim();
+  const val = parseFloat(pill.dataset.val);
+  const group = pill.dataset.group;
+
+  document.getElementById('edit-pill-nom').value = nom;
+  document.getElementById('edit-pill-val').value = val;
+  document.getElementById('edit-pill-group-label').textContent = GROUP_LABELS[group] || group;
+
+  const affected = stock.filter(a => !a.sold && a.breakdown && (
+    Object.values(a.breakdown).some(v => v && v.label === fullLabel) ||
+    (a.breakdown.bonus || []).some(b => b.label === fullLabel)
+  )).length;
+  const info = document.getElementById('edit-pill-stock-info');
+  if (affected > 0) {
+    info.textContent = `${affected} article(s) du stock utilisent ce critère et seront mis à jour automatiquement.`;
+    info.style.display = 'block';
+  } else {
+    info.style.display = 'none';
+  }
+
+  document.getElementById('edit-pill-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('edit-pill-nom').focus(), 50);
+}
+
+function closeEditPill() {
+  editingPillEl = null;
+  document.getElementById('edit-pill-modal').style.display = 'none';
+}
+
+function calcPriceFromBd(bd) {
+  if (!bd || !bd.type) return null;
+  const bonus = (bd.bonus || []).reduce((s, b) => {
+    const m = b.label.match(/\(([+-]?\d+)€\)/);
+    return s + (m ? parseInt(m[1]) : 0);
+  }, 0);
+  return Math.max((bd.type?.val||0)+(bd.categorie?.val||0)+(bd.etat?.val||0)+(bd.matiere?.val||0)+(bd.taille?.val||0)+bonus+5, 5);
+}
+
+async function saveEditPill() {
+  if (!editingPillEl) return;
+  const newNom = document.getElementById('edit-pill-nom').value.trim();
+  const newVal = parseFloat(document.getElementById('edit-pill-val').value);
+  if (!newNom || isNaN(newVal)) return;
+
+  const pill = editingPillEl;
+  const group = pill.dataset.group;
+  const isMulti = pill.dataset.multi === '1';
+  const isCustom = pill.dataset.custom;
+  const sign = newVal >= 0 ? '+' : '';
+  const newLabel = `${newNom} (${sign}${newVal}€)`;
+  const oldLabel = pillLabelText(pill);
+  const oldKey = pillKey(pill);
+
+  const btn = document.getElementById('edit-pill-confirm');
+  btn.disabled = true; btn.textContent = 'Enregistrement…';
+
+  // 1. Mettre à jour le critère en mémoire
+  if (isCustom) {
+    const item = (customCriteria[group] || []).find(c => String(c.id) === String(isCustom));
+    if (item) { item.nom = newNom; item.val = newVal; }
+  } else {
+    // Convertir le défaut en custom
+    if (!deletedDefaults[group]) deletedDefaults[group] = [];
+    if (!deletedDefaults[group].includes(oldKey)) deletedDefaults[group].push(oldKey);
+    if (!customCriteria[group]) customCriteria[group] = [];
+    const id = Date.now();
+    customCriteria[group].push({ id, nom: newNom, val: newVal, isMulti });
+    pill.dataset.custom = id;
+  }
+  pill.childNodes[0].textContent = newLabel;
+  pill.dataset.val = newVal;
+  saveCriteria();
+
+  // 2. Mettre à jour les articles du stock
+  const affected = stock.filter(a => !a.sold && a.breakdown);
+  let updatedCount = 0;
+  for (const article of affected) {
+    const bd = JSON.parse(JSON.stringify(article.breakdown));
+    let changed = false;
+    for (const g of ['type','categorie','etat','matiere','taille']) {
+      if (bd[g] && bd[g].label === oldLabel) {
+        bd[g] = { label: newLabel, val: newVal };
+        changed = true;
+      }
+    }
+    if (bd.bonus) {
+      bd.bonus = bd.bonus.map(b => {
+        if (b.label === oldLabel) { changed = true; return { ...b, label: newLabel }; }
+        return b;
+      });
+    }
+    if (changed) {
+      const newPrice = calcPriceFromBd(bd);
+      const newMargin = newPrice !== null ? Math.round(newPrice - (article.achat||0) - newPrice * 0.08) : article.margin;
+      const { error } = await sb.from('mintsyrup_stock').update({
+        breakdown: bd, price: newPrice || article.price, margin: newMargin
+      }).eq('id', article.id);
+      if (!error) {
+        article.breakdown = bd;
+        article.price = newPrice || article.price;
+        article.margin = newMargin;
+        updatedCount++;
+      }
+    }
+  }
+
+  btn.disabled = false; btn.textContent = 'Enregistrer';
+  closeEditPill();
+  showToast(updatedCount > 0 ? `Critère modifié — ${updatedCount} article(s) mis à jour` : 'Critère modifié ✓');
 }
 
 // ── Image ──
@@ -1205,17 +1367,24 @@ function addPillToGrid(group, item) {
   if (item.isMulti) pill.dataset.multi = '1';
 
   const textNode = document.createTextNode(item.nom + ' (' + sign + item.val + '€)');
+  const editBtn = document.createElement('button');
+  editBtn.className = 'pill-edit';
+  editBtn.title = 'Modifier';
+  editBtn.textContent = '✏';
+  editBtn.onclick = (e) => openEditPill(e, editBtn);
   const delBtn = document.createElement('button');
   delBtn.className = 'pill-del';
   delBtn.textContent = '×';
   delBtn.onclick = (e) => deletePill(e, delBtn);
 
   pill.appendChild(textNode);
+  pill.appendChild(editBtn);
   pill.appendChild(delBtn);
 
   pill.addEventListener('click', (e) => {
     if (editMode) return;
     if (e.target.classList.contains('pill-del')) return;
+    if (e.target.classList.contains('pill-edit')) return;
     if (item.isMulti) {
       pill.classList.toggle('selected-check');
     } else {
@@ -1914,7 +2083,7 @@ function applyDeletedDefaults() {
   Object.entries(deletedDefaults).forEach(([group, keys]) => {
     document.querySelectorAll('.pill[data-group="' + group + '"]').forEach(pill => {
       if (!pill.dataset.custom) {
-        const k = pill.dataset.val + '|' + pill.textContent.replace('×', '').trim();
+        const k = pillKey(pill);
         if (keys.includes(k)) pill.remove();
       }
     });
@@ -1927,10 +2096,27 @@ function restoreCustomCriteria() {
   });
 }
 
+// Ajoute les boutons ✏ sur tous les pills par défaut
+function addEditButtons() {
+  document.querySelectorAll('#page-calc .pill').forEach(pill => {
+    if (!pill.querySelector('.pill-edit')) {
+      const editBtn = document.createElement('button');
+      editBtn.className = 'pill-edit';
+      editBtn.title = 'Modifier';
+      editBtn.textContent = '✏';
+      editBtn.onclick = (e) => openEditPill(e, editBtn);
+      const delBtn = pill.querySelector('.pill-del');
+      if (delBtn) pill.insertBefore(editBtn, delBtn);
+      else pill.appendChild(editBtn);
+    }
+  });
+}
+
 async function init() {
   await loadCriteriaFromSupabase();
   applyDeletedDefaults();
   restoreCustomCriteria();
+  addEditButtons();
   const hash = window.location.hash.replace('#', '');
   const page = ['calc', 'stock', 'archives'].includes(hash) ? hash : 'calc';
   showPage(page);
