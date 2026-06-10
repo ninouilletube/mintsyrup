@@ -1669,7 +1669,7 @@ function renderStock() {
         <div class="stock-card-name">${a.nom}</div>
         <div class="stock-card-prices">
           <div class="stock-card-price">${a.price}€</div>
-          <div class="stock-card-margin">~${a.margin}€ net</div>
+          <div class="stock-card-margin">${a.margin}€ net</div>
         </div>
         ${a.achat > 0 ? `<div class="stock-card-achat">Acheté ${parseFloat(a.achat).toFixed(2)}€</div>` : ''}
       </div>
@@ -1896,7 +1896,7 @@ function openTicket(id, isSold) {
              <span class="ticket-total-lbl">Prix de vente</span>
              <span class="ticket-total-val">${fmt(a.price)}€</span>
            </div>
-           ${a.achat > 0 ? `<div class="ticket-benef">Marge estimée : ~${fmt(a.margin)}€ (${Math.round((a.margin / a.price) * 100)}%)</div>` : ''}`
+           ${a.achat > 0 ? `<div class="ticket-benef">Marge estimée : ${fmt(a.margin)}€ (${Math.round((a.margin / a.price) * 100)}%)</div>` : ''}`
       }
       <div style="display:flex;gap:8px;margin-top:auto;padding-top:14px">
         <button onclick="openEditModal(${a.id})" style="flex:1;padding:9px;background:transparent;border:0.5px solid var(--border);border-radius:var(--radius-sm);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;color:var(--ink-soft);transition:all 0.15s" onmouseover="this.style.borderColor='var(--ink-soft)';this.style.color='var(--ink)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ink-soft)'">Modifier</button>
