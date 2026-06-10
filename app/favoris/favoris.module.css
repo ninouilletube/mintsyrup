@@ -4,6 +4,42 @@
   padding: 3rem 2rem 6rem;
   display: flex;
   justify-content: center;
+  position: relative;
+}
+
+.postit {
+  position: absolute;
+  top: 4.5rem;
+  left: 2rem;
+  font-family: 'MyUglyHandwriting', cursive;
+  font-size: 1.8rem;
+  font-weight: normal;
+  color: #3A2008;
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+
+  background: #FFE566;
+  padding: 0.8rem 1.1rem 0.45rem;
+  border-radius: 2px;
+  box-shadow:
+    2px 3px 6px rgba(0,0,0,0.18),
+    0 1px 2px rgba(0,0,0,0.08),
+    inset 0 -2px 4px rgba(0,0,0,0.04);
+  transform: rotate(2deg);
+}
+
+.postit::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -40%);
+  width: 40%;
+  height: 14px;
+  background: rgba(200,200,180,0.55);
+  border-radius: 1px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08);
 }
 
 .container {

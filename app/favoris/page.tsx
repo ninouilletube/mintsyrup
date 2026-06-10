@@ -22,6 +22,7 @@ export default async function FavorisPage() {
       <RetourArrow direction="left" />
       <PageArrow href="/projet" label="Le projet" direction="right" />
       <main className={styles.main}>
+        <span className={styles.postit}>Favoris</span>
         <div className={styles.container}>
           <p className={styles.intro}>Je ne pouvais pas vous proposer ces fringues sans vous en dire plus sur ce qu&apos;elles m&apos;inspirent.</p>
           {products.length === 0 ? (
