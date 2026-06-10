@@ -154,7 +154,7 @@
   transform: translateX(-65%);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 0.3rem;
   z-index: 2;
 }
@@ -183,7 +183,6 @@
   cursor: pointer;
   transition: all 0.15s;
   white-space: nowrap;
-  width: 6.5rem;
   text-align: center;
 }
 .filterSizeTag:hover {
