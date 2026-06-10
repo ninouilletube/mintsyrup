@@ -1048,10 +1048,21 @@ function selectSaison(val, el) {
   }
 }
 
-// helper : normalise saison en tableau (compat ancien format texte)
+// helper : normalise saison en tableau (compat ancien format texte + JSON string Supabase)
 function getSaisons(a) {
   if (!a.saison) return [];
-  return Array.isArray(a.saison) ? a.saison : [a.saison];
+  if (Array.isArray(a.saison)) return a.saison.map(s => typeof s === 'string' ? s.normalize('NFC') : s);
+  if (typeof a.saison === 'string') {
+    const trimmed = a.saison.trim();
+    if (trimmed.startsWith('[')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        if (Array.isArray(parsed)) return parsed.map(s => typeof s === 'string' ? s.normalize('NFC') : s);
+      } catch(e) {}
+    }
+    return [trimmed.normalize('NFC')];
+  }
+  return [];
 }
 
 // ── Mode édition ──
@@ -1546,7 +1557,7 @@ function renderStock() {
   const active    = stock.filter(a => !a.sold);
   const filtered  = applySort(active.filter(a => {
     const tierOk   = stockFilter === 'all' || a.tier === stockFilter;
-    const seasonOk = stockSeasonFilter === 'all' || getSaisons(a).includes(stockSeasonFilter);
+    const seasonOk = stockSeasonFilter === 'all' || getSaisons(a).includes(stockSeasonFilter.normalize('NFC'));
     return tierOk && seasonOk;
   }), stockSort);
 
@@ -1660,7 +1671,7 @@ function renderArchives() {
   const sold     = stock.filter(a => a.sold);
   const filtered = applySort(sold.filter(a => {
     const tierOk   = archiveFilter === 'all' || a.tier === archiveFilter;
-    const seasonOk = archiveSeasonFilter === 'all' || getSaisons(a).includes(archiveSeasonFilter);
+    const seasonOk = archiveSeasonFilter === 'all' || getSaisons(a).includes(archiveSeasonFilter.normalize('NFC'));
     return tierOk && seasonOk;
   }), archiveSort);
 
