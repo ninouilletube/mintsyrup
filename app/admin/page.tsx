@@ -787,13 +787,19 @@ export default function AdminPage() {
                 ♥ Ajouter aux favoris
               </label>
               {editForm.favorite && (
-                <textarea
-                  className={styles.editTextarea}
-                  value={editForm.favoriteText}
-                  rows={3}
-                  placeholder="Ce que j'aime dans cette pièce..."
-                  onChange={(e) => setEditForm({ ...editForm, favoriteText: e.target.value })}
-                />
+                <>
+                  <textarea
+                    className={styles.editTextarea}
+                    value={editForm.favoriteText}
+                    rows={3}
+                    maxLength={270}
+                    placeholder="Ce que j'aime dans cette pièce..."
+                    onChange={(e) => setEditForm({ ...editForm, favoriteText: e.target.value })}
+                  />
+                  <span style={{ fontSize: '0.7rem', color: editForm.favoriteText.length >= 250 ? '#C83A20' : 'rgba(58,24,8,0.4)' }}>
+                    {editForm.favoriteText.length}/270
+                  </span>
+                </>
               )}
             </div>
             <div className={styles.editActions}>
@@ -1330,14 +1336,20 @@ export default function AdminPage() {
                     ♥ Ajouter aux favoris
                   </label>
                   {form.favorite && (
-                    <textarea
-                      className={styles.stepTextarea}
-                      value={form.favoriteText}
-                      rows={3}
-                      placeholder="Ce que j'aime dans cette pièce..."
-                      onChange={(e) => setForm({ ...form, favoriteText: e.target.value })}
-                      style={{ marginTop: '0.75rem' }}
-                    />
+                    <>
+                      <textarea
+                        className={styles.stepTextarea}
+                        value={form.favoriteText}
+                        rows={3}
+                        maxLength={270}
+                        placeholder="Ce que j'aime dans cette pièce..."
+                        onChange={(e) => setForm({ ...form, favoriteText: e.target.value })}
+                        style={{ marginTop: '0.75rem' }}
+                      />
+                      <span style={{ fontSize: '0.7rem', color: form.favoriteText.length >= 250 ? '#C83A20' : 'rgba(58,24,8,0.4)' }}>
+                        {form.favoriteText.length}/270
+                      </span>
+                    </>
                   )}
                 </div>
                 <div className={styles.stepActions}>
