@@ -1245,6 +1245,7 @@ async function saveEditPill() {
   const newVal = parseFloat(document.getElementById('edit-pill-val').value);
   if (!newNom || isNaN(newVal)) return;
 
+  try {
   const pill = editingPillEl;
   const group = pill.dataset.group;
   const isMulti = pill.dataset.multi === '1';
@@ -1322,6 +1323,12 @@ async function saveEditPill() {
   btn.disabled = false; btn.textContent = 'Enregistrer';
   closeEditPill();
   showToast(updatedCount > 0 ? `Critère modifié — ${updatedCount} article(s) mis à jour` : 'Critère modifié ✓');
+  } catch(err) {
+    document.getElementById('edit-pill-confirm').disabled = false;
+    document.getElementById('edit-pill-confirm').textContent = 'Enregistrer';
+    showToast('Erreur — ' + (err?.message || String(err)));
+    console.error('[saveEditPill]', err);
+  }
 }
 
 // ── Image ──
