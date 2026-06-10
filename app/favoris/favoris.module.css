@@ -1,7 +1,7 @@
 .main {
   min-height: 100vh;
   background: url('/mer.png') center center / cover no-repeat fixed;
-  padding: 11rem 2rem 3rem;
+  padding: 8rem 2rem 5rem;
   display: flex;
   justify-content: center;
   align-items: center;
