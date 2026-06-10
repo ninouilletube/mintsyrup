@@ -1088,7 +1088,11 @@ let stockLoadingPromise = null;
 
 function ensureStockLoaded() {
   if (!stockLoadingPromise) {
-    stockLoadingPromise = loadStock().then(() => { stockLoaded = true; updateBadge(); updateArchiveBadge(); });
+    stockLoadingPromise = loadStock().then(() => {
+      stockLoaded = true; updateBadge(); updateArchiveBadge();
+    }).catch(() => {
+      stockLoadingPromise = null; // permet de réessayer à la prochaine navigation
+    });
   }
   return stockLoadingPromise;
 }
@@ -1504,15 +1508,21 @@ function updateArchiveBadge() {
 
 async function loadStock() {
   const { data, error } = await sb.from('mintsyrup_stock').select('*').order('created_at', { ascending: false });
-  if (!error) stock = data || [];
+  if (error) { console.error('[loadStock]', error); throw error; }
+  stock = data || [];
   updateBadge();
   updateArchiveBadge();
 }
 
 async function loadAndRenderStock() {
-  document.getElementById('stock-content').innerHTML = '<div class="loading-overlay">Chargement…</div>';
-  await ensureStockLoaded();
-  renderStock();
+  const container = document.getElementById('stock-content');
+  container.innerHTML = '<div class="loading-overlay">Chargement…</div>';
+  try {
+    await ensureStockLoaded();
+    renderStock();
+  } catch(e) {
+    container.innerHTML = '<div class="stock-empty"><strong>Erreur de connexion</strong>Impossible de charger le stock. Vérifie ta connexion et réessaie.</div>';
+  }
 }
 
 const SORT_OPTIONS = [
