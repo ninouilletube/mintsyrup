@@ -15,7 +15,7 @@ export default function ProductGrid() {
   const { lang } = useLang();
   const { activeCategory } = useShop();
   const { products } = useProducts();
-  const { subcategories } = useSubcategories();
+  const { subcategories, colorOrder } = useSubcategories();
 
   const [filterType, setFilterType] = useState<string | null>(null);
   const [filterSizes, setFilterSizes] = useState<string[]>([]);
@@ -105,7 +105,9 @@ export default function ProductGrid() {
     if (filterSizes.length > 0 && !filterSizes.includes(p.size)) return false;
     return true;
   });
-  const availableColorIds = [...new Set(forColors.flatMap((p) => p.tags ?? []))].filter(id => getColor(id));
+  const availableColorIds = [...new Set(forColors.flatMap((p) => p.tags ?? []))]
+    .filter(id => getColor(id))
+    .sort((a, b) => colorOrder.indexOf(a) - colorOrder.indexOf(b));
 
   // Apply filters
   const filtered = byCategory.filter((p) => {
@@ -115,7 +117,8 @@ export default function ProductGrid() {
     return true;
   });
 
-  const hasFilters = !isDrops && (availableTypeIds.length > 0 || availableSizes.length > 0 || availableColorIds.length > 0);
+  const hasFilters = !isDrops && (availableTypeIds.length > 0 || availableColorIds.length > 0);
+  const hasSizeFilter = !isDrops && availableSizes.length > 0;
 
   const season = activeCategory === 'ete' ? getCurrentSeason() : null;
 
@@ -126,6 +129,25 @@ export default function ProductGrid() {
   return (
     <div className={styles.overlay}>
       <div className={isDrops ? styles.panelOpen : styles.panel} ref={panelRef}>
+
+        {activeCategory === 'ete' && (
+          <p className={styles.eteLead}>
+            <span className={styles.eteLeadHandwriting}>SUMMER :</span>
+            {' '}Ma sélection pour cet été
+          </p>
+        )}
+
+        {hasSizeFilter && (
+          <div className={styles.filterSizesFloat}>
+            {availableSizes.map((size) => (
+              <button
+                key={size}
+                className={`${styles.filterSizeTag} ${filterSizes.includes(size) ? styles.filterSizeTagActive : ''}`}
+                onClick={() => setFilterSizes(filterSizes.includes(size) ? filterSizes.filter(s => s !== size) : [...filterSizes, size])}
+              >{size}</button>
+            ))}
+          </div>
+        )}
 
         {hasFilters && (
           <div className={styles.filterBar}>
@@ -144,17 +166,6 @@ export default function ProductGrid() {
                 );
               })}
             </div>
-            {availableSizes.length > 0 && (
-              <div className={styles.filterSizes}>
-                {availableSizes.map((size) => (
-                  <button
-                    key={size}
-                    className={`${styles.filterSizeTag} ${filterSizes.includes(size) ? styles.filterSizeTagActive : ''}`}
-                    onClick={() => setFilterSizes(filterSizes.includes(size) ? filterSizes.filter(s => s !== size) : [...filterSizes, size])}
-                  >{size}</button>
-                ))}
-              </div>
-            )}
             {availableColorIds.length > 0 && (
               <div className={styles.filterColors}>
                 {availableColorIds.map((id) => {

@@ -87,6 +87,20 @@
 }
 .scrollTop:hover { background: var(--cream); transform: translateY(-2px); }
 
+.eteLead {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1rem;
+  color: rgba(58,24,8,0.65);
+  margin: 0 0 1rem;
+  line-height: 1.3;
+}
+
+.eteLeadHandwriting {
+  font-family: 'MyUglyHandwriting', cursive;
+  font-size: 1.4rem;
+  color: var(--dark);
+}
+
 .filterBar {
   display: flex;
   align-items: center;
@@ -110,6 +124,27 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 0.35rem;
+}
+
+.filterSizesFloat {
+  position: absolute;
+  top: 0;
+  left: 2rem;
+  transform: translateY(-55%);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  z-index: 2;
+}
+
+.filterSizesFloat .filterSizeTag {
+  background: var(--cream);
+  box-shadow: 2px 2px 0 rgba(58,24,8,0.08);
+}
+
+.filterSizesFloat .filterSizeTagActive {
+  background: rgba(200,48,106,0.08);
 }
 
 .filterSizeTag {

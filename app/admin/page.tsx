@@ -5,13 +5,13 @@ import Image from 'next/image';
 import { useProducts } from '@/context/ProductsContext';
 import { useSubcategories } from '@/context/SubcategoriesContext';
 import { CATEGORIES } from '@/data/categories';
-import { COLORS } from '@/data/colors';
+import { COLORS, getColor } from '@/data/colors';
 import type { Category, Season, Product } from '@/data/products';
 import { getCurrentSeason } from '@/lib/season';
 import { getData, setData } from '@/lib/supabase';
 import styles from './Admin.module.css';
 
-type View = 'dashboard' | 'articles' | 'add-article' | 'edit-article' | 'article-detail' | 'bio' | 'finances';
+type View = 'dashboard' | 'articles' | 'add-article' | 'edit-article' | 'article-detail' | 'bio' | 'finances' | 'catalog';
 
 const SIZES = [
   'TU',
@@ -158,7 +158,13 @@ export default function AdminPage() {
   const TOTAL_STEPS = 10;
 
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
-  const { subcategories, addSubcategory, deleteSubcategory } = useSubcategories();
+  const { subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder } = useSubcategories();
+
+  // Catalog drag-and-drop state
+  const [dragSub, setDragSub] = useState<string | null>(null);
+  const [dragOverSub, setDragOverSub] = useState<string | null>(null);
+  const [dragColor, setDragColor] = useState<string | null>(null);
+  const [dragOverColor, setDragOverColor] = useState<string | null>(null);
 
   useEffect(() => {
     setAuth(sessionStorage.getItem('msc_auth') === '1');
@@ -423,6 +429,8 @@ export default function AdminPage() {
                 if (view === 'edit-article') setView('articles');
                 else if (view === 'article-detail') setView(detailOrigin);
                 else setView('dashboard');
+                // Reset drag state when leaving catalog
+                setDragSub(null); setDragOverSub(null); setDragColor(null); setDragOverColor(null);
               }}
             >
               ←
@@ -436,6 +444,7 @@ export default function AdminPage() {
             {view === 'article-detail' && (detailProduct?.title.fr ?? '')}
             {view === 'bio'            && 'Le projet'}
             {view === 'finances'       && '€€€'}
+            {view === 'catalog'        && 'Catalogue'}
           </h1>
         </div>
         {view === 'dashboard' && <a href="/" className={styles.backLink}>← Site</a>}
@@ -487,6 +496,9 @@ export default function AdminPage() {
                 </button>
                 <button className={styles.btnFinances} onClick={() => setView('finances')}>
                   €€€
+                </button>
+                <button className={styles.btnSecondary} onClick={() => setView('catalog')}>
+                  Catalogue
                 </button>
                 <a href="/calculateur.html" target="_blank" rel="noopener noreferrer" className={styles.btnCalculateur}>
                   Calculateur
@@ -1032,6 +1044,96 @@ export default function AdminPage() {
           </div>
         );
       })()}
+
+      {/* ── CATALOGUE ───────────────────────────────────────────────────────── */}
+      {view === 'catalog' && (
+        <div className={styles.section}>
+          <p style={{ fontSize: '0.78rem', color: 'rgba(58,24,8,0.5)', marginBottom: '1.5rem' }}>
+            Glisser-déposer pour réordonner. Les changements sont sauvegardés automatiquement.
+          </p>
+
+          {/* Sous-catégories par catégorie */}
+          <h3 className={styles.sectionTitle}>Sous-catégories</h3>
+          {CATEGORIES.filter((c) => c.id !== 'drops' && c.id !== 'ete').map((cat) => {
+            const subs = subcategories.filter((s) => s.parentCategory === cat.id);
+            if (subs.length === 0) return null;
+            return (
+              <div key={cat.id} className={styles.catalogSection}>
+                <p className={styles.catalogSectionTitle}>{cat.fr}</p>
+                <div className={styles.catalogList}>
+                  {subs.map((sub) => (
+                    <div
+                      key={sub.id}
+                      className={`${styles.catalogItem} ${dragOverSub === sub.id && dragSub !== sub.id ? styles.catalogItemOver : ''}`}
+                      draggable
+                      onDragStart={() => setDragSub(sub.id)}
+                      onDragOver={(e) => { e.preventDefault(); setDragOverSub(sub.id); }}
+                      onDrop={() => {
+                        if (!dragSub || dragSub === sub.id) { setDragSub(null); setDragOverSub(null); return; }
+                        const catSubs = subcategories.filter((s) => s.parentCategory === cat.id);
+                        const otherSubs = subcategories.filter((s) => s.parentCategory !== cat.id);
+                        const fromIdx = catSubs.findIndex((s) => s.id === dragSub);
+                        const toIdx = catSubs.findIndex((s) => s.id === sub.id);
+                        if (fromIdx === -1) { setDragSub(null); setDragOverSub(null); return; }
+                        const newCatSubs = [...catSubs];
+                        const [moved] = newCatSubs.splice(fromIdx, 1);
+                        newCatSubs.splice(toIdx, 0, moved);
+                        reorderSubcategories([...otherSubs, ...newCatSubs]);
+                        setDragSub(null); setDragOverSub(null);
+                      }}
+                      onDragEnd={() => { setDragSub(null); setDragOverSub(null); }}
+                    >
+                      <span className={styles.catalogDragHandle}>⠿</span>
+                      <span className={styles.catalogItemLabel}>{sub.label}</span>
+                      <button
+                        className={styles.catalogItemDelete}
+                        title="Supprimer"
+                        onClick={() => { if (confirm(`Supprimer "${sub.label}" ?`)) deleteSubcategory(sub.id); }}
+                      >×</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Couleurs */}
+          <h3 className={styles.sectionTitle} style={{ marginTop: '2rem' }}>Couleurs</h3>
+          <p className={styles.catalogSectionTitle}>Ordre d&apos;apparition dans les filtres</p>
+          <div className={styles.catalogColorGrid}>
+            {colorOrder.map((colorId) => {
+              const color = getColor(colorId);
+              if (!color) return null;
+              return (
+                <div
+                  key={colorId}
+                  className={`${styles.catalogColorItem} ${dragOverColor === colorId && dragColor !== colorId ? styles.catalogColorItemOver : ''}`}
+                  draggable
+                  onDragStart={() => setDragColor(colorId)}
+                  onDragOver={(e) => { e.preventDefault(); setDragOverColor(colorId); }}
+                  onDrop={() => {
+                    if (!dragColor || dragColor === colorId) { setDragColor(null); setDragOverColor(null); return; }
+                    const fromIdx = colorOrder.indexOf(dragColor);
+                    const toIdx = colorOrder.indexOf(colorId);
+                    const newOrder = [...colorOrder];
+                    const [moved] = newOrder.splice(fromIdx, 1);
+                    newOrder.splice(toIdx, 0, moved);
+                    setColorOrder(newOrder);
+                    setDragColor(null); setDragOverColor(null);
+                  }}
+                  onDragEnd={() => { setDragColor(null); setDragOverColor(null); }}
+                >
+                  <div
+                    className={styles.catalogColorSwatch}
+                    style={{ background: color.bg }}
+                  />
+                  <span>{color.label}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       {soldModal && (
         <div className={styles.modalOverlay} onClick={() => setSoldModal(null)}>
