@@ -2338,6 +2338,7 @@ async function saveEdit() {
     updateData.breakdown = editBreakdown;
     updateData.price = newPrice;
     updateData.margin = newMargin;
+    updateData.tier = newPrice <= 20 ? 'Accessible' : newPrice <= 40 ? 'Mid-range' : 'Premium';
   }
 
   const { data, error } = await sb.from('mintsyrup_stock')
