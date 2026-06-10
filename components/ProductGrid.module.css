@@ -91,17 +91,17 @@
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translate(-50%, -52%) rotate(-2.5deg);
+  transform: translate(-50%, -72%) rotate(-2.5deg);
   font-family: 'MyUglyHandwriting', cursive;
   font-size: 2rem;
-  font-weight: 700;
+  font-weight: normal;
   color: #3A2008;
   white-space: nowrap;
   z-index: 3;
   pointer-events: none;
 
   background: #FFE566;
-  padding: 0.55rem 1.1rem 0.75rem;
+  padding: 0.85rem 1.1rem 0.45rem;
   border-radius: 2px;
   box-shadow:
     2px 3px 6px rgba(0,0,0,0.18),
