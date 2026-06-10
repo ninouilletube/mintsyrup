@@ -752,8 +752,6 @@
     <div class="card">
       <div class="card-title">Taille</div>
       <div class="pill-grid" id="taille">
-        <div class="pill" data-group="taille" data-val="0">Grande taille (+0€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="taille" data-val="0">Taille moyenne (+0€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="taille" data-val="1">S (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
         <div class="pill" data-group="taille" data-val="2">XS (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
       </div>
@@ -1438,10 +1436,13 @@ function calc() {
     return;
   }
 
-  const cat    = getRadioVal('categorie') || 0;
+  const catRaw    = getRadioVal('categorie');
+  const matRaw    = getRadioVal('matiere');
+  const tailleRaw = getRadioVal('taille');
+  const cat    = catRaw || 0;
   const etat   = getMultiSum('etat');
-  const mat    = getRadioVal('matiere') || 0;
-  const taille = getRadioVal('taille') || 0;
+  const mat    = matRaw || 0;
+  const taille = tailleRaw || 0;
   const bonus  = getMultiSum('coupe') + getMultiSum('couleur') + getMultiSum('details') + getMultiSum('motif') + getMultiSum('style');
   const adjBonus = Math.abs(parseFloat(document.getElementById('adj-bonus').value) || 0);
   const adjMalus = Math.abs(parseFloat(document.getElementById('adj-malus').value) || 0);
@@ -1453,10 +1454,10 @@ function calc() {
   document.getElementById('result-price').textContent = final + '€';
   document.getElementById('breakdown').style.display = 'flex';
   document.getElementById('bd-type').textContent = type + '€';
-  document.getElementById('bd-cat').textContent = (cat >= 0 ? '+' : '') + cat + '€';
+  document.getElementById('bd-cat').textContent = catRaw !== null ? (cat >= 0 ? '+' : '') + cat + '€' : '—';
   document.getElementById('bd-etat').textContent = etat !== 0 ? (etat > 0 ? '+' : '') + etat + '€' : '—';
-  document.getElementById('bd-mat').textContent = mat !== 0 ? (mat >= 0 ? '+' : '') + mat + '€' : '—';
-  document.getElementById('bd-taille').textContent = (taille >= 0 ? '+' : '') + taille + '€';
+  document.getElementById('bd-mat').textContent = matRaw !== null ? (mat >= 0 ? '+' : '') + mat + '€' : '—';
+  document.getElementById('bd-taille').textContent = tailleRaw !== null ? (taille >= 0 ? '+' : '') + taille + '€' : '—';
   document.getElementById('bd-bonus').textContent = bonus > 0 ? '+' + bonus + '€' : '—';
   const adjRow = document.getElementById('bd-adj-row');
   if (adjustment !== 0) {
