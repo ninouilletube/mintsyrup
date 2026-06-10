@@ -62,11 +62,9 @@ export default function ProductGrid() {
   }, [activeCategory]);
 
   useEffect(() => {
-    const panel = panelRef.current;
-    if (!panel) return;
-    const onScroll = () => setShowScrollTop(panel.scrollTop > 120);
-    panel.addEventListener('scroll', onScroll);
-    return () => panel.removeEventListener('scroll', onScroll);
+    const onScroll = () => setShowScrollTop(window.scrollY > 200);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const DROPS_VISIBLE = 4;
@@ -220,8 +218,8 @@ export default function ProductGrid() {
             ))}
           </div>
         )}
-        {showScrollTop && (
-          <button className={styles.scrollTop} onClick={() => panelRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}>↑</button>
+        {showScrollTop && !isDrops && (
+          <button className={styles.scrollTop} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>↑</button>
         )}
       </div>
     </div>
