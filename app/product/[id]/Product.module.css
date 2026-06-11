@@ -40,6 +40,7 @@
   border-radius: 18px;
   box-shadow: 6px 6px 0 var(--dark);
   width: 100%;
+  height: 480px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   overflow: hidden;
@@ -51,6 +52,8 @@
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .thumbsCol {
@@ -60,17 +63,18 @@
   overflow-y: auto;
   scrollbar-width: none;
   flex-shrink: 0;
+  height: 100%;
 }
 .thumbsCol::-webkit-scrollbar { display: none; }
 
 .imageWrap {
   position: relative;
-  aspect-ratio: 3/4;
   background: var(--bg);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 3px 3px 0 var(--dark);
   flex: 1;
+  height: 100%;
 }
 
 .thumb {
@@ -235,6 +239,9 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .title {
