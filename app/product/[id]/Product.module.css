@@ -363,6 +363,8 @@
   border-radius: 999px;
   border: 1.5px solid rgba(26,10,0,0.2);
   display: inline-block;
+  margin-left: 3rem;
+  margin-bottom: 0.75rem;
 }
 
 .relatedGrid {
