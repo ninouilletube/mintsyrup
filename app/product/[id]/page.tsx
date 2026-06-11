@@ -62,47 +62,49 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       <Nav />
       <div className={styles.page}>
       <Link href="/" className={styles.back}>← Retour</Link>
-      <div className={styles.card}>
-        {product.size && <span className={styles.size}>{product.size}</span>}
-        <div className={styles.gallery}>
-          <div className={`${styles.imageWrap} ${current ? styles.imageWrapClickable : ''}`} onClick={() => current && setLightbox(true)}>
-            {current ? (
-              <img key={activeIndex} src={current} alt={product.title[lang]} className={`${styles.image} ${direction === 'right' ? styles.slideInRight : styles.slideInLeft}`} />
-            ) : (
-              <div className={styles.placeholder} style={{ background: `linear-gradient(145deg, ${product.placeholder[0]}, ${product.placeholder[1]})` }} />
-            )}
-            {images.length > 1 && (
-              <>
-                <button className={`${styles.arrow} ${styles.arrowLeft}`} onClick={(e) => { e.stopPropagation(); setDirection('left'); setActiveIndex((activeIndex - 1 + images.length) % images.length); }}>←</button>
-                <button className={`${styles.arrow} ${styles.arrowRight}`} onClick={(e) => { e.stopPropagation(); setDirection('right'); setActiveIndex((activeIndex + 1) % images.length); }}>→</button>
-              </>
-            )}
-          </div>
-          {images.length > 1 && (
-            <div className={styles.thumbs}>
-              {images.map((src, i) => (
-                <button key={i} className={`${styles.thumb} ${i === activeIndex ? styles.thumbActive : ''}`} onClick={() => setActiveIndex(i)}>
-                  <img src={src} alt="" className={styles.thumbImg} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                </button>
-              ))}
+      <div className={styles.cardWrap}>
+        <div className={styles.card}>
+          {product.size && <span className={styles.size}>{product.size}</span>}
+          <div className={styles.gallery}>
+            <div className={`${styles.imageWrap} ${current ? styles.imageWrapClickable : ''}`} onClick={() => current && setLightbox(true)}>
+              {current ? (
+                <img key={activeIndex} src={current} alt={product.title[lang]} className={`${styles.image} ${direction === 'right' ? styles.slideInRight : styles.slideInLeft}`} />
+              ) : (
+                <div className={styles.placeholder} style={{ background: `linear-gradient(145deg, ${product.placeholder[0]}, ${product.placeholder[1]})` }} />
+              )}
+              {images.length > 1 && (
+                <>
+                  <button className={`${styles.arrow} ${styles.arrowLeft}`} onClick={(e) => { e.stopPropagation(); setDirection('left'); setActiveIndex((activeIndex - 1 + images.length) % images.length); }}>←</button>
+                  <button className={`${styles.arrow} ${styles.arrowRight}`} onClick={(e) => { e.stopPropagation(); setDirection('right'); setActiveIndex((activeIndex + 1) % images.length); }}>→</button>
+                </>
+              )}
             </div>
-          )}
+          </div>
+          <div className={styles.info}>
+            <h1 className={styles.title}>{product.title[lang]}</h1>
+            {product.brand && <p className={styles.brand}>{product.brand}</p>}
+            {product.description[lang] && <p className={styles.desc}>{product.description[lang]}</p>}
+            <a
+              href={product.vintedUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.btn}
+              onClick={() => trackVintedClick(product.id)}
+            >
+              <span className={styles.btnPrice}>{product.price} €</span>
+              {lang === 'fr' ? 'Acheter sur Vinted ↗' : 'Buy on Vinted ↗'}
+            </a>
+          </div>
         </div>
-        <div className={styles.info}>
-          <h1 className={styles.title}>{product.title[lang]}</h1>
-          {product.brand && <p className={styles.brand}>{product.brand}</p>}
-          {product.description[lang] && <p className={styles.desc}>{product.description[lang]}</p>}
-          <a
-            href={product.vintedUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.btn}
-            onClick={() => trackVintedClick(product.id)}
-          >
-            <span className={styles.btnPrice}>{product.price} €</span>
-            {lang === 'fr' ? 'Acheter sur Vinted ↗' : 'Buy on Vinted ↗'}
-          </a>
-        </div>
+        {images.length > 1 && (
+          <div className={styles.thumbsRow}>
+            {images.map((src, i) => (
+              <button key={i} className={`${styles.thumb} ${i === activeIndex ? styles.thumbActive : ''}`} onClick={() => setActiveIndex(i)}>
+                <img src={src} alt="" className={styles.thumbImg} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+              </button>
+            ))}
+          </div>
+        )}
       </div>
       {lightbox && current && (
         <div className={styles.lightbox} onClick={() => setLightbox(false)}>
@@ -121,9 +123,12 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       </div>
 
       {(() => {
-        const related = products
-          .filter((p) => !p.hidden && p.id !== product.id && p.categories.some((c) => product.categories.includes(c)))
-          .slice(0, 4);
+        const others = products.filter((p) => !p.hidden && p.id !== product.id);
+        const sameCategory = others.filter((p) => p.categories.some((c) => product.categories.includes(c)));
+        const sameColor    = others.filter((p) => !sameCategory.includes(p) && p.tags?.some((t) => product.tags?.includes(t)));
+        const oldest       = others.filter((p) => !sameCategory.includes(p) && !sameColor.includes(p))
+          .sort((a, b) => a.id - b.id);
+        const related = [...sameCategory, ...sameColor, ...oldest].slice(0, 4);
         if (!related.length) return null;
         return (
           <div className={styles.related}>
