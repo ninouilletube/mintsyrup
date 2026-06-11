@@ -294,8 +294,68 @@
   color: var(--mid);
 }
 
+.related {
+  width: 100%;
+  max-width: 800px;
+  margin-top: 3rem;
+}
+
+.relatedTitle {
+  font-family: var(--font-dm-serif), serif;
+  font-size: 1.4rem;
+  color: var(--dark);
+  margin-bottom: 1.25rem;
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.relatedCard {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: transform 0.15s;
+}
+.relatedCard:hover { transform: translateY(-3px); }
+
+.relatedImg {
+  position: relative;
+  aspect-ratio: 3/4;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid var(--dark);
+  box-shadow: 3px 3px 0 var(--dark);
+  background: var(--bg);
+}
+
+.relatedInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.relatedName {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--dark);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.relatedPrice {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #D94870;
+}
+
 @media (max-width: 600px) {
   .card { grid-template-columns: 1fr; }
   .imageWrap { aspect-ratio: 4/3; }
   .info { padding: 1.5rem; }
+  .relatedGrid { grid-template-columns: repeat(2, 1fr); }
 }

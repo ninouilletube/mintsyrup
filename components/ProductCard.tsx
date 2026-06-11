@@ -37,9 +37,9 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
       <div className={styles.btnWrap}>
-        <a href={product.vintedUrl} target="_blank" rel="noopener noreferrer" className={styles.btn}>
-          {lang === 'fr' ? 'Acheter sur Vinted ↗' : 'Buy on Vinted ↗'}
-        </a>
+        <Link href={`/product/${product.id}`} className={styles.btn}>
+          {lang === 'fr' ? 'Voir la pièce →' : 'See item →'}
+        </Link>
       </div>
     </article>
   );

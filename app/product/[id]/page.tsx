@@ -2,6 +2,7 @@
 
 import { use, useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useProducts } from '@/context/ProductsContext';
 import { useLang } from '@/context/LangContext';
 import { trackArticleView, trackVintedClick } from '@/lib/supabase';
@@ -118,6 +119,35 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </div>
       )}
       </div>
+
+      {(() => {
+        const related = products
+          .filter((p) => !p.hidden && p.id !== product.id && p.categories.some((c) => product.categories.includes(c)))
+          .slice(0, 4);
+        if (!related.length) return null;
+        return (
+          <div className={styles.related}>
+            <h2 className={styles.relatedTitle}>{lang === 'fr' ? 'Vous aimerez peut-être…' : 'You might also like…'}</h2>
+            <div className={styles.relatedGrid}>
+              {related.map((p) => (
+                <Link key={p.id} href={`/product/${p.id}`} className={styles.relatedCard}>
+                  <div className={styles.relatedImg}>
+                    {p.image
+                      ? <Image src={p.image} alt={p.title[lang]} fill style={{ objectFit: 'cover' }} sizes="200px" />
+                      : <div style={{ background: `linear-gradient(145deg, ${p.placeholder[0]}, ${p.placeholder[1]})`, width: '100%', height: '100%' }} />
+                    }
+                  </div>
+                  <div className={styles.relatedInfo}>
+                    <span className={styles.relatedName}>{p.title[lang]}</span>
+                    <span className={styles.relatedPrice}>{p.price} €</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        );
+      })()}
+
       <Footer />
     </>
   );
