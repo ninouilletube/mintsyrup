@@ -66,6 +66,15 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <div className={styles.card}>
           {product.size && <span className={styles.size}>{product.size}</span>}
           <div className={styles.gallery}>
+            {images.length > 1 && (
+              <div className={styles.thumbsCol}>
+                {images.map((src, i) => (
+                  <button key={i} className={`${styles.thumb} ${i === activeIndex ? styles.thumbActive : ''}`} onClick={() => setActiveIndex(i)}>
+                    <img src={src} alt="" className={styles.thumbImg} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                  </button>
+                ))}
+              </div>
+            )}
             <div className={`${styles.imageWrap} ${current ? styles.imageWrapClickable : ''}`} onClick={() => current && setLightbox(true)}>
               {current ? (
                 <img key={activeIndex} src={current} alt={product.title[lang]} className={`${styles.image} ${direction === 'right' ? styles.slideInRight : styles.slideInLeft}`} />
@@ -96,15 +105,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             </a>
           </div>
         </div>
-        {images.length > 1 && (
-          <div className={styles.thumbsRow}>
-            {images.map((src, i) => (
-              <button key={i} className={`${styles.thumb} ${i === activeIndex ? styles.thumbActive : ''}`} onClick={() => setActiveIndex(i)}>
-                <img src={src} alt="" className={styles.thumbImg} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-              </button>
-            ))}
-          </div>
-        )}
       </div>
       {lightbox && current && (
         <div className={styles.lightbox} onClick={() => setLightbox(false)}>
