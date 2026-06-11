@@ -325,35 +325,35 @@
   align-items: flex-start;
 }
 
-.relatedHeader {
+.relatedStrip {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin: 0 0 0.75rem 1.5rem;
+  width: 100%;
 }
 
-.relatedArrows {
-  display: flex;
-  gap: 0.35rem;
-}
-
-.relatedArrow {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 2px solid var(--dark);
-  background: rgba(255,255,255,0.75);
-  backdrop-filter: blur(4px);
-  font-size: 0.85rem;
+.relatedScrollBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  background: none;
+  border: none;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s, transform 0.15s;
-  color: var(--dark);
   padding: 0;
+  opacity: 0.75;
+  transition: opacity 0.15s, transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
-.relatedArrow:hover { background: white; transform: scale(1.08); }
+.relatedScrollBtn:hover { opacity: 1; transform: translateY(-50%) scale(1.1); }
+
+.relatedScrollLeft { left: 0.5rem; }
+.relatedScrollRight { right: 0.5rem; }
+
+.relatedScrollImg { width: 28px; height: auto; display: block; }
+.relatedScrollImgFlip { transform: scaleX(-1); }
 
 .relatedTitle {
   font-family: var(--font-dm-sans), sans-serif;

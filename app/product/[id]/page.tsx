@@ -18,33 +18,37 @@ function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'e
   };
   return (
     <div className={styles.related}>
-      <div className={styles.relatedHeader}>
-        <h2 className={styles.relatedTitle}>{lang === 'fr' ? 'Vous aimerez peut-être…' : 'You might also like…'}</h2>
+      <h2 className={styles.relatedTitle}>{lang === 'fr' ? 'Vous aimerez peut-être…' : 'You might also like…'}</h2>
+      <div className={styles.relatedStrip}>
         {related.length > 3 && (
-          <div className={styles.relatedArrows}>
-            <button className={styles.relatedArrow} onClick={() => scroll('left')} aria-label="Précédent">←</button>
-            <button className={styles.relatedArrow} onClick={() => scroll('right')} aria-label="Suivant">→</button>
-          </div>
+          <button className={`${styles.relatedScrollBtn} ${styles.relatedScrollLeft}`} onClick={() => scroll('left')} aria-label="Précédent">
+            <img src="/fleche-droite.png" alt="←" className={`${styles.relatedScrollImg} ${styles.relatedScrollImgFlip}`} />
+          </button>
         )}
-      </div>
-      <div className={styles.relatedGrid} ref={gridRef}>
-        {related.map((p) => (
-          <Link key={p.id} href={`/product/${p.id}`} className={styles.relatedCard}>
-            <div className={styles.relatedImg}>
-              {p.image
-                ? <Image src={p.image} alt={p.title[lang]} fill style={{ objectFit: 'cover' }} sizes="200px" />
-                : <div style={{ background: `linear-gradient(145deg, ${p.placeholder[0]}, ${p.placeholder[1]})`, width: '100%', height: '100%' }} />
-              }
-              {p.images?.[1] && (
-                <img src={p.images[1]} alt="" className={styles.relatedImgHover} />
-              )}
-            </div>
-            <div className={styles.relatedInfo}>
-              <span className={styles.relatedName}>{p.title[lang]}</span>
-              <span className={styles.relatedPrice}>{p.price} €</span>
-            </div>
-          </Link>
-        ))}
+        <div className={styles.relatedGrid} ref={gridRef}>
+          {related.map((p) => (
+            <Link key={p.id} href={`/product/${p.id}`} className={styles.relatedCard}>
+              <div className={styles.relatedImg}>
+                {p.image
+                  ? <Image src={p.image} alt={p.title[lang]} fill style={{ objectFit: 'cover' }} sizes="200px" />
+                  : <div style={{ background: `linear-gradient(145deg, ${p.placeholder[0]}, ${p.placeholder[1]})`, width: '100%', height: '100%' }} />
+                }
+                {p.images?.[1] && (
+                  <img src={p.images[1]} alt="" className={styles.relatedImgHover} />
+                )}
+              </div>
+              <div className={styles.relatedInfo}>
+                <span className={styles.relatedName}>{p.title[lang]}</span>
+                <span className={styles.relatedPrice}>{p.price} €</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+        {related.length > 3 && (
+          <button className={`${styles.relatedScrollBtn} ${styles.relatedScrollRight}`} onClick={() => scroll('right')} aria-label="Suivant">
+            <img src="/fleche-droite.png" alt="→" className={styles.relatedScrollImg} />
+          </button>
+        )}
       </div>
     </div>
   );
