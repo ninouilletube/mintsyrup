@@ -13,6 +13,24 @@ import styles from './Product.module.css';
 
 function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'en' }) {
   const gridRef = useRef<HTMLDivElement>(null);
+  const [atStart, setAtStart] = useState(true);
+  const [atEnd, setAtEnd] = useState(false);
+
+  const updateBounds = () => {
+    const el = gridRef.current;
+    if (!el) return;
+    setAtStart(el.scrollLeft <= 0);
+    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 1);
+  };
+
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+    updateBounds();
+    el.addEventListener('scroll', updateBounds, { passive: true });
+    return () => el.removeEventListener('scroll', updateBounds);
+  }, []);
+
   const scroll = (dir: 'left' | 'right') => {
     gridRef.current?.scrollBy({ left: dir === 'right' ? 300 : -300, behavior: 'smooth' });
   };
@@ -20,7 +38,7 @@ function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'e
     <div className={styles.related}>
       <h2 className={styles.relatedTitle}>{lang === 'fr' ? 'Vous aimerez peut-être…' : 'You might also like…'}</h2>
       <div className={styles.relatedStrip}>
-        {related.length > 3 && (
+        {related.length > 3 && !atStart && (
           <button className={`${styles.relatedScrollBtn} ${styles.relatedScrollLeft}`} onClick={() => scroll('left')} aria-label="Précédent">‹</button>
         )}
         <div className={styles.relatedGrid} ref={gridRef}>
@@ -42,7 +60,7 @@ function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'e
             </Link>
           ))}
         </div>
-        {related.length > 3 && (
+        {related.length > 3 && !atEnd && (
           <button className={`${styles.relatedScrollBtn} ${styles.relatedScrollRight}`} onClick={() => scroll('right')} aria-label="Suivant">›</button>
         )}
       </div>
