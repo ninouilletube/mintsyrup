@@ -318,6 +318,36 @@
   align-items: flex-start;
 }
 
+.relatedHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 0.75rem 1.5rem;
+}
+
+.relatedArrows {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.relatedArrow {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--dark);
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(4px);
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, transform 0.15s;
+  color: var(--dark);
+  padding: 0;
+}
+.relatedArrow:hover { background: white; transform: scale(1.08); }
+
 .relatedTitle {
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.68rem;
@@ -330,7 +360,6 @@
   padding: 0.3rem 0.85rem;
   border-radius: 999px;
   border: 1.5px solid rgba(26,10,0,0.2);
-  margin: 0 0 0.75rem 1.5rem;
   display: inline-block;
 }
 

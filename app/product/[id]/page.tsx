@@ -3,12 +3,52 @@
 import { use, useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import type { Product } from '@/data/products';
 import { useProducts } from '@/context/ProductsContext';
 import { useLang } from '@/context/LangContext';
 import { trackArticleView, trackVintedClick } from '@/lib/supabase';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import styles from './Product.module.css';
+
+function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'en' }) {
+  const gridRef = useRef<HTMLDivElement>(null);
+  const scroll = (dir: 'left' | 'right') => {
+    gridRef.current?.scrollBy({ left: dir === 'right' ? 300 : -300, behavior: 'smooth' });
+  };
+  return (
+    <div className={styles.related}>
+      <div className={styles.relatedHeader}>
+        <h2 className={styles.relatedTitle}>{lang === 'fr' ? 'Vous aimerez peut-être…' : 'You might also like…'}</h2>
+        {related.length > 3 && (
+          <div className={styles.relatedArrows}>
+            <button className={styles.relatedArrow} onClick={() => scroll('left')} aria-label="Précédent">←</button>
+            <button className={styles.relatedArrow} onClick={() => scroll('right')} aria-label="Suivant">→</button>
+          </div>
+        )}
+      </div>
+      <div className={styles.relatedGrid} ref={gridRef}>
+        {related.map((p) => (
+          <Link key={p.id} href={`/product/${p.id}`} className={styles.relatedCard}>
+            <div className={styles.relatedImg}>
+              {p.image
+                ? <Image src={p.image} alt={p.title[lang]} fill style={{ objectFit: 'cover' }} sizes="200px" />
+                : <div style={{ background: `linear-gradient(145deg, ${p.placeholder[0]}, ${p.placeholder[1]})`, width: '100%', height: '100%' }} />
+              }
+              {p.images?.[1] && (
+                <img src={p.images[1]} alt="" className={styles.relatedImgHover} />
+              )}
+            </div>
+            <div className={styles.relatedInfo}>
+              <span className={styles.relatedName}>{p.title[lang]}</span>
+              <span className={styles.relatedPrice}>{p.price} €</span>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -101,7 +141,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               onClick={() => trackVintedClick(product.id)}
             >
               <span className={styles.btnPrice}>{product.price} €</span>
-              {lang === 'fr' ? 'Acheter sur Vinted ↗' : 'Buy on Vinted ↗'}
+              {lang === 'fr' ? 'Acheter sur Vinted' : 'Buy on Vinted'}
             </a>
           </div>
         </div>
@@ -128,29 +168,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         const sameColor    = others.filter((p) => !sameCategory.includes(p) && p.tags?.some((t) => product.tags?.includes(t)));
         const oldest       = others.filter((p) => !sameCategory.includes(p) && !sameColor.includes(p))
           .sort((a, b) => a.id - b.id);
-        const related = [...sameCategory, ...sameColor, ...oldest].slice(0, 4);
+        const related = [...sameCategory, ...sameColor, ...oldest].slice(0, 20);
         if (!related.length) return null;
-        return (
-          <div className={styles.related}>
-            <h2 className={styles.relatedTitle}>{lang === 'fr' ? 'Vous aimerez peut-être…' : 'You might also like…'}</h2>
-            <div className={styles.relatedGrid}>
-              {related.map((p) => (
-                <Link key={p.id} href={`/product/${p.id}`} className={styles.relatedCard}>
-                  <div className={styles.relatedImg}>
-                    {p.image
-                      ? <Image src={p.image} alt={p.title[lang]} fill style={{ objectFit: 'cover' }} sizes="200px" />
-                      : <div style={{ background: `linear-gradient(145deg, ${p.placeholder[0]}, ${p.placeholder[1]})`, width: '100%', height: '100%' }} />
-                    }
-                  </div>
-                  <div className={styles.relatedInfo}>
-                    <span className={styles.relatedName}>{p.title[lang]}</span>
-                    <span className={styles.relatedPrice}>{p.price} €</span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        );
+        return <RelatedSection related={related} lang={lang} />;
       })()}
 
       <Footer />
