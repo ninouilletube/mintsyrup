@@ -369,6 +369,17 @@
   background: var(--bg);
 }
 
+.relatedImgHover {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.relatedCard:hover .relatedImgHover { opacity: 1; }
+
 .relatedInfo {
   padding: 8px 4px 0;
   display: flex;
