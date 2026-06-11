@@ -21,9 +21,7 @@ function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'e
       <h2 className={styles.relatedTitle}>{lang === 'fr' ? 'Vous aimerez peut-être…' : 'You might also like…'}</h2>
       <div className={styles.relatedStrip}>
         {related.length > 3 && (
-          <button className={`${styles.relatedScrollBtn} ${styles.relatedScrollLeft}`} onClick={() => scroll('left')} aria-label="Précédent">
-            <img src="/fleche-droite.png" alt="←" className={`${styles.relatedScrollImg} ${styles.relatedScrollImgFlip}`} />
-          </button>
+          <button className={`${styles.relatedScrollBtn} ${styles.relatedScrollLeft}`} onClick={() => scroll('left')} aria-label="Précédent">‹</button>
         )}
         <div className={styles.relatedGrid} ref={gridRef}>
           {related.map((p) => (
@@ -45,9 +43,7 @@ function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'e
           ))}
         </div>
         {related.length > 3 && (
-          <button className={`${styles.relatedScrollBtn} ${styles.relatedScrollRight}`} onClick={() => scroll('right')} aria-label="Suivant">
-            <img src="/fleche-droite.png" alt="→" className={styles.relatedScrollImg} />
-          </button>
+          <button className={`${styles.relatedScrollBtn} ${styles.relatedScrollRight}`} onClick={() => scroll('right')} aria-label="Suivant">›</button>
         )}
       </div>
     </div>
