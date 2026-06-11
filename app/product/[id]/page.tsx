@@ -81,6 +81,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   }, [lightbox, images.length]);
 
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [id]);
+
+  useEffect(() => {
     if (!product || tracked.current) return;
     tracked.current = true;
     trackArticleView(product.id);
