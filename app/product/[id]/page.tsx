@@ -187,11 +187,18 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
       {(() => {
         const others = products.filter((p) => !p.hidden && p.id !== product.id);
-        const sameCategory = others.filter((p) => p.categories.some((c) => product.categories.includes(c)));
-        const sameColor    = others.filter((p) => !sameCategory.includes(p) && p.tags?.some((t) => product.tags?.includes(t)));
-        const oldest       = others.filter((p) => !sameCategory.includes(p) && !sameColor.includes(p))
+        const sameColorSameCategory = others.filter((p) =>
+          p.tags?.some((t) => product.tags?.includes(t)) &&
+          p.categories.some((c) => product.categories.includes(c))
+        );
+        const sameColorAnyCategory = others.filter((p) =>
+          !sameColorSameCategory.includes(p) &&
+          p.tags?.some((t) => product.tags?.includes(t))
+        );
+        const oldest = others
+          .filter((p) => !sameColorSameCategory.includes(p) && !sameColorAnyCategory.includes(p))
           .sort((a, b) => a.id - b.id);
-        const related = [...sameCategory, ...sameColor, ...oldest].slice(0, 20);
+        const related = [...sameColorSameCategory, ...sameColorAnyCategory, ...oldest].slice(0, 20);
         if (!related.length) return null;
         return <RelatedSection related={related} lang={lang} />;
       })()}
