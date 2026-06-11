@@ -1,4 +1,4 @@
-export type Category = 'drops' | 'hauts' | 'bas' | 'manteaux' | 'chaussures' | 'accessoires' | 'ete';
+export type Category = 'drops' | 'hauts' | 'bas' | 'robes' | 'manteaux' | 'chaussures' | 'accessoires' | 'ete';
 
 export type Product = {
   id: number;
