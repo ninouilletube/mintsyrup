@@ -307,7 +307,7 @@
 
 .related {
   width: 100%;
-  background: url('/mer.png') center center / cover no-repeat;
+  background: #F5D8E0;
   padding: 1.5rem 0 2rem;
   display: flex;
   flex-direction: column;
@@ -345,7 +345,7 @@
   flex-direction: column;
   flex-shrink: 0;
   width: 160px;
-  background: #F5D8E0;
+  background: transparent;
   border: 2.5px solid var(--dark);
   border-radius: 4px;
   box-shadow: 4px 4px 0 var(--dark);
