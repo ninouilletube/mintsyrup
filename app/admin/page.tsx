@@ -699,6 +699,20 @@ export default function AdminPage() {
               <label className={styles.editLabel}>Photos</label>
               {editForm.imageUrls.map((url, i) => (
                 <div key={i} className={styles.imageUrlRow}>
+                  {editForm.imageUrls.length > 1 && (
+                    <div className={styles.imgOrderBtns}>
+                      <button type="button" disabled={i === 0} onClick={() => {
+                        const urls = [...editForm.imageUrls];
+                        [urls[i - 1], urls[i]] = [urls[i], urls[i - 1]];
+                        setEditForm({ ...editForm, imageUrls: urls });
+                      }}>↑</button>
+                      <button type="button" disabled={i === editForm.imageUrls.length - 1} onClick={() => {
+                        const urls = [...editForm.imageUrls];
+                        [urls[i + 1], urls[i]] = [urls[i], urls[i + 1]];
+                        setEditForm({ ...editForm, imageUrls: urls });
+                      }}>↓</button>
+                    </div>
+                  )}
                   <input
                     className={styles.editInput}
                     type="url"
