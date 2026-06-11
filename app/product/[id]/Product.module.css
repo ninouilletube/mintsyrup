@@ -258,6 +258,7 @@
   color: var(--mid);
   line-height: 1.6;
   flex: 1;
+  white-space: pre-wrap;
 }
 
 .btnPrice {
