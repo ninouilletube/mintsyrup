@@ -31,8 +31,8 @@ export default function Nav() {
   const isHome = pathname === '/';
 
   const handleLogo = () => {
-    if (isHome) setActiveCategory(null);
-    else router.push('/');
+    setActiveCategory(null);
+    if (!isHome) router.push('/');
   };
 
   const handleCategory = (catId: Category) => {
