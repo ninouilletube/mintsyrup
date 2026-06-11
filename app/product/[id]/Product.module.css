@@ -325,10 +325,10 @@
 
 .relatedGrid {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem;
   overflow-x: auto;
   scrollbar-width: none;
-  padding: 0 0 8px 1.5rem;
+  padding: 16px 2rem 16px 1.5rem;
 }
 .relatedGrid::-webkit-scrollbar { display: none; }
 
@@ -338,7 +338,7 @@
   flex-direction: column;
   flex-shrink: 0;
   width: 160px;
-  background: #fff;
+  background: #F5D8E0;
   border: 2.5px solid var(--dark);
   border-radius: 4px;
   box-shadow: 4px 4px 0 var(--dark);
