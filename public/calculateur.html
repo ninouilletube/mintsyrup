@@ -1271,7 +1271,7 @@ function calcPriceFromBd(bd) {
     const m = b.label.match(/\(([+-]?\d+)€\)/);
     return s + (m ? parseInt(m[1]) : 0);
   }, 0);
-  return Math.max((bd.type?.val||0)+(bd.categorie?.val||0)+(bd.etat?.val||0)+(bd.matiere?.val||0)+bonus+(bd.adjustment||0)+5, 5);
+  return Math.round(Math.max((bd.type?.val||0)+(bd.categorie?.val||0)+(bd.etat?.val||0)+(bd.matiere?.val||0)+bonus+(bd.adjustment||0)+5, 5));
 }
 
 async function saveEditPill() {
@@ -2071,10 +2071,10 @@ function calcEditPrice() {
     const m = b.label.match(/\(([+-]?\d+)€\)/);
     return s + (m ? parseInt(m[1]) : 0);
   }, 0);
-  return Math.max(
+  return Math.round(Math.max(
     (bd.type?.val||0) + (bd.categorie?.val||0) + (bd.etat?.val||0) +
     (bd.matiere?.val||0) + bonus + (bd.adjustment||0) + 5, 5
-  );
+  ));
 }
 
 function renderEditCriteria() {
