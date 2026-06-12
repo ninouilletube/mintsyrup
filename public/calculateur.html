@@ -749,18 +749,6 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">Taille</div>
-      <div class="pill-grid" id="taille">
-        <div class="pill" data-group="taille" data-val="1">S (+1€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-        <div class="pill" data-group="taille" data-val="2">XS (+2€)<button class="pill-del" onclick="deletePill(event, this)">×</button></div>
-      </div>
-      <div class="add-section-row">
-        <input type="text" id="add-nom-taille" placeholder="Nouveau critère">
-        <input type="number" id="add-val-taille" placeholder="€" step="1">
-        <button class="add-section-btn" onclick="addCustomPill('taille', false)">+</button>
-      </div>
-    </div>
 
     <div class="card">
       <div class="card-title">Coupe <span style="font-weight:300;font-style:italic;text-transform:none;letter-spacing:0">— plusieurs possibles</span></div>
@@ -899,7 +887,6 @@
         <div class="breakdown-row"><span>Catégorie</span><span class="val" id="bd-cat">—</span></div>
         <div class="breakdown-row"><span>État</span><span class="val" id="bd-etat">—</span></div>
         <div class="breakdown-row"><span>Matière</span><span class="val" id="bd-mat">—</span></div>
-        <div class="breakdown-row"><span>Taille</span><span class="val" id="bd-taille">—</span></div>
         <div class="breakdown-row"><span>Bonus</span><span class="val" id="bd-bonus">—</span></div>
         <div class="breakdown-row"><span>Temps de travail</span><span class="val">+5€</span></div>
         <div class="breakdown-row" id="bd-adj-row" style="display:none"><span>Ajustement</span><span class="val" id="bd-adj">—</span></div>
@@ -1236,7 +1223,7 @@ function deletePill(e, btn) {
 let editingPillEl = null;
 const GROUP_LABELS = {
   type:'Type d\'article', categorie:'Catégorie', etat:'État',
-  matiere:'Matière', taille:'Taille', coupe:'Coupe',
+  matiere:'Matière', coupe:'Coupe',
   couleur:'Couleur signature', details:'Détails & effets', motif:'Motif', style:'Style'
 };
 
@@ -1284,7 +1271,7 @@ function calcPriceFromBd(bd) {
     const m = b.label.match(/\(([+-]?\d+)€\)/);
     return s + (m ? parseInt(m[1]) : 0);
   }, 0);
-  return Math.max((bd.type?.val||0)+(bd.categorie?.val||0)+(bd.etat?.val||0)+(bd.matiere?.val||0)+(bd.taille?.val||0)+bonus+(bd.adjustment||0)+5, 5);
+  return Math.max((bd.type?.val||0)+(bd.categorie?.val||0)+(bd.etat?.val||0)+(bd.matiere?.val||0)+bonus+(bd.adjustment||0)+5, 5);
 }
 
 async function saveEditPill() {
@@ -1333,7 +1320,7 @@ async function saveEditPill() {
     const rawBd = typeof article.breakdown === 'string' ? JSON.parse(article.breakdown) : article.breakdown;
     const bd = JSON.parse(JSON.stringify(rawBd));
     let changed = false;
-    for (const g of ['type','categorie','matiere','taille']) {
+    for (const g of ['type','categorie','matiere']) {
       if (bd[g] && labelName(bd[g].label) === oldName) {
         bd[g] = { label: newLabel, val: newVal };
         changed = true;
@@ -1438,17 +1425,15 @@ function calc() {
 
   const catRaw    = getRadioVal('categorie');
   const matRaw    = getRadioVal('matiere');
-  const tailleRaw = getRadioVal('taille');
   const cat    = catRaw || 0;
   const etat   = getMultiSum('etat');
   const mat    = matRaw || 0;
-  const taille = tailleRaw || 0;
   const bonus  = getMultiSum('coupe') + getMultiSum('couleur') + getMultiSum('details') + getMultiSum('motif') + getMultiSum('style');
   const adjBonus = Math.abs(parseFloat(document.getElementById('adj-bonus').value) || 0);
   const adjMalus = Math.abs(parseFloat(document.getElementById('adj-malus').value) || 0);
   const adjustment = adjBonus - adjMalus;
 
-  const total = type + cat + etat + mat + taille + bonus + adjustment + 5;
+  const total = type + cat + etat + mat + bonus + adjustment + 5;
   const final = Math.max(total, 5);
 
   document.getElementById('result-price').textContent = final + '€';
@@ -1457,8 +1442,7 @@ function calc() {
   document.getElementById('bd-cat').textContent = catRaw !== null ? (cat >= 0 ? '+' : '') + cat + '€' : '—';
   document.getElementById('bd-etat').textContent = etat !== 0 ? (etat > 0 ? '+' : '') + etat + '€' : '—';
   document.getElementById('bd-mat').textContent = matRaw !== null ? (mat >= 0 ? '+' : '') + mat + '€' : '—';
-  document.getElementById('bd-taille').textContent = tailleRaw !== null ? (taille >= 0 ? '+' : '') + taille + '€' : '—';
-  document.getElementById('bd-bonus').textContent = bonus > 0 ? '+' + bonus + '€' : '—';
+document.getElementById('bd-bonus').textContent = bonus > 0 ? '+' + bonus + '€' : '—';
   const adjRow = document.getElementById('bd-adj-row');
   if (adjustment !== 0) {
     adjRow.style.display = '';
@@ -1577,7 +1561,6 @@ async function saveArticle() {
     categorie: { label: pillLabel('categorie'), val: getRadioVal('categorie') || 0 },
     etat:      { label: getMultiLabels('etat').join(', ') || null, val: getMultiSum('etat') },
     matiere:   { label: pillLabel('matiere'),   val: getRadioVal('matiere') || 0 },
-    taille:    { label: pillLabel('taille'),    val: getRadioVal('taille') || 0 },
     bonus: [
       ...multiLabels('coupe').map(l => ({ label: l, group: 'Coupe' })),
       ...multiLabels('couleur').map(l => ({ label: l, group: 'Couleur' })),
@@ -1990,7 +1973,6 @@ function openTicket(id, isSold) {
       ${b.categorie?.label ? `<div class="ticket-breakdown-row"><span class="lbl">${b.categorie.label}</span><span class="val">${fmtVal(b.categorie.val)}</span></div>` : ''}
       ${b.etat?.label      ? `<div class="ticket-breakdown-row"><span class="lbl">${b.etat.label}</span><span class="val">${fmtVal(b.etat.val)}</span></div>` : ''}
       ${b.matiere?.label   ? `<div class="ticket-breakdown-row"><span class="lbl">${b.matiere.label}</span><span class="val">${fmtVal(b.matiere.val)}</span></div>` : ''}
-      ${b.taille?.label    ? `<div class="ticket-breakdown-row"><span class="lbl">${b.taille.label}</span><span class="val">${fmtVal(b.taille.val)}</span></div>` : ''}
       ${(b.bonus || []).map(x => {
         const m = x.label.match(/\(([+-]?\d+)€\)/);
         const v = m ? parseInt(m[1]) : null;
@@ -2066,7 +2048,6 @@ const EDIT_SINGLE_GROUPS = [
   { key: 'categorie', lbl: 'Catégorie' },
   { key: 'etat',      lbl: 'État' },
   { key: 'matiere',   lbl: 'Matière' },
-  { key: 'taille',    lbl: 'Taille' },
 ];
 const EDIT_MULTI_GROUPS = [
   { key: 'coupe',   lbl: 'Coupe',           bdGroup: 'Coupe' },
@@ -2090,7 +2071,7 @@ function calcEditPrice() {
   }, 0);
   return Math.max(
     (bd.type?.val||0) + (bd.categorie?.val||0) + (bd.etat?.val||0) +
-    (bd.matiere?.val||0) + (bd.taille?.val||0) + bonus + (bd.adjustment||0) + 5, 5
+    (bd.matiere?.val||0) + bonus + (bd.adjustment||0) + 5, 5
   );
 }
 
