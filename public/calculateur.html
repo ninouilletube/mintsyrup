@@ -1347,8 +1347,10 @@ async function saveEditPill() {
       matchCount++;
       const newPrice = calcPriceFromBd(bd);
       const newMargin = newPrice !== null ? Math.round(newPrice - (article.achat||0)) : article.margin;
+      const finalPrice = newPrice || article.price;
+      const newTier = finalPrice <= 20 ? 'Accessible' : finalPrice <= 40 ? 'Mid-range' : 'Premium';
       const { error } = await sb.from('mintsyrup_stock').update({
-        breakdown: bd, price: newPrice || article.price, margin: newMargin
+        breakdown: bd, price: finalPrice, margin: newMargin, tier: newTier
       }).eq('id', article.id);
       if (!error) {
         article.breakdown = bd;
