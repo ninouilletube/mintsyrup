@@ -378,6 +378,7 @@ export default function AdminPage() {
       favoriteText: form.favoriteText || undefined,
       favoriteOrder: form.favorite ? Date.now() : undefined,
       purchasePrice: form.purchasePrice ? parseFloat(form.purchasePrice) : undefined,
+      provenance: form.provenance || undefined,
     });
     setSuccess(true);
     setTimeout(() => { setSuccess(false); setForm(emptyForm); setStep(0); setView('dashboard'); }, 1800);
@@ -1246,6 +1247,15 @@ export default function AdminPage() {
                 <input autoFocus className={styles.stepInput} type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="Ex: 25" onKeyDown={(e) => { if (e.key === 'Enter' && form.price) next(); }} />
                 <p className={styles.stepQ} style={{ marginTop: '1.25rem', fontSize: '0.9rem', opacity: 0.75 }}>Prix d&apos;achat en € ? <span style={{ fontSize: '0.7rem', opacity: 0.6 }}>admin uniquement</span></p>
                 <input className={styles.stepInput} type="number" step="0.01" value={form.purchasePrice} onChange={(e) => setForm({ ...form, purchasePrice: e.target.value })} placeholder="Ex: 8" onKeyDown={(e) => { if (e.key === 'Enter' && form.price) next(); }} />
+                <p className={styles.stepQ} style={{ marginTop: '1.25rem', fontSize: '0.9rem', opacity: 0.75 }}>Provenance ?</p>
+                <select className={styles.stepInput} value={form.provenance} onChange={(e) => setForm({ ...form, provenance: e.target.value })}>
+                  <option value="">— Non renseignée</option>
+                  <option value="Friperie">Friperie</option>
+                  <option value="Brocante">Brocante</option>
+                  <option value="Don">Don</option>
+                  <option value="B2B">B2B</option>
+                  <option value="Vinted">Vinted</option>
+                </select>
                 <div className={styles.stepActions}>
                   <button className={styles.stepNext} disabled={!form.price} onClick={next}>Continuer →</button>
                 </div>
