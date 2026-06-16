@@ -26,7 +26,11 @@
   pointer-events: none;
 
   background: #FFE566;
-  padding: 0.25rem 0.3rem 0.15rem;
+  padding: 1rem 0.3rem;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 2px;
   box-shadow:
     2px 4px 8px rgba(0,0,0,0.2),
