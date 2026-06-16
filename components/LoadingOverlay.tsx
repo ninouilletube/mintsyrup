@@ -8,18 +8,17 @@ export default function LoadingOverlay() {
 
   useEffect(() => {
     const hide = () => {
-      setTimeout(() => {
-        setFading(true);
-        setTimeout(() => setVisible(false), 400);
-      }, 1000);
+      setFading(true);
+      setTimeout(() => setVisible(false), 400);
     };
 
-    if (document.readyState === 'complete') {
-      hide();
-    } else {
-      window.addEventListener('load', hide, { once: true });
-      return () => window.removeEventListener('load', hide);
-    }
+    window.addEventListener('video-ready', hide, { once: true });
+    // Fallback : si pas de vidéo sur la page, on cache après 4s max
+    const fallback = setTimeout(hide, 4000);
+    return () => {
+      window.removeEventListener('video-ready', hide);
+      clearTimeout(fallback);
+    };
   }, []);
 
   if (!visible) return null;

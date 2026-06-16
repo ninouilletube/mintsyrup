@@ -12,6 +12,7 @@ export default function VideoHero() {
         muted
         loop
         playsInline
+        onCanPlay={() => window.dispatchEvent(new Event('video-ready'))}
       />
       <div className={styles.grain} aria-hidden />
       <div className={styles.overlay} aria-hidden />
