@@ -8,8 +8,10 @@ export default function LoadingOverlay() {
 
   useEffect(() => {
     const hide = () => {
-      setFading(true);
-      setTimeout(() => setVisible(false), 400);
+      setTimeout(() => {
+        setFading(true);
+        setTimeout(() => setVisible(false), 400);
+      }, 1000);
     };
 
     if (document.readyState === 'complete') {
