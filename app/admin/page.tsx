@@ -102,6 +102,7 @@ const emptyForm = {
   favorite: false,
   favoriteText: '',
   purchasePrice: '',
+  provenance: '',
 };
 
 export default function AdminPage() {
@@ -300,6 +301,7 @@ export default function AdminPage() {
       favorite: p.favorite || false,
       favoriteText: p.favoriteText || '',
       purchasePrice: String(p.purchasePrice ?? ''),
+      provenance: p.provenance || '',
     });
     setView('edit-article');
   };
@@ -328,6 +330,7 @@ export default function AdminPage() {
       favoriteText: editForm.favoriteText || undefined,
       favoriteOrder: favOrder,
       purchasePrice: editForm.purchasePrice ? parseFloat(editForm.purchasePrice) : undefined,
+      provenance: editForm.provenance || undefined,
     });
     setView('articles');
     setEditingProduct(null);
@@ -685,6 +688,17 @@ export default function AdminPage() {
               <div className={styles.editField}>
                 <label className={styles.editLabel}>Prix d&apos;achat (€) <span className={styles.editLabelAdmin}>admin</span></label>
                 <input className={styles.editInput} type="number" step="0.01" value={editForm.purchasePrice} placeholder="Ce que tu as payé" onChange={(e) => setEditForm({ ...editForm, purchasePrice: e.target.value })} />
+              </div>
+              <div className={styles.editField}>
+                <label className={styles.editLabel}>Provenance</label>
+                <select className={styles.editInput} value={editForm.provenance} onChange={(e) => setEditForm({ ...editForm, provenance: e.target.value })}>
+                  <option value="">— Non renseignée</option>
+                  <option value="Friperie">Friperie</option>
+                  <option value="Brocante">Brocante</option>
+                  <option value="Don">Don</option>
+                  <option value="B2B">B2B</option>
+                  <option value="Vinted">Vinted</option>
+                </select>
               </div>
             </div>
             <div className={styles.editField}>

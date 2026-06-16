@@ -262,6 +262,15 @@
   white-space: pre-wrap;
 }
 
+.provenance {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mid);
+  opacity: 0.7;
+}
+
 .btnPrice {
   display: inline-flex;
   align-items: center;

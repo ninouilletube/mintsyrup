@@ -156,6 +156,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             <h1 className={styles.title}>{product.title[lang]}</h1>
             {product.brand && <p className={styles.brand}>{product.brand}</p>}
             {product.description[lang] && <p className={styles.desc}>{product.description[lang]}</p>}
+            {product.provenance && <p className={styles.provenance}>{lang === 'fr' ? 'Provenance' : 'Source'} : {product.provenance}</p>}
             <a
               href={product.vintedUrl}
               target="_blank"

@@ -20,6 +20,7 @@ export type Product = {
   favoriteText?: string;
   favoriteOrder?: number;
   purchasePrice?: number;
+  provenance?: string;
   sold?: boolean;
   soldAt?: number;
   soldPrice?: number;
