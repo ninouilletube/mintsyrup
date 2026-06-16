@@ -46,15 +46,16 @@ export default function LoadingOverlay() {
         {/* Anneau tournant */}
         <div style={{
           position: 'absolute',
-          inset: '-6px',
+          inset: '-4px',
           borderRadius: '50%',
-          background: 'conic-gradient(#09B1BA, #F5D8E0, #F0A820, #D94870, #09B1BA)',
-          animation: 'spin-glow 1.5s linear infinite',
+          background: 'conic-gradient(transparent 60%, #09B1BA 80%, transparent 100%)',
+          animation: 'spin-glow 1.2s linear infinite',
+          filter: 'blur(2px)',
         }} />
         {/* Masque blanc pour l'effet anneau */}
         <div style={{
           position: 'absolute',
-          inset: '3px',
+          inset: '2px',
           borderRadius: '50%',
           background: 'white',
           zIndex: 1,
