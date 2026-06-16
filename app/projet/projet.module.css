@@ -245,4 +245,5 @@
   object-fit: cover;
   margin-top: 1.5rem;
   display: block;
+  transform: rotate(-8deg);
 }
