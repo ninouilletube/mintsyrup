@@ -6,6 +6,7 @@ import { ProductsProvider } from '@/context/ProductsContext';
 import { SubcategoriesProvider } from '@/context/SubcategoriesContext';
 import { TagsProvider } from '@/context/TagsContext';
 import VisitTracker from '@/components/VisitTracker';
+import LoadingOverlay from '@/components/LoadingOverlay';
 import './globals.css';
 
 const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans' });
@@ -23,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LangProvider>
           <ShopProvider>
             <ProductsProvider><SubcategoriesProvider><TagsProvider>
+              <LoadingOverlay />
               <VisitTracker />
               {children}
             </TagsProvider></SubcategoriesProvider></ProductsProvider>
