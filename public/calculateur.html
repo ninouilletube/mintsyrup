@@ -1544,7 +1544,8 @@ async function saveArticle() {
   btn.disabled = true;
   btn.textContent = 'Enregistrement…';
 
-  const achat  = parseFloat(document.getElementById('achat').value) || 0;
+  const achatRaw = document.getElementById('achat').value.trim();
+  const achat  = achatRaw === '' ? null : parseFloat(achatRaw);
   const price  = parseInt(document.getElementById('result-price').textContent);
   const nom    = document.getElementById('nom').value.trim() || 'Article sans nom';
   const tier   = document.getElementById('tier-badge').textContent;
@@ -1751,7 +1752,7 @@ function renderStock() {
   const totalCA       = active.reduce((s, a) => s + a.price, 0);
   const totalMargin   = active.reduce((s, a) => s + a.margin, 0);
   const totalAchat    = active.reduce((s, a) => s + (a.achat || 0), 0);
-  const withAchat     = active.filter(a => a.achat > 0);
+  const withAchat     = active.filter(a => a.achat != null);
   const avgAchat      = withAchat.length > 0 ? withAchat.reduce((s, a) => s + a.achat, 0) / withAchat.length : 0;
   const nbScheduled   = active.filter(a => a.status === 'scheduled').length;
   const nbOnline      = active.filter(a => a.status === 'online').length;
@@ -1782,7 +1783,7 @@ function renderStock() {
           <div class="stock-card-price">${a.price}€</div>
           <div class="stock-card-margin">${a.margin}€ net</div>
         </div>
-        ${a.achat > 0 ? `<div class="stock-card-achat">Acheté ${parseFloat(a.achat).toFixed(2)}€</div>` : ''}
+        ${a.achat != null ? `<div class="stock-card-achat">Acheté ${parseFloat(a.achat).toFixed(2)}€</div>` : ''}
         <button class="stock-card-status ${!a.status ? 'sc-status-none' : a.status === 'scheduled' ? 'sc-status-scheduled' : 'sc-status-online'}" onclick="event.stopPropagation();saveArticleStatus(${a.id})" title="Changer le statut">${!a.status ? '○ Non programmé' : a.status === 'scheduled' ? '◐ Programmé' : '● En ligne'}</button>
       </div>
       <button class="stock-card-sold-btn" onclick="event.stopPropagation();openSoldModal(${a.id}, '${a.nom.replace(/'/g,"\\'")}', ${a.price})">Vendu ✓</button>
@@ -1998,7 +1999,7 @@ function openTicket(id, isSold) {
         ${getSaisons(a).map(s => `<span class="saison-badge" style="padding:3px 10px;font-size:11px">${s}</span>`).join('')}
       </div>
       <hr class="ticket-divider">
-      ${a.achat > 0 ? `<div class="ticket-row"><span class="lbl">Prix d'achat</span><span>${fmt(a.achat)}€</span></div>` : ''}
+      ${a.achat != null ? `<div class="ticket-row"><span class="lbl">Prix d'achat</span><span>${fmt(a.achat)}€</span></div>` : ''}
       ${isSold
         ? `<div class="ticket-row"><span class="lbl">Prix affiché</span><span>${fmt(a.price)}€</span></div>
            <div class="ticket-row"><span class="lbl">Prix de vente réel</span><span style="color:#1a9e6e;font-weight:500">${fmt(sp)}€</span></div>
@@ -2220,7 +2221,7 @@ function openEditModal(id) {
   editBreakdown = a.breakdown ? JSON.parse(JSON.stringify(a.breakdown)) : null;
 
   document.getElementById('edit-nom').value = a.nom || '';
-  document.getElementById('edit-achat').value = a.achat || '';
+  document.getElementById('edit-achat').value = a.achat != null ? a.achat : '';
 
   // saison pills
   const saisons = getSaisons(a);
@@ -2296,7 +2297,8 @@ function removeEditImage(e) {
 async function saveEdit() {
   if (!editArticleId) return;
   const nom   = document.getElementById('edit-nom').value.trim();
-  const achat = parseFloat(document.getElementById('edit-achat').value) || 0;
+  const editAchatRaw = document.getElementById('edit-achat').value.trim();
+  const achat = editAchatRaw === '' ? null : parseFloat(editAchatRaw);
   const saisonEls = document.querySelectorAll('#edit-saison-pills .saison-pill.selected');
   const saison = saisonEls.length > 0 ? Array.from(saisonEls).map(p => p.textContent) : null;
 
