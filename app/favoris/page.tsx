@@ -27,7 +27,11 @@ export default async function FavorisPage() {
             <p className={styles.empty}>Aucun favori pour l&apos;instant.</p>
           ) : (
             <div className={styles.gridWrap}>
-              <span className={styles.postit}>Mes coups de cœur</span>
+              <span className={styles.postit}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/coeur.png" alt="" className={styles.postitHeart} />
+                Mes coups de coeur
+              </span>
               <div className={styles.grid}>
               {products.map((p) => {
                 const img = p.images?.find(Boolean) ?? p.image ?? null;
