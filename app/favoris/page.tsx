@@ -30,7 +30,7 @@ export default async function FavorisPage() {
               <span className={styles.postit}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/coeur.png" alt="" className={styles.postitHeart} />
-                Mes coups de coeur
+                MES COUPS<br />DE COEUR
               </span>
               <div className={styles.grid}>
               {products.map((p) => {
