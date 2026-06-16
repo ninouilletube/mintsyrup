@@ -16,9 +16,9 @@
   position: absolute;
   top: 0;
   left: 0;
-  transform: translate(-30%, -120%) rotate(-3deg);
+  transform: translate(-30%, -30%) rotate(-3deg);
   font-family: 'MyUglyHandwriting', cursive;
-  font-size: 3.2rem;
+  font-size: 1.6rem;
   font-weight: normal;
   color: #3A2008;
   white-space: nowrap;
@@ -26,7 +26,7 @@
   pointer-events: none;
 
   background: #FFE566;
-  padding: 1rem 0.3rem;
+  padding: 0.5rem 0.15rem;
   aspect-ratio: 1;
   display: flex;
   align-items: center;
@@ -41,12 +41,12 @@
 .postitInner {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.3rem;
 }
 
 .postitHeart {
-  width: 3rem;
-  height: 3rem;
+  width: 1.5rem;
+  height: 1.5rem;
   object-fit: contain;
   flex-shrink: 0;
 }
