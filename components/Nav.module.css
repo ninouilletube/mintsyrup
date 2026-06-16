@@ -19,17 +19,6 @@
 
 .logo {
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.logoImg {
-  width: 2.2rem;
-  height: 2.2rem;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
 }
 
 

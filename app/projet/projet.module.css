@@ -236,3 +236,13 @@
     transform: none;
   }
 }
+
+
+.projetLogo {
+  width: 6.6rem;
+  height: 6.6rem;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 1.5rem;
+  display: block;
+}

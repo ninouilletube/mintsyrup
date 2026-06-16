@@ -40,6 +40,10 @@ export default async function ProjetPage() {
                     {b.text && b.text.split('\n').filter(Boolean).map((p, j) => (
                       <p key={j}>{p}</p>
                     ))}
+                    {i === 0 && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src="/icon.png" alt="Mint Syrup" className={styles.projetLogo} />
+                    )}
                   </div>
                 ))}
               </div>
