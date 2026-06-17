@@ -53,7 +53,7 @@ export default function Nav() {
 
       {/* ── Mobile : burger seul à gauche ── */}
       <button
-        className={styles.burger}
+        className={`${styles.burger} ${menuOpen ? styles.burgerOpen : ''}`}
         onClick={() => setMenuOpen(!menuOpen)}
         aria-label="Menu"
       >
@@ -108,9 +108,9 @@ export default function Nav() {
           ))}
           {/* Coups de cœur */}
           <Link href="/favoris" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileFavorisItem}`} onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>
+            Coups de cœur
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/coeur.png" alt="" className={styles.menuHeart} />
-            Coups de cœur
           </Link>
         </div>
       )}

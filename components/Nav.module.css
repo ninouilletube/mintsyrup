@@ -202,7 +202,19 @@
     width: 22px;
     height: 2px;
     background: var(--dark);
-    border-radius: 1px;
+    border-radius: 2px;
+    transition: width 0.2s ease, height 0.2s ease;
+  }
+
+  /* Barres verticales quand le menu est ouvert */
+  .burgerOpen {
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+  }
+  .burgerOpen .burgerBar {
+    width: 2px;
+    height: 18px;
   }
 
   /* Menu déroulant — ajusté au contenu */
@@ -210,7 +222,7 @@
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 100%;
+    top: calc(100% + 5px);
     left: 0.6rem;
     width: fit-content;
     min-width: 180px;
@@ -252,13 +264,13 @@
   }
 
   .mobileFavorisItem {
-    gap: 0.45rem;
+    gap: 0.25rem;
     text-decoration: none !important;
   }
 
   .menuHeart {
     display: block;
-    width: 24px;
+    width: 20px;
     height: auto;
   }
 }
