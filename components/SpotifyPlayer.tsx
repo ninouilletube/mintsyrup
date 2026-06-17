@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import styles from './SpotifyPlayer.module.css';
 
-const PLAYLIST_ID = '00kyLTAqpS0J9HG4pEqI78';
+const PLAYLIST_ID = '0KLtlLeLd6BXTIZjpgGQ0E';
 
 export default function SpotifyPlayer() {
   const [hidden, setHidden] = useState(false);
