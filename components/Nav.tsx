@@ -125,14 +125,14 @@ export default function Nav() {
           {[...CATEGORIES.filter(c => c.id === 'ete'), ...CATEGORIES.filter(c => c.id !== 'ete')].map((cat) => (
             <button
               key={cat.id}
-              className={`${styles.link} ${styles.mobileMenuItem} ${cat.id === 'ete' ? `${SEASON_CLASS[season]} ${styles.mobileMenuSeason}` : ''} ${activeCategory === cat.id && cat.id !== 'ete' ? styles.active : ''}`}
+              className={`${styles.link} ${styles.mobileMenuItem} ${cat.id === 'ete' ? `${SEASON_CLASS[season]} ${styles.mobileMenuSeason}` : ''} ${isHome && activeCategory === cat.id && cat.id !== 'ete' ? styles.active : ''}`}
               onClick={() => handleCategory(cat.id as Category)}
             >
               {cat.id === 'ete' ? SEASON_LABEL[season][lang] : (lang === 'fr' ? cat.fr : cat.en)}
             </button>
           ))}
           {/* Coups de cœur */}
-          <Link href="/favoris" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileFavorisItem}`} onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>
+          <Link href="/favoris" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileFavorisItem} ${pathname === '/favoris' ? styles.active : ''}`} onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>
             Coups de cœur
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/coeur.webp" alt="" className={styles.menuHeart} />
