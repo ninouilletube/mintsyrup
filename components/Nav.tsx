@@ -107,7 +107,7 @@ export default function Nav() {
             </button>
           ))}
           {/* Coups de cœur */}
-          <Link href="/favoris" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileFavorisItem}`} onClick={() => setMenuOpen(false)}>
+          <Link href="/favoris" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileFavorisItem}`} onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/coeur.png" alt="" className={styles.menuHeart} />
             Coups de cœur
