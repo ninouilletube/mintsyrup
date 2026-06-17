@@ -273,8 +273,8 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--mid);
-  opacity: 0.7;
+  color: var(--coral);
+  text-align: right;
 }
 
 .btnPrice {
@@ -511,7 +511,7 @@
     text-align: center;
     gap: 0.2rem;
     width: 100%;
-    margin-bottom: 0.65rem;
+    margin-bottom: 0.3rem;
   }
   .mobileTitleAbove {
     display: block;
