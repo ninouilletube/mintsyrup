@@ -1,25 +1,51 @@
 .wrap {
   position: fixed;
-  right: 1rem;
-  bottom: 1.5rem;
+  right: 0;
+  bottom: 20%;
   z-index: 200;
   display: flex;
-  align-items: flex-start;
-  gap: 0.3rem;
+  align-items: center;
+  flex-direction: row-reverse;
 }
 
-.close {
-  background: none;
-  border: none;
+.tab {
+  width: 28px;
+  height: 44px;
+  background: var(--dark);
+  border-radius: 8px 0 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  font-size: 0.65rem;
-  color: rgba(255,255,255,0.5);
-  padding: 0.2rem;
-  margin-top: 0.2rem;
-  transition: color 0.15s;
-  line-height: 1;
+  flex-shrink: 0;
+  transition: background 0.25s;
 }
-.close:hover { color: white; }
+
+.icon {
+  font-size: 0.9rem;
+  color: #5ECEC0;
+}
+
+.wrap:hover .tab {
+  background: #5ECEC0;
+}
+
+.wrap:hover .icon {
+  color: white;
+}
+
+.panel {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, clip-path 0.3s ease;
+  clip-path: inset(0 0 0 100%);
+}
+
+.wrap:hover .panel {
+  opacity: 1;
+  pointer-events: all;
+  clip-path: inset(0 0 0 0);
+}
 
 .iframe {
   border: none;
