@@ -10,6 +10,7 @@ import type { Category, Season, Product } from '@/data/products';
 import { getCurrentSeason } from '@/lib/season';
 import { getData, setData } from '@/lib/supabase';
 import styles from './Admin.module.css';
+import MobileAdmin from './MobileAdmin';
 
 type View = 'dashboard' | 'articles' | 'add-article' | 'edit-article' | 'article-detail' | 'bio' | 'finances' | 'catalog';
 
@@ -110,6 +111,16 @@ export default function AdminPage() {
   const [auth, setAuth] = useState(false);
   const [pwd, setPwd] = useState('');
   const [pwdError, setPwdError] = useState(false);
+
+  // Détection mobile
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mq.matches);
+    const h = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', h);
+    return () => mq.removeEventListener('change', h);
+  }, []);
 
   // Navigation
   const [view, setView] = useState<View>('dashboard');
@@ -419,6 +430,11 @@ export default function AdminPage() {
         </div>
       </div>
     );
+  }
+
+  // ── MOBILE ADMIN ──────────────────────────────────────────────────────────
+  if (auth && isMobile) {
+    return <MobileAdmin />;
   }
 
   // ── SHELL ──────────────────────────────────────────────────────────────────

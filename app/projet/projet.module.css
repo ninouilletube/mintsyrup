@@ -227,7 +227,8 @@
 }
 
 /* ── Éléments desktop/mobile exclusifs ── */
-.mobileLogoRow { display: none; }
+/* Desktop : mobileLogoRow affiche le logo seul (block), block1Inner masqué */
+.mobileLogoRow { display: block; }
 .mobileBlock1Inner { display: none; }
 .accordionWrap  { display: none; }
 

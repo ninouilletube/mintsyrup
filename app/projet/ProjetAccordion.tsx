@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styles from './projet.module.css';
 
 interface Props {
@@ -11,9 +11,18 @@ interface Props {
 
 export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
   const [open, setOpen] = useState(false);
+  const wrapRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const timer = setTimeout(() => {
+      wrapRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [open]);
 
   return (
-    <div className={`${styles.accordionWrap} ${open ? styles.accordionOpen : ''}`}>
+    <div ref={wrapRef} className={`${styles.accordionWrap} ${open ? styles.accordionOpen : ''}`}>
       <button
         className={styles.accordionHeader}
         onClick={() => setOpen(!open)}

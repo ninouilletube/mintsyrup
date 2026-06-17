@@ -42,24 +42,19 @@ export default async function ProjetPage() {
                       <p key={j}>{p}</p>
                     ))}
                     {i === 0 && (
-                      <>
-                        {/* Desktop : logo seul */}
+                      /* Logo + bloc 2 côte à côte sur mobile ; logo seul sur desktop */
+                      <div className={styles.mobileLogoRow}>
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src="/icon.png" alt="Mint Syrup" className={`${styles.projetLogo} ${styles.logoDesktop}`} />
-                        {/* Mobile : logo + bloc 1 côte à côte */}
-                        <div className={styles.mobileLogoRow}>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img src="/icon.png" alt="Mint Syrup" className={styles.projetLogo} />
-                          {blocks[1] && (
-                            <div className={styles.mobileBlock1Inner}>
-                              {blocks[1].title && <h2 className={styles.blockTitle}>{blocks[1].title}</h2>}
-                              {blocks[1].text && blocks[1].text.split('\n').filter(Boolean).map((p, j) => (
-                                <p key={j}>{p}</p>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </>
+                        <img src="/icon.png" alt="Mint Syrup" className={styles.projetLogo} />
+                        {blocks[1] && (
+                          <div className={styles.mobileBlock1Inner}>
+                            {blocks[1].title && <h2 className={styles.blockTitle}>{blocks[1].title}</h2>}
+                            {blocks[1].text && blocks[1].text.split('\n').filter(Boolean).map((p, j) => (
+                              <p key={j}>{p}</p>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                 ))}
