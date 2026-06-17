@@ -345,19 +345,23 @@
 
 @media (max-width: 768px) {
   .overlay {
-    padding: 1.25rem 0.75rem 2rem;
+    padding: 0 0.75rem 2rem;
     margin-top: -100vh;
   }
   .panel {
-    width: 97%;
-    padding: 1.25rem 0.9rem 2rem;
-    border-radius: 12px;
-    box-shadow: 4px 4px 0 var(--dark);
+    width: 100%;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: calc(52px + 1rem) 0 2rem;
   }
   .panelOpen {
-    width: 97%;
-    padding: 1.25rem 0.9rem 2rem;
+    width: 100%;
+    padding: calc(52px + 1rem) 0 2rem;
   }
+  /* Masquer le filigrane sur mobile */
+  .watermark { display: none; }
   /* Filtre taille : devient une barre horizontale dans le panneau */
   .filterSizesFloat {
     position: relative;

@@ -38,7 +38,7 @@ export default function ProductCard({ product }: { product: Product }) {
       </Link>
       <div className={styles.btnWrap}>
         <Link href={`/product/${product.id}`} className={styles.btn}>
-          {lang === 'fr' ? 'Voir la pièce →' : 'See item →'}
+          {lang === 'fr' ? 'Voir la pièce' : 'See item'}<span className={styles.btnArrow}> →</span>
         </Link>
       </div>
     </article>

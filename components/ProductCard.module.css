@@ -157,3 +157,26 @@
 }
 
 .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--dark); }
+
+.btnArrow { /* visible partout par défaut */ }
+
+@media (max-width: 768px) {
+  /* Masquer la description */
+  .desc { display: none; }
+
+  /* Corps de la carte plus compact */
+  .body { padding: 0.5rem 0.65rem 0.4rem; }
+
+  /* Bouton plus visible, sans flèche */
+  .btnArrow { display: none; }
+  .btnWrap { padding: 0 0.65rem 0.65rem; }
+  .btn {
+    font-size: 0.75rem;
+    padding: 0.55rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* Titre un peu plus petit pour la compacité */
+  .title { font-size: 0.88rem; margin-bottom: 0.2rem; }
+  .brand { margin-bottom: 0.15rem; }
+}

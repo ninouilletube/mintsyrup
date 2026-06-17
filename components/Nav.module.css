@@ -165,8 +165,12 @@
     display: flex;
     align-items: center;
     padding: 0.5rem 0.75rem;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     min-height: 52px;
+    z-index: 100;
   }
 
   /* Desktop éléments cachés sur mobile */
@@ -203,19 +207,13 @@
     height: 2px;
     background: var(--dark);
     border-radius: 2px;
-    transition: width 0.2s ease, height 0.2s ease;
+    transition: transform 0.22s ease, opacity 0.22s ease;
   }
 
-  /* Barres verticales quand le menu est ouvert */
-  .burgerOpen {
-    flex-direction: row;
-    gap: 4px;
-    align-items: center;
-  }
-  .burgerOpen .burgerBar {
-    width: 2px;
-    height: 18px;
-  }
+  /* X quand le menu est ouvert */
+  .burgerOpen .burgerBar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .burgerOpen .burgerBar:nth-child(2) { transform: scaleX(0); opacity: 0; }
+  .burgerOpen .burgerBar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
   /* Menu déroulant — ajusté au contenu */
   .mobileMenu {

@@ -96,8 +96,8 @@ export default function Nav() {
       {/* ── Mobile : menu déroulant (toutes catégories + favoris) ── */}
       {menuOpen && (
         <div className={styles.mobileMenu}>
-          {/* Toutes catégories dans l'ordre naturel (ete est après accessoires) */}
-          {CATEGORIES.map((cat) => (
+          {/* SUMMER en premier, puis les autres catégories */}
+          {[...CATEGORIES.filter(c => c.id === 'ete'), ...CATEGORIES.filter(c => c.id !== 'ete')].map((cat) => (
             <button
               key={cat.id}
               className={`${styles.link} ${styles.mobileMenuItem} ${cat.id === 'ete' ? `${SEASON_CLASS[season]} ${styles.mobileMenuSeason}` : ''} ${activeCategory === cat.id && cat.id !== 'ete' ? styles.active : ''}`}
