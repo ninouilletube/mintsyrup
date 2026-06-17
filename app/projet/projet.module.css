@@ -226,6 +226,22 @@
   margin-bottom: 0;
 }
 
+/* ── Logo vinyle (défini ICI, avant @media, pour que les règles mobiles puissent l'écraser) ── */
+@keyframes vinyl {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.projetLogo {
+  width: 6.6rem;
+  height: 6.6rem;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-top: 1.5rem;
+  display: block;
+  animation: vinyl 6s linear infinite;
+}
+
 /* ── Défauts desktop : éléments mobile masqués ── */
 .mobileLogoRow   { display: none; }   /* caché sur desktop, grid enfant sur mobile */
 .mobileBlock1Inner { display: none; }
@@ -259,13 +275,13 @@
   /* Groupe A – texte 1 : col 1, ligne 1 */
   .mobileBlock0 { grid-column: 1; grid-row: 1; margin-top: 0; }
 
-  /* Photo : col 2, ligne 1, centrée sur l'axe Y du texte 1 */
+  /* Photo : col 2, ligne 1, alignée en haut */
   .photoWrap {
     grid-column: 2;
     grid-row: 1;
     width: 88px;
     transform: rotate(2deg);
-    align-self: center;
+    align-self: start;
   }
 
   .photoWrap::before { width: 24px; height: 10px; top: -5px; }
@@ -384,20 +400,4 @@
     from { opacity: 0; transform: translateY(10px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-}
-
-
-@keyframes vinyl {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-.projetLogo {
-  width: 6.6rem;
-  height: 6.6rem;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-top: 1.5rem;
-  display: block;
-  animation: vinyl 6s linear infinite;
 }
