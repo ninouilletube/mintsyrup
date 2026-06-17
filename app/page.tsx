@@ -5,7 +5,6 @@ import ProductGrid from '@/components/ProductGrid';
 import Footer from '@/components/Footer';
 import CategoryInit from '@/components/CategoryInit';
 import PageBackground from '@/components/PageBackground';
-import DropsArrow from '@/components/DropsArrow';
 import styles from './page.module.css';
 
 export default function Home() {
@@ -21,7 +20,6 @@ export default function Home() {
           <Footer />
         </main>
       </PageBackground>
-      <DropsArrow />
       <Suspense><CategoryInit /></Suspense>
     </>
   );

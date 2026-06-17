@@ -89,30 +89,68 @@
 .secret:hover { opacity: 1; }
 
 @media (max-width: 768px) {
+  /* Grille 2×2 : [logo | liens] / [tagline | copyright]
+     display:contents sur .col rend ses enfants des items directs du grid footer */
   .footer {
-    flex-direction: column;
-    align-items: stretch;   /* enfants pleine largeur */
-    padding: 1.5rem 1.25rem 2rem;
-    gap: 0.75rem;
-  }
-  .logoRow {
-    justify-content: space-between;  /* Mint Syrup à gauche, Le projet à droite */
-  }
-  .logo {
-    font-size: 1.75rem;
-  }
-  .links {
-    gap: 0.5rem;
-  }
-  .link {
-    padding: 0.4rem 0.75rem;
-    min-height: 40px;
-    display: inline-flex;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-rows: auto auto;
+    column-gap: 0.5rem;
+    row-gap: 0.3rem;
+    padding: 1rem 1.25rem 1.1rem;
     align-items: center;
   }
+
+  /* col transparent au layout — ses enfants deviennent items du grid footer */
+  .col { display: contents; }
+
+  /* Ligne 1 col 1 : logo */
+  .logoRow {
+    grid-column: 1;
+    grid-row: 1;
+    align-items: center;
+    margin-bottom: 0;
+  }
+  .logo { font-size: 1.6rem; }
+
+  /* "Le projet" masqué sur mobile */
+  .projetTag { display: none; }
+
+  /* Ligne 1 col 2 : boutons Vinted + YouTube */
+  .links {
+    grid-column: 2;
+    grid-row: 1;
+    gap: 0.3rem;
+    flex-wrap: nowrap;
+    align-self: center;
+  }
+  .link {
+    padding: 0.18rem 0.45rem;
+    font-size: 0.58rem;
+    min-height: auto;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 1px 1px 0 var(--dark);
+    white-space: nowrap;
+  }
+
+  /* Ligne 2 col 1 : tagline */
+  .tagline {
+    grid-column: 1;
+    grid-row: 2;
+    font-size: 0.6rem;
+    margin-bottom: 0;
+    align-self: center;
+  }
+
+  /* Ligne 2 col 2 : copyright à droite */
   .copy {
-    margin-top: 0.5rem;
-    text-align: center;     /* copyright centré */
-    width: 100%;
+    grid-column: 2;
+    grid-row: 2;
+    text-align: right;
+    align-self: center;
+    margin-top: 0;
+    width: auto;
+    white-space: nowrap;
   }
 }

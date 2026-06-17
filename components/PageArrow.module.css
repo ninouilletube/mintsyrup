@@ -39,8 +39,8 @@
 
 @media (max-width: 768px) {
   .arrow {
-    top: 38%;
-    bottom: auto;
+    top: auto;
+    bottom: 2.5rem;
   }
   .arrowImg {
     width: 40px;

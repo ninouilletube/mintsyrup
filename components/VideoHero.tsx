@@ -1,10 +1,12 @@
 'use client';
 
 import { useShop } from '@/context/ShopContext';
+import PageArrow from './PageArrow';
 import styles from './VideoHero.module.css';
 
 export default function VideoHero() {
   const { activeCategory } = useShop();
+  const showArrows = activeCategory === 'drops' || activeCategory === null;
 
   return (
     <section className={styles.hero}>
@@ -24,6 +26,12 @@ export default function VideoHero() {
           Mint Syrup
         </h1>
       </div>
+      {showArrows && (
+        <>
+          <PageArrow href="/projet" label="Le projet" direction="left" />
+          <PageArrow href="/favoris" label="Mes favoris" direction="right" />
+        </>
+      )}
     </section>
   );
 }

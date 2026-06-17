@@ -8,7 +8,7 @@ export default function Footer() {
   const { lang } = useLang();
   return (
     <footer className={styles.footer}>
-      <div>
+      <div className={styles.col}>
         <div className={styles.logoRow}>
           <p className={styles.logo}>Mint Syrup</p>
           <Link href="/projet" className={styles.projetTag}>
