@@ -35,7 +35,7 @@ export default async function ProjetPage() {
             <div className={styles.layoutTop}>
               <div className={styles.blocksTop}>
                 {[blocks[0], blocks[1]].map((b, i) => b && (
-                  <div key={i} className={`${styles.blockNaked} ${i === 1 ? styles.blockNakedNarrow : ''}`}>
+                  <div key={i} className={`${styles.blockNaked} ${i === 1 ? styles.blockNakedNarrow : ''} ${i === 0 ? styles.mobileBlock0 : styles.mobileBlock1}`}>
                     {b.title && <h2 className={styles.blockTitle}>{b.title}</h2>}
                     {b.text && b.text.split('\n').filter(Boolean).map((p, j) => (
                       <p key={j}>{p}</p>

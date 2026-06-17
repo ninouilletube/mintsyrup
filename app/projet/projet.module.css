@@ -228,16 +228,120 @@
 
 @media (max-width: 768px) {
   .mobileHidden { display: none; }
-}
 
-@media (max-width: 700px) {
-  .layout {
-    grid-template-columns: 1fr;
-    gap: 2rem;
+  /* ── Conteneur principal ── */
+  .main {
+    padding: calc(52px + 1.5rem) 1rem 4rem;
+    align-items: flex-start;
   }
+
+  .container { max-width: 100%; }
+
+  .layout {
+    gap: 1rem;
+    padding-top: 0;
+  }
+
+  /* ── Zone haute : grid photo droite / texte gauche ── */
+  .layoutTop {
+    display: grid;
+    grid-template-columns: 1fr 88px;
+    grid-template-rows: auto auto;
+    gap: 0.65rem 0.75rem;
+    align-items: flex-start;
+  }
+
+  /* blocksTop transparent : ses enfants participent au grid du parent */
+  .blocksTop {
+    display: contents;
+  }
+
+  /* Bloc 0 : colonne gauche, ligne 1 */
+  .mobileBlock0 {
+    grid-column: 1;
+    grid-row: 1;
+    margin-top: 0;
+  }
+
+  /* Bloc 1 : pleine largeur sous la zone photo+texte */
+  .mobileBlock1 {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    margin-top: 0.5rem;
+    border-top: 1px solid rgba(255,255,255,0.18);
+    padding-top: 0.75rem;
+  }
+
+  /* ── Photo ── */
   .photoWrap {
-    aspect-ratio: 4 / 3;
-    transform: none;
+    grid-column: 2;
+    grid-row: 1;
+    width: 88px;
+    transform: rotate(2deg) translateY(-0.25rem);
+    align-self: flex-start;
+  }
+
+  .photo {
+    height: 120px;
+    object-position: center 10%;
+  }
+
+  /* ── Blocs de texte blanc ── */
+  .blockNaked {
+    font-size: 0.79rem;
+    line-height: 1.55;
+    padding: 0;
+    animation: mFadeUp 0.5s ease both;
+  }
+
+  .blockNakedNarrow {
+    margin-top: 0;
+    animation-delay: 0.12s;
+  }
+
+  .blockNaked .blockTitle {
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+  }
+
+  /* Logo vinyle : plus petit sur mobile */
+  .projetLogo {
+    width: 3rem;
+    height: 3rem;
+    margin-top: 0.75rem;
+  }
+
+  /* ── Carte bloc 3 ── */
+  .blockFull {
+    animation: mFadeUp 0.5s 0.22s ease both;
+  }
+
+  .content {
+    padding: 1rem 1.1rem;
+    font-size: 0.82rem;
+    line-height: 1.65;
+    border-radius: 12px;
+    box-shadow: 4px 4px 0 var(--dark);
+  }
+
+  .blockTitle {
+    font-size: 1rem;
+    margin-bottom: 0.55rem;
+  }
+
+  /* Tooltip info : passe sous l'icône sur mobile */
+  .infoTooltip {
+    left: auto;
+    right: 0;
+    top: 100%;
+    padding-left: 0;
+    padding-top: 0.35rem;
+    width: 220px;
+  }
+
+  @keyframes mFadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 }
 
