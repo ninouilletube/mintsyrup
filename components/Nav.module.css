@@ -141,6 +141,13 @@
 
 .langBtn:hover, .langBtn.active { color: var(--orange); }
 
+/* Éléments mobiles — cachés sur desktop */
+.mobileLeft   { display: none; }
+.mobileFavoris { display: none; }
+.mobileMenu   { display: none; }
+.burger       { display: none; }
+.mobileMenuItem { display: none; }
+
 @media (max-width: 900px) {
   .nav { grid-template-columns: auto auto; grid-template-rows: auto auto; padding: 0.75rem 1.25rem; }
   .links { grid-column: 1 / -1; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
@@ -151,38 +158,109 @@
 
 @media (max-width: 768px) {
   .nav {
-    padding: 0.5rem 1rem;
-    gap: 0.4rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-rows: auto;
+    padding: 0.5rem 0.75rem;
+    gap: 0;
+    position: relative;
   }
-  .logoText {
-    font-size: 1.55rem;
+
+  /* Desktop éléments cachés sur mobile */
+  .links { display: none !important; }
+  .lang  { display: none !important; }
+
+  /* Logo centré */
+  .logoWrap {
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
-  .link {
+  .logoText { font-size: 1.6rem; }
+
+  /* Gauche : burger + summer */
+  .mobileLeft {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.4rem 0.5rem;
     min-height: 44px;
+    min-width: 36px;
+  }
+
+  .burgerBar {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background: var(--dark);
+    border-radius: 1px;
+  }
+
+  /* Droite : favoris */
+  .mobileFavoris {
+    display: flex;
+    align-items: center;
+    grid-column: 3;
+    grid-row: 1;
+    padding: 0 0.25rem;
+    min-height: 44px;
+    transition: transform 0.15s;
+  }
+  .mobileFavoris:hover { transform: scale(1.12); }
+  .heartNav { width: 22px; }
+
+  /* Menu déroulant */
+  .mobileMenu {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--cream);
+    border-bottom: 2.5px solid var(--dark);
+    z-index: 99;
+    padding: 0.4rem 0.75rem 0.75rem;
+    gap: 0.1rem;
+    box-shadow: 0 6px 20px rgba(26,10,0,0.1);
+  }
+
+  .mobileMenuItem {
+    display: flex !important;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    min-height: 48px;
+    font-size: 0.95rem;
+    padding: 0 0.75rem;
+    border-radius: 8px;
+  }
+
+  /* Bouton SUMMER dans la barre */
+  .mobileLeft .link {
     display: inline-flex;
     align-items: center;
-    padding: 0 0.65rem;
-    font-size: 0.8rem;
-  }
-  .linkSummer,
-  .linkAutumn,
-  .linkWinter,
-  .linkSpring {
-    font-size: 1.3rem;
     min-height: 44px;
-    display: inline-flex;
-    align-items: center;
+    padding: 0 0.4rem;
+    border: none;
+    background: none;
   }
-  .heartLink {
-    min-height: 44px;
-    align-items: center;
-    margin-left: 0.25rem;
-  }
-  .heartNav {
-    width: 22px;
-  }
-  .langBtn {
-    font-size: 0.62rem;
-    min-height: 32px;
-  }
+  .mobileLeft .linkSummer  { font-size: 1.25rem; }
+  .mobileLeft .linkAutumn  { font-size: 1.25rem; }
+  .mobileLeft .linkWinter  { font-size: 1.25rem; }
+  .mobileLeft .linkSpring  { font-size: 1.25rem; }
 }

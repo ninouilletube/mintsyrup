@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { useLang } from '@/context/LangContext';
 import { useShop } from '@/context/ShopContext';
 import { CATEGORIES } from '@/data/categories';
@@ -30,13 +31,16 @@ export default function Nav() {
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === '/';
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogo = () => {
     setActiveCategory(null);
+    setMenuOpen(false);
     if (!isHome) router.push('/');
   };
 
   const handleCategory = (catId: Category) => {
+    setMenuOpen(false);
     if (isHome) {
       setActiveCategory(activeCategory === catId ? null : catId);
     } else {
@@ -46,12 +50,34 @@ export default function Nav() {
 
   return (
     <nav className={styles.nav}>
+
+      {/* ── Mobile gauche : burger + SUMMER ── */}
+      <div className={styles.mobileLeft}>
+        <button
+          className={styles.burger}
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Menu"
+        >
+          <span className={styles.burgerBar} />
+          <span className={styles.burgerBar} />
+          <span className={styles.burgerBar} />
+        </button>
+        <button
+          className={`${styles.link} ${SEASON_CLASS[season]}`}
+          onClick={() => handleCategory('ete' as Category)}
+        >
+          {SEASON_LABEL[season][lang]}
+        </button>
+      </div>
+
+      {/* ── Logo (desktop : colonne 1 / mobile : colonne 2 centré) ── */}
       <div className={styles.logoWrap}>
         <div className={styles.logo} onClick={handleLogo}>
           <span className={styles.logoText}>Mint Syrup</span>
         </div>
       </div>
 
+      {/* ── Desktop : liens catégories ── */}
       <div className={styles.links}>
         {CATEGORIES.map((cat) => (
           <button
@@ -68,11 +94,33 @@ export default function Nav() {
         </Link>
       </div>
 
+      {/* ── Desktop : langue ── */}
       <div className={styles.lang}>
         <button className={`${styles.langBtn} ${lang === 'fr' ? styles.active : ''}`} onClick={() => setLang('fr')}>FR</button>
         <span className={styles.langSep}>/</span>
         <button className={`${styles.langBtn} ${lang === 'en' ? styles.active : ''}`} onClick={() => setLang('en')}>EN</button>
       </div>
+
+      {/* ── Mobile droite : favoris ── */}
+      <Link href="/favoris" className={styles.mobileFavoris}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/coeur.png" alt="Favoris" className={styles.heartNav} />
+      </Link>
+
+      {/* ── Mobile : menu déroulant ── */}
+      {menuOpen && (
+        <div className={styles.mobileMenu}>
+          {CATEGORIES.filter((cat) => cat.id !== 'ete').map((cat) => (
+            <button
+              key={cat.id}
+              className={`${styles.link} ${styles.mobileMenuItem} ${activeCategory === cat.id ? styles.active : ''}`}
+              onClick={() => handleCategory(cat.id as Category)}
+            >
+              {lang === 'fr' ? cat.fr : cat.en}
+            </button>
+          ))}
+        </div>
+      )}
     </nav>
   );
 }
