@@ -433,8 +433,9 @@
     transition: background 0.15s, color 0.15s;
   }
   .mobileFilterBtnOpen {
-    background: var(--dark);
-    color: #fff;
+    background: #FBE5BD;
+    color: var(--dark);
+    border-color: var(--dark);
   }
   .mobileFilterBtnActive {
     background: #FDE4EF;
@@ -443,10 +444,10 @@
     box-shadow: 2px 2px 0 #C8306A;
   }
   .mobileFilterBtnActive.mobileFilterBtnOpen {
-    background: #C8306A;
-    color: #fff;
-    box-shadow: 2px 2px 0 #7A1040;
-    border-color: #7A1040;
+    background: #FBE5BD;
+    color: var(--dark);
+    border-color: var(--dark);
+    box-shadow: 2px 2px 0 var(--dark);
   }
   .mobileFilterCount {
     background: var(--coral);

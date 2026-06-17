@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLang } from '@/context/LangContext';
 import { useShop } from '@/context/ShopContext';
 import { CATEGORIES } from '@/data/categories';
@@ -32,6 +32,22 @@ export default function Nav() {
   const router = useRouter();
   const isHome = pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+
+  // Fermer le menu burger au scroll ou au touch en dehors
+  useEffect(() => {
+    if (!menuOpen) return;
+    const close = () => setMenuOpen(false);
+    const onTouch = (e: TouchEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) close();
+    };
+    window.addEventListener('scroll', close, { passive: true });
+    document.addEventListener('touchstart', onTouch, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', close);
+      document.removeEventListener('touchstart', onTouch);
+    };
+  }, [menuOpen]);
 
   const handleLogo = () => {
     setActiveCategory(null);
@@ -58,7 +74,7 @@ export default function Nav() {
   };
 
   return (
-    <nav className={styles.nav}>
+    <nav className={styles.nav} ref={navRef}>
 
       {/* ── Mobile : burger seul à gauche ── */}
       <button
@@ -120,6 +136,10 @@ export default function Nav() {
             Coups de cœur
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/coeur.png" alt="" className={styles.menuHeart} />
+          </Link>
+          {/* Le projet */}
+          <Link href="/projet" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileMenuProjet}`} onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>
+            Le projet
           </Link>
         </div>
       )}

@@ -189,3 +189,18 @@
 @media (max-width: 700px) {
   .card { width: calc(50% - 0.75rem); }
 }
+
+@media (max-width: 768px) {
+  .main {
+    padding: 0;
+    align-items: flex-start;
+    min-height: 100dvh;
+  }
+  .container {
+    width: 100%;
+    max-width: none;
+    align-items: stretch;
+  }
+  /* Cacher le grid desktop sur mobile */
+  .gridWrap { display: none; }
+}
