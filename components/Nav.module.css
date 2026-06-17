@@ -183,7 +183,7 @@
     left: 50%;
     transform: translateX(-50%);
   }
-  .logoText { font-size: 1.6rem; }
+  .logoText { font-size: 2rem; }
 
   /* Burger à gauche */
   .burger {

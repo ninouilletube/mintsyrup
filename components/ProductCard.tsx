@@ -11,7 +11,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <article className={styles.card}>
-      <Link href={`/product/${product.id}`} className={styles.cardLink}>
+      <Link href={`/product/${product.id}`} className={styles.cardLink} prefetch={true}>
         <div className={styles.imageWrapper}>
           {product.image ? (
             <Image src={product.image} alt={product.title[lang]} fill className={styles.image} sizes="(max-width: 768px) 100vw, 33vw" />
@@ -37,7 +37,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
       <div className={styles.btnWrap}>
-        <Link href={`/product/${product.id}`} className={styles.btn}>
+        <Link href={`/product/${product.id}`} className={styles.btn} prefetch={true}>
           {lang === 'fr' ? 'Voir la pièce' : 'See item'}<span className={styles.btnArrow}> →</span>
         </Link>
       </div>
