@@ -50,7 +50,7 @@ export default async function ProjetPage() {
                     ))}
                     {/* Logo desktop uniquement — masqué sur mobile */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/icon.png" alt="Mint Syrup" className={`${styles.projetLogo} ${styles.desktopOnly}`} />
+                    <img src="/icon.webp" alt="Mint Syrup" className={`${styles.projetLogo} ${styles.desktopOnly}`} />
                   </div>
                 )}
 
@@ -68,7 +68,7 @@ export default async function ProjetPage() {
                 {/* Avec display:contents sur blocksTop, ce div devient enfant direct du grid layoutTop */}
                 <div className={styles.mobileLogoRow}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/icon.png" alt="Mint Syrup" className={styles.projetLogo} />
+                  <img src="/icon.webp" alt="Mint Syrup" className={styles.projetLogo} />
                   {blocks[1] && (
                     <div className={styles.mobileBlock1Inner}>
                       {blocks[1].title && <h2 className={styles.blockTitle}>{blocks[1].title}</h2>}
@@ -82,7 +82,7 @@ export default async function ProjetPage() {
               </div>
               <div className={styles.photoWrap}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/nina - copie.png" alt="Nina" className={styles.photo} />
+                <img src="/nina - copie.webp" alt="Nina" className={styles.photo} />
               </div>
             </div>
 

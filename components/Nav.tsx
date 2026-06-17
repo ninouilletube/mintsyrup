@@ -107,7 +107,7 @@ export default function Nav() {
         ))}
         <Link href="/favoris" className={styles.heartLink}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/coeur.png" alt="Favoris" className={styles.heartNav} />
+          <img src="/coeur.webp" alt="Favoris" className={styles.heartNav} />
         </Link>
       </div>
 
@@ -135,7 +135,7 @@ export default function Nav() {
           <Link href="/favoris" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileFavorisItem}`} onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>
             Coups de cœur
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/coeur.png" alt="" className={styles.menuHeart} />
+            <img src="/coeur.webp" alt="" className={styles.menuHeart} />
           </Link>
           {/* Le projet */}
           <Link href="/projet" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileMenuProjet}`} onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>

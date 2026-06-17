@@ -25,7 +25,7 @@ export default function RetourArrow({ direction }: Props) {
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/fleche-droite.png"
+        src="/fleche-droite.webp"
         alt={direction === 'left' ? '←' : '→'}
         className={`${styles.arrowImg} ${direction === 'left' ? styles.arrowImgFlip : ''}`}
       />

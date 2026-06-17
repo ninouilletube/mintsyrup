@@ -1,6 +1,6 @@
 .main {
   min-height: 100vh;
-  background: url('/mer.png') center center / cover no-repeat fixed;
+  background: url('/mer.webp') center center / cover no-repeat fixed;
   padding: 3rem 2rem 6rem;
   display: flex;
   justify-content: center;

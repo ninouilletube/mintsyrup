@@ -90,7 +90,7 @@ export default function LoadingOverlay() {
           zIndex: 1,
         }} />
         <img
-          src="/icon.png"
+          src="/icon.webp"
           alt="Mint Syrup"
           style={{
             position: 'absolute',

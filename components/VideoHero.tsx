@@ -38,7 +38,7 @@ export default function VideoHero() {
         aria-hidden
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/icon.png" alt="" className={styles.loadingLogo} />
+        <img src="/icon.webp" alt="" className={styles.loadingLogo} />
         <span className={styles.loadingText}>chargement…</span>
       </div>
       <div className={styles.content}>

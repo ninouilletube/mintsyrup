@@ -33,10 +33,10 @@ export default async function FavorisPage() {
                 <span className={styles.postit}>
                   <span className={styles.postitInner}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/coeur.png" alt="" className={styles.postitHeart} />
+                    <img src="/coeur.webp" alt="" className={styles.postitHeart} />
                     <span>MES COUPS<br />DE COEUR</span>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/coeur.png" alt="" className={styles.postitHeart} />
+                    <img src="/coeur.webp" alt="" className={styles.postitHeart} />
                   </span>
                 </span>
                 <div className={styles.grid}>
