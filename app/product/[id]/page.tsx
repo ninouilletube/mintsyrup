@@ -126,7 +126,14 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       <div className={styles.page}>
       <Link href="/" className={styles.back}>← Retour</Link>
       <div className={styles.cardWrap}>
+        {/* Mobile uniquement : titre + marque centrés au-dessus de la carte */}
+        <div className={styles.mobileCardHeader}>
+          <h1 className={styles.mobileTitleAbove}>{product.title[lang]}</h1>
+          {product.brand && <p className={styles.mobileBrandAbove}>{product.brand}</p>}
+        </div>
+
         <div className={styles.card}>
+          {/* Taille : position absolue sur desktop, masquée sur mobile */}
           {product.size && <span className={styles.size}>{product.size}</span>}
           <div className={styles.gallery}>
             {images.length > 1 && (
@@ -152,6 +159,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
               )}
             </div>
           </div>
+          {/* Mobile uniquement : taille sous les images, alignée à droite */}
+          {product.size && <span className={styles.mobileSizeBelow}>{product.size}</span>}
           <div className={styles.info}>
             <h1 className={styles.title}>{product.title[lang]}</h1>
             {product.brand && <p className={styles.brand}>{product.brand}</p>}
