@@ -180,3 +180,10 @@
   .title { font-size: 0.88rem; margin-bottom: 0.2rem; }
   .brand { margin-bottom: 0.15rem; }
 }
+
+/* Désactiver les effets hover sur appareils tactiles (évite le "hover collant" au toucher) */
+@media (hover: none) {
+  .card:hover { transform: none; box-shadow: 5px 5px 0 var(--dark); }
+  .card:hover .image { transform: none; }
+  .card:hover .imageHover { opacity: 0 !important; }
+}

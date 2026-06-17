@@ -67,6 +67,10 @@ export default function ProductGrid() {
     if (activeCategory === 'drops') {
       carouselWindowRef.current?.scrollTo({ left: 0 });
     }
+    // Mobile : remonter en haut lors du changement de catégorie
+    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+      window.scrollTo({ top: 0 });
+    }
   }, [activeCategory]);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);

@@ -37,7 +37,7 @@ export default function Nav() {
     setActiveCategory(null);
     setMenuOpen(false);
     if (isHome) {
-      router.replace('/', { scroll: false });
+      window.history.replaceState(window.history.state, '', '/');
     } else {
       router.push('/');
     }
@@ -48,8 +48,10 @@ export default function Nav() {
     if (isHome) {
       const newCat = activeCategory === catId ? null : catId;
       setActiveCategory(newCat);
-      // Sync URL so "back" from a product page restores the correct category
-      router.replace(newCat ? `/?cat=${newCat}` : '/', { scroll: false });
+      // Met à jour l'URL via l'API native (sans déclencher un event Next.js)
+      // pour que le bouton "retour" restaure la bonne catégorie
+      const url = newCat ? `/?cat=${newCat}` : '/';
+      window.history.replaceState(window.history.state, '', url);
     } else {
       router.push(`/?cat=${catId}`);
     }
