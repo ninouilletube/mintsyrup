@@ -451,10 +451,10 @@
 
 @media (max-width: 768px) {
   .page {
-    padding: 1rem 0.6rem 3rem;
+    padding: calc(52px + 1.5rem) 0.75rem 3rem;
   }
   .back {
-    top: 4.5rem;
+    top: 4.2rem;
     left: 0.75rem;
     font-size: 0.65rem;
     padding: 0.2rem 0.55rem;
@@ -464,61 +464,54 @@
     border-radius: 12px;
     box-shadow: 4px 4px 0 var(--dark);
   }
-  /* Galerie : image en haut, thumbs en rangée horizontale en bas */
+
+  /* Galerie : image à gauche, thumbs verticaux à droite */
   .gallery {
-    flex-direction: column;
-    padding: 0.6rem 0.6rem 0;
-    gap: 0.4rem;
-  }
-  .thumbsCol {
-    order: 2;
     flex-direction: row;
-    max-height: none;
-    overflow-x: auto;
-    overflow-y: visible;
-    scrollbar-width: none;
-    padding-bottom: 2px;
-    gap: 0.3rem;
+    align-items: flex-start;
+    padding: 0.85rem;
+    gap: 0.5rem;
   }
-  .thumbsCol::-webkit-scrollbar { display: none; }
   .imageWrap {
     order: 1;
+    flex: 1;
     aspect-ratio: 3/4;
     height: auto;
-    max-height: 60vw;
+    max-height: none;
+  }
+  /* Flèches internes visibles sur mobile (pas de hover) */
+  .arrow { opacity: 1; }
+
+  .thumbsCol {
+    order: 2;
+    flex-direction: column;
+    max-height: none;
+    overflow-y: auto;
+    overflow-x: visible;
+    width: 52px;
+    flex-shrink: 0;
+    gap: 0.35rem;
   }
   .thumb {
     width: 52px;
     height: 52px;
   }
+
+  /* Même padding que la galerie */
   .info {
-    padding: 1.25rem 1rem 1.5rem;
+    padding: 0.85rem 0.85rem 1.25rem;
     gap: 0.6rem;
   }
-  .title {
-    font-size: 1.15rem;
-  }
-  .btn {
-    width: 100%;
-    justify-content: center;
-  }
-  /* Suggestions */
-  .relatedTitle {
-    margin-left: 1rem;
-  }
-  .relatedCard {
-    width: 130px;
-  }
-  .relatedGrid {
-    padding: 10px 1rem 16px;
-    gap: 1rem;
-  }
-}
+  .title { font-size: 1.15rem; }
 
-@media (max-width: 600px) {
-  .card { grid-template-columns: 1fr; }
-  .gallery { padding: 0.75rem 0.75rem 0; }
-  .imageWrap { aspect-ratio: 4/3; height: auto; }
-  .info { padding: 1.5rem; }
-  .relatedCard { width: 140px; }
+  /* Bouton centré, taille du contenu uniquement */
+  .btn {
+    width: fit-content;
+    align-self: center;
+  }
+
+  /* Suggestions */
+  .relatedTitle { margin-left: 1rem; }
+  .relatedCard  { width: 130px; }
+  .relatedGrid  { padding: 10px 1rem 16px; gap: 1rem; }
 }
