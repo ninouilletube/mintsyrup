@@ -329,6 +329,12 @@
   gap: 1.75rem;
 }
 
+/* Éléments mobiles — cachés sur desktop */
+.mobileCategoryHeader { display: none; }
+.mobileCategoryBadge  { display: none; }
+.mobileFilterWrap     { display: none; }
+.mobileFilterPanel    { display: none; }
+
 @media (max-width: 900px) {
   .overlay {
     padding: 1.5rem 1.5rem 2rem;
@@ -346,7 +352,6 @@
 @media (max-width: 768px) {
   .overlay {
     padding: 0;
-    /* Correspond au hero height: 100dvh sur mobile */
     margin-top: -100dvh;
     align-items: flex-start;
   }
@@ -357,7 +362,6 @@
     border: none;
     box-shadow: none;
     border-radius: 0;
-    /* padding-top pousse les cartes sous le header fixe (52px) */
     padding: calc(52px + 1.5rem) 0.75rem 3rem;
   }
   .panelOpen {
@@ -367,42 +371,174 @@
     min-height: 100vh;
     padding: calc(52px + 1.5rem) 0.75rem 3rem;
   }
-  /* Masquer le filigrane sur mobile */
   .watermark { display: none; }
-  /* Filtre taille : devient une barre horizontale dans le panneau */
-  .filterSizesFloat {
-    position: relative;
-    left: auto;
-    top: auto;
-    transform: none;
-    flex-direction: row;
+
+  /* Masquer les filtres desktop sur mobile */
+  .filterBar         { display: none !important; }
+  .filterSizesFloat  { display: none !important; }
+  .eteLead           { display: none; }
+
+  /* ── Titre de catégorie ── */
+  .mobileCategoryHeader {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.1rem;
+  }
+  .mobileCategoryBadge {
+    display: inline-block;
+    background: var(--coral);
+    color: #fff;
+    border: 2px solid var(--dark);
+    box-shadow: 3px 3px 0 var(--dark);
+    border-radius: 7px;
+    padding: 0.3rem 1.1rem;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .mobileCategoryBadgeSummer {
+    background: rgba(240,160,32,0.12);
+    color: #D08800;
+    border-color: #F0A020;
+    box-shadow: 3px 3px 0 #F0A020;
+    font-family: 'MyUglyHandwriting', cursive;
+    font-size: 1.35rem;
+    letter-spacing: 0.04em;
+    padding: 0.15rem 1.1rem;
+  }
+
+  /* ── Filtre mobile ── */
+  .mobileFilterWrap {
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .mobileFilterBtn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: #fff;
+    border: 2px solid var(--dark);
+    border-radius: 999px;
+    padding: 0.38rem 0.9rem;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 2px 2px 0 var(--dark);
+    color: var(--dark);
+    transition: background 0.15s, color 0.15s;
+  }
+  .mobileFilterBtnOpen {
+    background: var(--dark);
+    color: #fff;
+  }
+  .mobileFilterCount {
+    background: var(--coral);
+    color: #fff;
+    border-radius: 999px;
+    width: 17px;
+    height: 17px;
+    font-size: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+  }
+  .mobileFilterChevron {
+    font-size: 0.5rem;
+    opacity: 0.55;
+  }
+  .mobileFilterPanel {
+    display: block;
+    margin-top: 0.55rem;
+    background: #fff;
+    border: 2px solid var(--dark);
+    border-radius: 14px;
+    padding: 0.6rem 0.75rem 0.5rem;
+    box-shadow: 3px 3px 0 var(--dark);
+  }
+  .mobileFilterSection {
+    padding: 0.45rem 0;
+  }
+  .mobileFilterSection + .mobileFilterSection {
+    border-top: 1px solid rgba(58,24,8,0.08);
+  }
+  .mobileFilterLabel {
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin: 0 0 0.4rem;
+  }
+  .mobileFilterPills {
+    display: flex;
     flex-wrap: wrap;
     gap: 0.3rem;
-    margin-bottom: 0.9rem;
   }
-  .filterSizesFloat .filterSizeTag {
-    padding: 0.3rem 0.65rem;
-    font-size: 0.65rem;
-    min-height: 32px;
+  .mobileFilterPill {
+    padding: 0.22rem 0.65rem;
+    border: 1.5px solid rgba(58,24,8,0.28);
+    border-radius: 999px;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.67rem;
+    font-weight: 500;
+    color: var(--mid);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.12s;
+    min-height: 30px;
     display: inline-flex;
     align-items: center;
   }
-  /* Carousel drops : 2 cartes visibles */
+  .mobileFilterPill:hover { border-color: var(--dark); color: var(--dark); }
+  .mobileFilterPillActive {
+    background: var(--dark);
+    border-color: var(--dark);
+    color: #fff;
+  }
+  .mobileFilterColors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    padding: 0.1rem 0;
+  }
+  .mobileFilterReset {
+    display: block;
+    width: 100%;
+    margin-top: 0.5rem;
+    padding-top: 0.55rem;
+    border-top: 1px solid rgba(58,24,8,0.08);
+    border-left: none; border-right: none; border-bottom: none;
+    background: none;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.67rem;
+    color: var(--mid);
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-align: center;
+  }
+
+  /* Carousel drops : 1 carte sur mobile */
   .carouselTrack {
-    grid-auto-columns: calc((100cqi - 0.75rem) / 2.15);
+    grid-auto-columns: 100cqi;
     gap: 0.75rem;
   }
   .carouselArrow {
-    width: 36px;
-    height: 36px;
-    font-size: 1.3rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.6rem;
+    flex-shrink: 0;
   }
   .grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
-  }
-  .filterBar {
-    margin-bottom: 1rem;
   }
 }
 

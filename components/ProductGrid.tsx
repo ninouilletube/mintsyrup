@@ -22,26 +22,39 @@ export default function ProductGrid() {
   const [filterSizes, setFilterSizes] = useState<string[]>([]);
   const [filterColor, setFilterColor] = useState<string | null>(null);
   const [dropsIndex, setDropsIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const carouselWindowRef = useRef<HTMLDivElement>(null);
 
   const GAP = 16;
+  const MOBILE_GAP = 12;
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   useLayoutEffect(() => {
     const el = carouselWindowRef.current;
     if (!el) return;
     const ro = new ResizeObserver(() => {
-      // Reset scroll position on resize
-      el.scrollLeft = dropsIndex * ((el.clientWidth - 3 * GAP) / 4 + GAP);
+      const cardWidth = isMobile ? el.clientWidth : (el.clientWidth - 3 * GAP) / 4;
+      const gap = isMobile ? MOBILE_GAP : GAP;
+      el.scrollLeft = dropsIndex * (cardWidth + gap);
     });
     ro.observe(el);
     return () => ro.disconnect();
-  }, [dropsIndex]);
+  }, [dropsIndex, isMobile]);
 
   const scrollTo = (index: number) => {
     const el = carouselWindowRef.current;
     if (!el) return;
-    const cardWidth = (el.clientWidth - 3 * GAP) / 4;
-    el.scrollTo({ left: index * (cardWidth + GAP), behavior: 'smooth' });
+    const cardWidth = isMobile ? el.clientWidth : (el.clientWidth - 3 * GAP) / 4;
+    const gap = isMobile ? MOBILE_GAP : GAP;
+    el.scrollTo({ left: index * (cardWidth + gap), behavior: 'smooth' });
     setDropsIndex(index);
   };
 
@@ -50,6 +63,7 @@ export default function ProductGrid() {
     setFilterType(null);
     setFilterSizes([]);
     setFilterColor(null);
+    setMobileFilterOpen(false);
     if (activeCategory === 'drops') {
       carouselWindowRef.current?.scrollTo({ left: 0 });
     }
@@ -132,16 +146,31 @@ export default function ProductGrid() {
 
   const dropsPool = isDrops ? filtered.slice(0, DROPS_MAX) : [];
   const canPrev = dropsIndex > 0;
-  const canNext = dropsIndex + DROPS_VISIBLE < dropsPool.length;
+  const canNext = isMobile
+    ? dropsIndex + 1 < dropsPool.length
+    : dropsIndex + DROPS_VISIBLE < dropsPool.length;
+
+  const activeCat = CATEGORIES.find(c => c.id === activeCategory);
+  const catLabel = activeCat ? (lang === 'fr' ? activeCat.fr : activeCat.en) : '';
+  const activeFilterCount = [filterType, ...filterSizes, filterColor].filter(Boolean).length;
 
   return (
     <div className={styles.overlay}>
       <div className={isDrops ? styles.panelOpen : styles.panel} ref={panelRef}>
 
+        {/* Desktop : note été post-it */}
         {activeCategory === 'ete' && (
           <p className={styles.eteLead}>SUMMER</p>
         )}
 
+        {/* Mobile uniquement : titre de catégorie encadré */}
+        <div className={styles.mobileCategoryHeader}>
+          <span className={`${styles.mobileCategoryBadge} ${activeCategory === 'ete' ? styles.mobileCategoryBadgeSummer : ''}`}>
+            {catLabel}
+          </span>
+        </div>
+
+        {/* Desktop uniquement : filtre taille flottant */}
         {hasSizeFilter && (
           <div className={styles.filterSizesFloat}>
             {availableSizes.map((size) => (
@@ -154,6 +183,7 @@ export default function ProductGrid() {
           </div>
         )}
 
+        {/* Desktop uniquement : barre filtres type + couleur */}
         {hasFilters && (
           <div className={styles.filterBar}>
             <div className={styles.filterLeft}>
@@ -191,6 +221,95 @@ export default function ProductGrid() {
           </div>
         )}
 
+        {/* Mobile uniquement : bouton Filtrer + panneau déroulant */}
+        {(hasFilters || hasSizeFilter) && (
+          <div className={styles.mobileFilterWrap}>
+            <button
+              className={`${styles.mobileFilterBtn} ${mobileFilterOpen ? styles.mobileFilterBtnOpen : ''}`}
+              onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
+            >
+              <span>Filtrer</span>
+              {activeFilterCount > 0 && (
+                <span className={styles.mobileFilterCount}>{activeFilterCount}</span>
+              )}
+              <span className={styles.mobileFilterChevron}>{mobileFilterOpen ? '▲' : '▼'}</span>
+            </button>
+
+            {mobileFilterOpen && (
+              <div className={styles.mobileFilterPanel}>
+
+                {/* Sous-catégorie */}
+                {availableTypeIds.length > 0 && (
+                  <div className={styles.mobileFilterSection}>
+                    <p className={styles.mobileFilterLabel}>Sous-catégorie</p>
+                    <div className={styles.mobileFilterPills}>
+                      {availableTypeIds.map((id) => {
+                        const sub = subcategories.find((s) => s.id === id);
+                        if (!sub) return null;
+                        return (
+                          <button
+                            key={id}
+                            className={`${styles.mobileFilterPill} ${filterType === id ? styles.mobileFilterPillActive : ''}`}
+                            onClick={() => setFilterType(filterType === id ? null : id)}
+                          >{sub.label}</button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Taille */}
+                {availableSizes.length > 0 && (
+                  <div className={styles.mobileFilterSection}>
+                    <p className={styles.mobileFilterLabel}>Taille</p>
+                    <div className={styles.mobileFilterPills}>
+                      {availableSizes.map((size) => (
+                        <button
+                          key={size}
+                          className={`${styles.mobileFilterPill} ${filterSizes.includes(size) ? styles.mobileFilterPillActive : ''}`}
+                          onClick={() => setFilterSizes(filterSizes.includes(size) ? filterSizes.filter(s => s !== size) : [...filterSizes, size])}
+                        >{size}</button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Couleur */}
+                {availableColorIds.length > 0 && (
+                  <div className={styles.mobileFilterSection}>
+                    <p className={styles.mobileFilterLabel}>Couleur</p>
+                    <div className={styles.mobileFilterColors}>
+                      {availableColorIds.map((id) => {
+                        const color = getColor(id);
+                        if (!color) return null;
+                        return (
+                          <button
+                            key={id}
+                            title={color.label}
+                            className={`${styles.filterColorDot} ${filterColor === id ? styles.filterColorDotActive : ''}`}
+                            style={{ background: color.bg }}
+                            onClick={() => setFilterColor(filterColor === id ? null : id)}
+                          />
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Réinitialiser */}
+                {activeFilterCount > 0 && (
+                  <button
+                    className={styles.mobileFilterReset}
+                    onClick={() => { setFilterType(null); setFilterSizes([]); setFilterColor(null); }}
+                  >
+                    Réinitialiser les filtres
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
         {filtered.length === 0 ? (
           <p className={styles.empty}>
             {lang === 'fr' ? "Il n'y a pas encore de pièces dans cette catégorie — Reviens plus tard <3" : 'No pieces in this category yet... Check back soon <3'}
@@ -209,7 +328,7 @@ export default function ProductGrid() {
               </div>
             </div>
             </div>
-            <button className={styles.carouselArrow} style={{ visibility: canNext ? 'visible' : 'hidden' }} onClick={() => scrollTo(Math.min(dropsPool.length - DROPS_VISIBLE, dropsIndex + 1))}>›</button>
+            <button className={styles.carouselArrow} style={{ visibility: canNext ? 'visible' : 'hidden' }} onClick={() => scrollTo(Math.min(dropsPool.length - (isMobile ? 1 : DROPS_VISIBLE), dropsIndex + 1))}>›</button>
           </div>
         ) : (
           <div className={styles.grid}>
