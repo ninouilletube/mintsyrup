@@ -245,7 +245,7 @@ export default function ProductGrid() {
         {(hasFilters || hasSizeFilter) && (
           <div className={styles.mobileFilterWrap}>
             <button
-              className={`${styles.mobileFilterBtn} ${mobileFilterOpen ? styles.mobileFilterBtnOpen : ''}`}
+              className={`${styles.mobileFilterBtn} ${activeFilterCount > 0 ? styles.mobileFilterBtnActive : ''} ${mobileFilterOpen ? styles.mobileFilterBtnOpen : ''}`}
               onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
             >
               <span>Filtrer</span>

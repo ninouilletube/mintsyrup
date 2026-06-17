@@ -399,14 +399,14 @@
     text-transform: uppercase;
   }
   .mobileCategoryBadgeSummer {
-    background: rgba(240,160,32,0.12);
-    color: #D08800;
-    border-color: #F0A020;
-    box-shadow: 3px 3px 0 #F0A020;
-    font-family: 'MyUglyHandwriting', cursive;
-    font-size: 1.35rem;
-    letter-spacing: 0.04em;
-    padding: 0.15rem 1.1rem;
+    background: var(--coral);
+    color: #fff;
+    border-color: var(--dark);
+    box-shadow: 3px 3px 0 var(--dark);
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    padding: 0.3rem 1.1rem;
   }
 
   /* ── Filtre mobile ── */
@@ -435,6 +435,18 @@
   .mobileFilterBtnOpen {
     background: var(--dark);
     color: #fff;
+  }
+  .mobileFilterBtnActive {
+    background: #FDE4EF;
+    border-color: #C8306A;
+    color: #C8306A;
+    box-shadow: 2px 2px 0 #C8306A;
+  }
+  .mobileFilterBtnActive.mobileFilterBtnOpen {
+    background: #C8306A;
+    color: #fff;
+    box-shadow: 2px 2px 0 #7A1040;
+    border-color: #7A1040;
   }
   .mobileFilterCount {
     background: var(--coral);
@@ -498,9 +510,9 @@
   }
   .mobileFilterPill:hover { border-color: var(--dark); color: var(--dark); }
   .mobileFilterPillActive {
-    background: var(--dark);
-    border-color: var(--dark);
-    color: #fff;
+    background: #FDE4EF;
+    border-color: #C8306A;
+    color: #C8306A;
   }
   .mobileFilterColors {
     display: flex;

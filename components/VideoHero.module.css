@@ -72,10 +72,9 @@
     height: 100dvh;
   }
   .content {
-    /* Remonte légèrement pour compenser la nav et centrer visuellement */
     transform: translateY(-12vh);
   }
   .title {
-    font-size: clamp(3.2rem, 18vw, 5.5rem);
+    display: none;
   }
 }
