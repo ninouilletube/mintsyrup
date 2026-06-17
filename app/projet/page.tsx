@@ -4,6 +4,7 @@ import PageArrow from '@/components/PageArrow';
 import RetourArrow from '@/components/RetourArrow';
 import { getData } from '@/lib/supabase';
 import styles from './projet.module.css';
+import ProjetAccordion from './ProjetAccordion';
 
 export const revalidate = 60;
 
@@ -41,8 +42,24 @@ export default async function ProjetPage() {
                       <p key={j}>{p}</p>
                     ))}
                     {i === 0 && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src="/icon.png" alt="Mint Syrup" className={styles.projetLogo} />
+                      <>
+                        {/* Desktop : logo seul */}
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/icon.png" alt="Mint Syrup" className={`${styles.projetLogo} ${styles.logoDesktop}`} />
+                        {/* Mobile : logo + bloc 1 côte à côte */}
+                        <div className={styles.mobileLogoRow}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src="/icon.png" alt="Mint Syrup" className={styles.projetLogo} />
+                          {blocks[1] && (
+                            <div className={styles.mobileBlock1Inner}>
+                              {blocks[1].title && <h2 className={styles.blockTitle}>{blocks[1].title}</h2>}
+                              {blocks[1].text && blocks[1].text.split('\n').filter(Boolean).map((p, j) => (
+                                <p key={j}>{p}</p>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </>
                     )}
                   </div>
                 ))}
@@ -53,28 +70,33 @@ export default async function ProjetPage() {
               </div>
             </div>
             {blocks[2] && (
-              <div className={`${styles.content} ${styles.blockFull}`}>
-                {tooltip3 && (
-                  <div className={styles.infoWrap}>
-                    <span className={styles.infoIcon}>i</span>
-                    <div className={styles.infoTooltip}>
-                    <div className={styles.infoTooltipInner}>
-                      <span>{tooltip3}</span>
-                      <a
-                        href="https://www.vinted.pt/member/3125590380"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={styles.infoLink}
-                      >Voir mon profil Vinted ↗</a>
+              <>
+                {/* Desktop : carte pleine */}
+                <div className={`${styles.content} ${styles.blockFull} ${styles.desktopBlock2}`}>
+                  {tooltip3 && (
+                    <div className={styles.infoWrap}>
+                      <span className={styles.infoIcon}>i</span>
+                      <div className={styles.infoTooltip}>
+                        <div className={styles.infoTooltipInner}>
+                          <span>{tooltip3}</span>
+                          <a
+                            href="https://www.vinted.pt/member/3125590380"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.infoLink}
+                          >Voir mon profil Vinted ↗</a>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  </div>
-                )}
-                {blocks[2].title && <h2 className={styles.blockTitle}>{blocks[2].title}</h2>}
-                {blocks[2].text && blocks[2].text.split('\n').filter(Boolean).map((p, j) => (
-                  <p key={j}>{p}</p>
-                ))}
-              </div>
+                  )}
+                  {blocks[2].title && <h2 className={styles.blockTitle}>{blocks[2].title}</h2>}
+                  {blocks[2].text && blocks[2].text.split('\n').filter(Boolean).map((p, j) => (
+                    <p key={j}>{p}</p>
+                  ))}
+                </div>
+                {/* Mobile : accordéon repliable */}
+                <ProjetAccordion title={blocks[2].title} text={blocks[2].text} tooltip3={tooltip3} />
+              </>
             )}
           </div>
 

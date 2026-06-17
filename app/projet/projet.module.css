@@ -226,6 +226,11 @@
   margin-bottom: 0;
 }
 
+/* ── Éléments desktop/mobile exclusifs ── */
+.mobileLogoRow { display: none; }
+.mobileBlock1Inner { display: none; }
+.accordionWrap  { display: none; }
+
 @media (max-width: 768px) {
   .mobileHidden { display: none; }
 
@@ -246,7 +251,7 @@
   .layoutTop {
     display: grid;
     grid-template-columns: 1fr 88px;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto;
     gap: 0.65rem 0.75rem;
     align-items: flex-start;
   }
@@ -256,20 +261,16 @@
     display: contents;
   }
 
-  /* Bloc 0 : colonne gauche, ligne 1 */
+  /* Bloc 0 : colonne gauche, toute la hauteur */
   .mobileBlock0 {
     grid-column: 1;
     grid-row: 1;
     margin-top: 0;
   }
 
-  /* Bloc 1 : pleine largeur sous la zone photo+texte */
+  /* Bloc 1 original : masqué, rendu inline dans mobileLogoRow */
   .mobileBlock1 {
-    grid-column: 1 / -1;
-    grid-row: 2;
-    margin-top: 0.5rem;
-    border-top: 1px solid rgba(255,255,255,0.18);
-    padding-top: 0.75rem;
+    display: none;
   }
 
   /* ── Photo ── */
@@ -277,8 +278,15 @@
     grid-column: 2;
     grid-row: 1;
     width: 88px;
-    transform: rotate(2deg) translateY(-0.25rem);
-    align-self: flex-start;
+    transform: rotate(2deg);
+    align-self: center;
+  }
+
+  /* Scotch réduit sur mobile */
+  .photoWrap::before {
+    width: 24px;
+    height: 10px;
+    top: -5px;
   }
 
   .photo {
@@ -304,32 +312,119 @@
     margin-bottom: 0.4rem;
   }
 
-  /* Logo vinyle : plus petit sur mobile */
+  /* Logo vinyle + bloc 1 côte à côte sur mobile */
+  .logoDesktop { display: none; }
+
+  .mobileLogoRow {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    margin-top: 0.6rem;
+  }
+
+  .mobileLogoRow .projetLogo {
+    width: 3rem;
+    height: 3rem;
+    margin-top: 0;
+    flex-shrink: 0;
+  }
+
+  .mobileBlock1Inner {
+    display: block;
+    flex: 1;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.78rem;
+    font-style: italic;
+    color: white;
+    line-height: 1.55;
+  }
+
+  .mobileBlock1Inner .blockTitle {
+    font-size: 0.88rem;
+    color: white;
+    margin-bottom: 0.3rem;
+  }
+
+  /* Logo vinyle seul (desktop) : taille mobile héritée si jamais affiché */
   .projetLogo {
     width: 3rem;
     height: 3rem;
     margin-top: 0.75rem;
   }
 
-  /* ── Carte bloc 3 ── */
-  .blockFull {
+  /* ── Carte bloc 3 : masquée sur mobile (remplacée par l'accordéon) ── */
+  .desktopBlock2 { display: none; }
+
+  /* ── Accordéon bloc 3 ── */
+  .accordionWrap {
+    display: block;
+    border: 2.5px solid var(--dark);
+    border-radius: 12px;
+    box-shadow: 4px 4px 0 var(--dark);
+    background: var(--cream);
     animation: mFadeUp 0.5s 0.22s ease both;
   }
 
-  .content {
-    padding: 1rem 1.1rem;
+  .accordionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.85rem 1.1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .accordionHeader .blockTitle {
+    margin-bottom: 0;
+    font-size: 1rem;
+    flex: 1;
+  }
+
+  .accordionArrow {
+    font-size: 0.65rem;
+    color: #F04080;
+    flex-shrink: 0;
+  }
+
+  .accordionBody {
+    padding: 0 1.1rem 1rem;
+    font-family: var(--font-dm-sans), sans-serif;
     font-size: 0.82rem;
     line-height: 1.65;
-    border-radius: 12px;
-    box-shadow: 4px 4px 0 var(--dark);
+    color: var(--dark);
+    position: relative;
   }
 
-  .blockTitle {
-    font-size: 1rem;
-    margin-bottom: 0.55rem;
+  .accordionBody p {
+    margin-bottom: 0.75rem;
+  }
+  .accordionBody p:last-child {
+    margin-bottom: 0;
   }
 
-  /* Tooltip info : passe sous l'icône sur mobile */
+  /* Tooltip info dans l'accordéon */
+  .accordionBody .infoWrap {
+    position: relative;
+    top: auto;
+    right: auto;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+  }
+
+  .accordionBody .infoTooltip {
+    left: auto;
+    right: 0;
+    top: 100%;
+    padding-left: 0;
+    padding-top: 0.35rem;
+    width: 220px;
+  }
+
+  /* Tooltip info hors accordéon (non utilisé sur mobile mais reset propre) */
   .infoTooltip {
     left: auto;
     right: 0;
@@ -337,6 +432,12 @@
     padding-left: 0;
     padding-top: 0.35rem;
     width: 220px;
+  }
+
+  /* blockTitle global mobile */
+  .blockTitle {
+    font-size: 1rem;
+    margin-bottom: 0.55rem;
   }
 
   @keyframes mFadeUp {
