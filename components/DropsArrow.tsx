@@ -5,7 +5,8 @@ import PageArrow from './PageArrow';
 
 export default function DropsArrow() {
   const { activeCategory } = useShop();
-  if (activeCategory !== 'drops' && activeCategory !== null) return null;
+  // null géré par VideoHero (flèches dans le hero, scroll-away sur mobile)
+  if (activeCategory !== 'drops') return null;
   return (
     <>
       <PageArrow href="/projet" label="Le projet" direction="left" />
