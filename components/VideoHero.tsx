@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useShop } from '@/context/ShopContext';
 import PageArrow from './PageArrow';
 import styles from './VideoHero.module.css';
@@ -9,6 +9,11 @@ export default function VideoHero() {
   const { activeCategory } = useShop();
   const showArrows = activeCategory === 'drops' || activeCategory === null;
   const [videoReady, setVideoReady] = useState(false);
+
+  useEffect(() => {
+    const t = setTimeout(() => setVideoReady(true), 3000);
+    return () => clearTimeout(t);
+  }, []);
 
   return (
     <section className={styles.hero}>
