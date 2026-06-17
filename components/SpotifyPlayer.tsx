@@ -18,8 +18,8 @@ export default function SpotifyPlayer() {
       <div className={styles.panel}>
         <iframe
           src={`https://open.spotify.com/embed/playlist/${PLAYLIST_ID}?utm_source=generator&theme=0`}
-          width="280"
-          height="80"
+          width="320"
+          height="152"
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
           className={styles.iframe}
