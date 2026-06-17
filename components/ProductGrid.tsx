@@ -72,6 +72,22 @@ export default function ProductGrid() {
       window.scrollTo({ top: 0 });
     }
   }, [activeCategory]);
+
+  // Mobile + drops : bloquer le scroll vertical de la page pour éviter
+  // que le fond rose (PageBackground) ou la vidéo apparaissent derrière
+  useEffect(() => {
+    if (isDrops && isMobile) {
+      document.documentElement.style.overflowY = 'hidden';
+      document.body.style.overflowY = 'hidden';
+    } else {
+      document.documentElement.style.overflowY = '';
+      document.body.style.overflowY = '';
+    }
+    return () => {
+      document.documentElement.style.overflowY = '';
+      document.body.style.overflowY = '';
+    };
+  }, [isDrops, isMobile]);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
 

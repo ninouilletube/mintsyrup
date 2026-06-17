@@ -530,6 +530,12 @@
     grid-auto-columns: 100cqi;
     gap: 0.75rem;
   }
+  /* touch-action: pan-x empêche le scroll vertical de la PAGE quand
+     le doigt touche le carousel (évite que la vidéo/fond rose apparaisse) */
+  .carouselWindow {
+    touch-action: pan-x;
+    overscroll-behavior-x: contain;
+  }
   .carouselArrow {
     width: 40px;
     height: 40px;
