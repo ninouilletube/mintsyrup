@@ -7,11 +7,15 @@
 }
 
 /* Éléments mobiles — masqués sur desktop */
-.mobileCardHeader  { display: none; }
-.mobileTitleAbove  { display: none; }
-.mobileBrandAbove  { display: none; }
-.mobileSizeBelow   { display: none; }
-.mobileProvenance  { display: none; }
+.mobileCardHeader    { display: none; }
+.mobileTitleAbove    { display: none; }
+.mobileBrandAbove    { display: none; }
+.mobileSizeBelow     { display: none; }
+.mobileProvenance    { display: none; }
+.mobileGalleryStrip  { display: none; }
+
+.mobileGallerySlide { flex-shrink: 0; width: 100%; height: 100%; scroll-snap-align: center; }
+.mobileGalleryImg   { width: 100%; height: 100%; object-fit: cover; display: block; }
 
 .back {
   position: fixed;
@@ -498,22 +502,33 @@
     box-shadow: 4px 4px 0 var(--dark);
   }
 
-  /* Galerie : grid — image col 1, thumbs col 2 (limités à la hauteur de l'image) */
+  /* Galerie : grid — strip mobile col 1, thumbs col 2 */
   .gallery {
     display: grid;
     grid-template-columns: 1fr 52px;
     padding: 0.85rem;
     gap: 0.5rem;
   }
-  .imageWrap {
+
+  /* Carrousel mobile : remplace imageWrap */
+  .mobileGalleryStrip {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
     grid-column: 1;
     grid-row: 1;
     aspect-ratio: 3/4;
-    height: auto;
-    max-height: none;
+    border-radius: 12px;
+    box-shadow: 3px 3px 0 var(--dark);
+    cursor: pointer;
   }
-  /* Flèches internes visibles sur mobile (pas de hover) */
-  .arrow { opacity: 1; }
+  .mobileGalleryStrip::-webkit-scrollbar { display: none; }
+
+  /* Masquer imageWrap desktop et ses flèches */
+  .imageWrap { display: none; }
+  .arrow { display: none; }
 
   .thumbsCol {
     grid-column: 2;

@@ -91,6 +91,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const swipeStartX = useRef<number | null>(null);
   const didSwipe = useRef(false);
   const lightboxStripRef = useRef<HTMLDivElement>(null);
+  const mainStripRef = useRef<HTMLDivElement>(null);
   const fromScroll = useRef(false);
   const lightboxWasOpen = useRef(false);
 
@@ -115,7 +116,28 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     window.scrollTo(0, 0);
   }, [id]);
 
-  // Sync strip scroll position with activeIndex
+  // Sync main gallery strip (mobile) to activeIndex
+  useEffect(() => {
+    const strip = mainStripRef.current;
+    if (!strip || images.length <= 1 || lightbox) return;
+    if (fromScroll.current) { fromScroll.current = false; return; }
+    strip.scrollTo({ left: activeIndex * strip.clientWidth, behavior: 'smooth' });
+  }, [activeIndex, images.length, lightbox]);
+
+  // scrollend listener for main gallery strip
+  useEffect(() => {
+    const strip = mainStripRef.current;
+    if (!strip) return;
+    const onScrollEnd = () => {
+      const idx = Math.round(strip.scrollLeft / strip.clientWidth);
+      fromScroll.current = true;
+      setActiveIndex(idx);
+    };
+    strip.addEventListener('scrollend', onScrollEnd);
+    return () => strip.removeEventListener('scrollend', onScrollEnd);
+  }, []);
+
+  // Sync lightbox strip scroll position with activeIndex
   useEffect(() => {
     const strip = lightboxStripRef.current;
     if (!strip) return;
@@ -176,6 +198,20 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           {/* Taille : position absolue sur desktop, masquée sur mobile */}
           {product.size && <span className={styles.size}>{product.size}</span>}
           <div className={styles.gallery}>
+            {/* Mobile : carrousel scroll-snap (remplace imageWrap) */}
+            {images.length > 0 && (
+              <div
+                className={styles.mobileGalleryStrip}
+                ref={mainStripRef}
+                onClick={() => current && setLightbox(true)}
+              >
+                {images.map((src, i) => (
+                  <div key={i} className={styles.mobileGallerySlide}>
+                    <img src={src} alt={product.title[lang]} className={styles.mobileGalleryImg} />
+                  </div>
+                ))}
+              </div>
+            )}
             {images.length > 1 && (
               <div className={styles.thumbsCol}>
                 {images.map((src, i) => (
@@ -185,19 +221,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 )).slice(0, 7)}
               </div>
             )}
+            {/* Desktop : image unique avec flèches */}
             <div
               className={`${styles.imageWrap} ${current ? styles.imageWrapClickable : ''}`}
               onClick={() => { if (didSwipe.current) { didSwipe.current = false; return; } current && setLightbox(true); }}
-              onTouchStart={images.length > 1 ? (e) => { swipeStartX.current = e.touches[0].clientX; } : undefined}
-              onTouchEnd={images.length > 1 ? (e) => {
-                if (swipeStartX.current === null) return;
-                const delta = e.changedTouches[0].clientX - swipeStartX.current;
-                swipeStartX.current = null;
-                if (Math.abs(delta) < 40) return;
-                didSwipe.current = true;
-                if (delta < 0) { setDirection('right'); setActiveIndex((i) => (i + 1) % images.length); }
-                else           { setDirection('left');  setActiveIndex((i) => (i - 1 + images.length) % images.length); }
-              } : undefined}
             >
               {current ? (
                 <img key={activeIndex} src={current} alt={product.title[lang]} className={`${styles.image} ${direction === 'right' ? styles.slideInRight : styles.slideInLeft}`} />
