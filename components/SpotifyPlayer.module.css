@@ -1,17 +1,18 @@
 .wrap {
   position: fixed;
-  left: 0;
+  right: 0;
   bottom: 5rem;
   z-index: 200;
   display: flex;
   align-items: center;
+  flex-direction: row-reverse;
 }
 
 .tab {
   width: 28px;
   height: 44px;
   background: var(--dark);
-  border-radius: 0 8px 8px 0;
+  border-radius: 8px 0 0 8px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -41,14 +42,14 @@
   transition: width 0.3s ease, opacity 0.25s ease;
   background: white;
   border: 2.5px solid var(--dark);
-  border-left: none;
-  border-radius: 0 12px 12px 0;
-  box-shadow: 4px 4px 0 var(--dark);
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  box-shadow: -4px 4px 0 var(--dark);
   position: relative;
 }
 
 .wrap:hover .panel {
-  width: 320px;
+  width: 300px;
   opacity: 1;
   pointer-events: all;
 }
@@ -56,7 +57,7 @@
 .close {
   position: absolute;
   top: 0.3rem;
-  right: 0.4rem;
+  left: 0.4rem;
   background: none;
   border: none;
   cursor: pointer;
@@ -70,11 +71,58 @@
 .close:hover { opacity: 1; }
 
 .content {
-  padding: 0.5rem 0.5rem 0.5rem 0.45rem;
+  padding: 0.6rem 0.55rem 0.6rem 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.iframe {
-  border: none;
+.embedTarget {
   border-radius: 8px;
-  display: block;
+  overflow: hidden;
 }
+
+.controls {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem 0.3rem 0.5rem;
+  background: var(--dark);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.btn:hover:not(:disabled) { background: #5ECEC0; }
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btnActive { background: #5ECEC0; }
+
+.btnPause {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem 0.6rem;
+  background: transparent;
+  color: var(--dark);
+  border: 1.5px solid var(--dark);
+  border-radius: 20px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btnPause:hover:not(:disabled) { background: var(--dark); color: white; }
+.btnPause:disabled { opacity: 0.4; cursor: default; }
