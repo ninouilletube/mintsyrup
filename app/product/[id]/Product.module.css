@@ -595,7 +595,7 @@
     margin-top: 1em;
   }
 
-  /* Lightbox : image vraiment centrée, flèches en overlay */
+  /* Lightbox : image vraiment centrée, swipe à la place des flèches */
   .lightbox { padding: 0; }
   .lightboxInner {
     width: 100%;
@@ -609,13 +609,7 @@
     max-width: 92vw;
     max-height: 88svh;
   }
-  .lightboxArrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  .lightboxArrowLeft  { left: 0.75rem; }
-  .lightboxArrowRight { right: 0.75rem; }
+  .lightboxArrow { display: none; }
 
   /* Suggestions */
   .relatedTitle { margin-left: 1rem; }

@@ -215,7 +215,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       </div>
       {lightbox && current && (
         <div className={styles.lightbox} onClick={() => setLightbox(false)}>
-          <div className={styles.lightboxInner} onClick={(e) => e.stopPropagation()}>
+          <div
+            className={styles.lightboxInner}
+            onClick={(e) => e.stopPropagation()}
+            onTouchStart={(e) => { swipeStartX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              if (swipeStartX.current === null || images.length <= 1) return;
+              const delta = e.changedTouches[0].clientX - swipeStartX.current;
+              swipeStartX.current = null;
+              if (Math.abs(delta) < 40) return;
+              if (delta < 0) { setDirection('right'); setActiveIndex((i) => (i + 1) % images.length); }
+              else           { setDirection('left');  setActiveIndex((i) => (i - 1 + images.length) % images.length); }
+            }}
+          >
             {images.length > 1 && (
               <button className={`${styles.lightboxArrow} ${styles.lightboxArrowLeft}`} onClick={(e) => { e.stopPropagation(); setDirection('left'); setActiveIndex((activeIndex - 1 + images.length) % images.length); }}>←</button>
             )}
