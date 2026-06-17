@@ -48,7 +48,7 @@
 }
 
 .wrap:hover .panel {
-  width: 260px;
+  width: 320px;
   opacity: 1;
   pointer-events: all;
 }
@@ -70,26 +70,7 @@
 .close:hover { opacity: 1; }
 
 .content {
-  padding: 0.6rem 0.6rem 0.6rem 0.55rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.coverWrap {
-  width: 100%;
-  height: 60px;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1.5px solid var(--dark);
-  flex-shrink: 0;
-}
-
-.cover {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+  padding: 0.5rem 0.5rem 0.5rem 0.45rem;
 }
 
 .iframe {
