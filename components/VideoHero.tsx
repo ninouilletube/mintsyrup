@@ -19,7 +19,7 @@ export default function VideoHero() {
     <section className={styles.hero}>
       <video
         className={styles.video}
-        src="/mintsyrup.mov"
+        src="/mintsyrup.mp4"
         autoPlay
         muted
         loop
