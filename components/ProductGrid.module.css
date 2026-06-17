@@ -552,8 +552,13 @@
   .carouselArrow {
     width: 40px;
     height: 40px;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
+    line-height: 40px;
     flex-shrink: 0;
+    border: 2.5px solid #1a1a1a;
+    background: rgba(255,255,255,0.9);
+    color: #1a1a1a;
+    box-shadow: 2px 2px 0 #1a1a1a;
   }
   .grid {
     grid-template-columns: repeat(2, 1fr);
