@@ -12,22 +12,16 @@ export default function SpotifyPlayer() {
 
   return (
     <div className={styles.wrap}>
-      <div className={styles.tab}>
-        <span className={styles.icon}>♫</span>
-      </div>
-      <div className={styles.panel}>
-        <div className={styles.content}>
-          <iframe
-            src={`https://open.spotify.com/embed/playlist/${PLAYLIST_ID}?utm_source=generator&theme=0`}
-            width="100%"
-            height="152"
-            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-            loading="lazy"
-            className={styles.iframe}
-            title="Spotify"
-          />
-        </div>
-      </div>
+      <button className={styles.close} onClick={() => setHidden(true)} aria-label="Fermer">✕</button>
+      <iframe
+        src={`https://open.spotify.com/embed/playlist/${PLAYLIST_ID}?utm_source=generator&theme=0`}
+        width="280"
+        height="80"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+        className={styles.iframe}
+        title="Spotify"
+      />
     </div>
   );
 }
