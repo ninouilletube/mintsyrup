@@ -33,6 +33,11 @@ export default async function ProjetPage() {
       <main className={styles.main}>
         <div className={styles.container}>
           <div className={styles.layout}>
+            {/* Badge mobile uniquement */}
+            <div className={styles.mobilePageHeader}>
+              <span className={styles.mobilePageBadge}>Le projet</span>
+            </div>
+
             <div className={styles.layoutTop}>
               <div className={styles.blocksTop}>
 

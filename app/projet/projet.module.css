@@ -243,16 +243,37 @@
 }
 
 /* ── Défauts desktop : éléments mobile masqués ── */
-.mobileLogoRow   { display: none; }   /* caché sur desktop, grid enfant sur mobile */
+.mobileLogoRow   { display: none; }
 .mobileBlock1Inner { display: none; }
 .accordionWrap   { display: none; }
+.mobilePageHeader { display: none; }
 
 @media (max-width: 768px) {
   /* ── Masquages ── */
   .mobileHidden  { display: none; }
-  .desktopOnly   { display: none; } /* logo desktop */
-  .desktopBlock2 { display: none; } /* carte bloc 3 desktop */
-  .mobileBlock1  { display: none; } /* texte 2 original (rendu dans mobileLogoRow) */
+  .desktopOnly   { display: none; }
+  .desktopBlock2 { display: none; }
+  .mobileBlock1  { display: none; }
+
+  /* ── Badge "Le projet" ── */
+  .mobilePageHeader {
+    display: flex;
+    justify-content: center;
+  }
+  .mobilePageBadge {
+    display: inline-block;
+    background: var(--coral);
+    color: #fff;
+    border: 2px solid var(--dark);
+    box-shadow: 3px 3px 0 var(--dark);
+    border-radius: 7px;
+    padding: 0.3rem 1.1rem;
+    font-family: var(--font-dm-sans), sans-serif;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
 
   /* ── Conteneurs ── */
   .main      { padding: calc(52px + 2.5rem) 1rem 4rem; align-items: flex-start; }
