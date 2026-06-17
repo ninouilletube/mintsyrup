@@ -177,7 +177,8 @@
   gap: 0.6rem;
 }
 
-.infoWrap:hover .infoTooltip {
+.infoWrap:hover .infoTooltip,
+.infoActive .infoTooltip {
   opacity: 1;
   transform: translateY(0);
   pointer-events: all;

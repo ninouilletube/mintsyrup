@@ -11,19 +11,35 @@ interface Props {
 
 export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
   const [open, setOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const tooltipRef = useRef<HTMLDivElement>(null);
 
+  // Scroll pour voir le bas du bloc accordéon au déploiement
   useEffect(() => {
     if (!open) return;
     const timer = setTimeout(() => {
       if (!wrapRef.current) return;
       const rect = wrapRef.current.getBoundingClientRect();
-      // Scroll pour que le bas du bloc soit à 24px du bas de l'écran
       const targetScrollY = window.scrollY + rect.bottom - window.innerHeight + 24;
       window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
     }, 150);
     return () => clearTimeout(timer);
   }, [open]);
+
+  // Scroll pour voir le tooltip (i) quand il s'ouvre
+  useEffect(() => {
+    if (!infoOpen) return;
+    const timer = setTimeout(() => {
+      if (!tooltipRef.current) return;
+      const rect = tooltipRef.current.getBoundingClientRect();
+      const targetScrollY = window.scrollY + rect.bottom - window.innerHeight + 24;
+      if (targetScrollY > window.scrollY) {
+        window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+      }
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [infoOpen]);
 
   return (
     <div ref={wrapRef} className={`${styles.accordionWrap} ${open ? styles.accordionOpen : ''}`}>
@@ -39,15 +55,16 @@ export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
       </button>
       {open && (
         <div className={styles.accordionBody}>
-          {/* Texte d'abord */}
           {text && text.split('\n').filter(Boolean).map((p, j) => (
             <p key={j}>{p}</p>
           ))}
-          {/* (i) en bas à droite */}
           {tooltip3 && (
-            <div className={styles.infoWrap}>
-              <span className={styles.infoIcon}>i</span>
-              <div className={styles.infoTooltip}>
+            <div className={`${styles.infoWrap} ${infoOpen ? styles.infoActive : ''}`}>
+              <span
+                className={styles.infoIcon}
+                onClick={() => setInfoOpen(!infoOpen)}
+              >i</span>
+              <div ref={tooltipRef} className={styles.infoTooltip}>
                 <div className={styles.infoTooltipInner}>
                   <span>{tooltip3}</span>
                   <a
@@ -56,7 +73,7 @@ export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
                     rel="noopener noreferrer"
                     className={styles.infoLink}
                   >
-                    Voir mon profil Vinted ↗
+                    Voir mon profil Vinted
                   </a>
                 </div>
               </div>
