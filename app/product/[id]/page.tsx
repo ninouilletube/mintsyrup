@@ -88,6 +88,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [lightbox, setLightbox] = useState(false);
   const tracked = useRef(false);
+  const swipeStartX = useRef<number | null>(null);
+  const didSwipe = useRef(false);
 
   const product = products.find((p) => String(p.id) === id);
 
@@ -156,7 +158,20 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                 )).slice(0, 7)}
               </div>
             )}
-            <div className={`${styles.imageWrap} ${current ? styles.imageWrapClickable : ''}`} onClick={() => current && setLightbox(true)}>
+            <div
+              className={`${styles.imageWrap} ${current ? styles.imageWrapClickable : ''}`}
+              onClick={() => { if (didSwipe.current) { didSwipe.current = false; return; } current && setLightbox(true); }}
+              onTouchStart={images.length > 1 ? (e) => { swipeStartX.current = e.touches[0].clientX; } : undefined}
+              onTouchEnd={images.length > 1 ? (e) => {
+                if (swipeStartX.current === null) return;
+                const delta = e.changedTouches[0].clientX - swipeStartX.current;
+                swipeStartX.current = null;
+                if (Math.abs(delta) < 40) return;
+                didSwipe.current = true;
+                if (delta < 0) { setDirection('right'); setActiveIndex((i) => (i + 1) % images.length); }
+                else           { setDirection('left');  setActiveIndex((i) => (i - 1 + images.length) % images.length); }
+              } : undefined}
+            >
               {current ? (
                 <img key={activeIndex} src={current} alt={product.title[lang]} className={`${styles.image} ${direction === 'right' ? styles.slideInRight : styles.slideInLeft}`} />
               ) : (
