@@ -1,19 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 export default function LoadingOverlay() {
-  const [visible, setVisible] = useState(true);
-  const [fading, setFading] = useState(false);
+  const [initVisible, setInitVisible] = useState(true);
+  const [initFading, setInitFading] = useState(false);
+  const [navVisible, setNavVisible] = useState(false);
+  const pathname = usePathname();
+  const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // ── Chargement initial (attend la vidéo) ──
   useEffect(() => {
     const hide = () => {
-      setFading(true);
-      setTimeout(() => setVisible(false), 400);
+      setInitFading(true);
+      setTimeout(() => setInitVisible(false), 400);
     };
-
     window.addEventListener('video-ready', hide, { once: true });
-    // Fallback : si pas de vidéo sur la page, on cache après 4s max
     const fallback = setTimeout(hide, 4000);
     return () => {
       window.removeEventListener('video-ready', hide);
@@ -21,7 +24,35 @@ export default function LoadingOverlay() {
     };
   }, []);
 
-  if (!visible) return null;
+  // ── Afficher l'overlay dès qu'un lien interne est cliqué ──
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const link = (e.target as HTMLElement).closest('a');
+      if (!link) return;
+      const href = link.getAttribute('href');
+      if (
+        !href ||
+        href.startsWith('#') ||
+        href.startsWith('http') ||
+        href.startsWith('mailto') ||
+        href.startsWith('tel')
+      ) return;
+      if (href !== pathname) setNavVisible(true);
+    };
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, [pathname]);
+
+  // ── Masquer quand la nouvelle page est prête (pathname change) ──
+  useEffect(() => {
+    if (hideTimer.current) clearTimeout(hideTimer.current);
+    hideTimer.current = setTimeout(() => setNavVisible(false), 150);
+    return () => { if (hideTimer.current) clearTimeout(hideTimer.current); };
+  }, [pathname]);
+
+  if (!initVisible && !navVisible) return null;
+
+  const isFadingInit = initFading && !navVisible;
 
   return (
     <div style={{
@@ -29,9 +60,9 @@ export default function LoadingOverlay() {
       inset: 0,
       background: 'white',
       zIndex: 9999,
-      opacity: fading ? 0 : 1,
-      transition: 'opacity 0.4s ease',
-      pointerEvents: fading ? 'none' : 'all',
+      opacity: isFadingInit ? 0 : 1,
+      transition: isFadingInit ? 'opacity 0.4s ease' : 'none',
+      pointerEvents: isFadingInit ? 'none' : 'all',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -43,7 +74,6 @@ export default function LoadingOverlay() {
         }
       `}</style>
       <div style={{ position: 'relative', width: '96px', height: '96px' }}>
-        {/* Anneau tournant */}
         <div style={{
           position: 'absolute',
           inset: '-4px',
@@ -52,7 +82,6 @@ export default function LoadingOverlay() {
           animation: 'spin-glow 1.2s linear infinite',
           filter: 'blur(2px)',
         }} />
-        {/* Masque blanc pour l'effet anneau */}
         <div style={{
           position: 'absolute',
           inset: '2px',
@@ -60,7 +89,6 @@ export default function LoadingOverlay() {
           background: 'white',
           zIndex: 1,
         }} />
-        {/* Logo */}
         <img
           src="/icon.png"
           alt="Mint Syrup"
