@@ -96,28 +96,21 @@ export default function Nav() {
       {/* ── Mobile : menu déroulant (toutes catégories + favoris) ── */}
       {menuOpen && (
         <div className={styles.mobileMenu}>
-          {/* Saison */}
-          <button
-            className={`${styles.link} ${styles.mobileMenuItem} ${SEASON_CLASS[season]}`}
-            onClick={() => handleCategory('ete' as Category)}
-          >
-            {SEASON_LABEL[season][lang]}
-          </button>
-          {/* Autres catégories */}
-          {CATEGORIES.filter((cat) => cat.id !== 'ete').map((cat) => (
+          {/* Toutes catégories dans l'ordre naturel (ete est après accessoires) */}
+          {CATEGORIES.map((cat) => (
             <button
               key={cat.id}
-              className={`${styles.link} ${styles.mobileMenuItem} ${activeCategory === cat.id ? styles.active : ''}`}
+              className={`${styles.link} ${styles.mobileMenuItem} ${cat.id === 'ete' ? `${SEASON_CLASS[season]} ${styles.mobileMenuSeason}` : ''} ${activeCategory === cat.id && cat.id !== 'ete' ? styles.active : ''}`}
               onClick={() => handleCategory(cat.id as Category)}
             >
-              {lang === 'fr' ? cat.fr : cat.en}
+              {cat.id === 'ete' ? SEASON_LABEL[season][lang] : (lang === 'fr' ? cat.fr : cat.en)}
             </button>
           ))}
-          {/* Favoris */}
+          {/* Coups de cœur */}
           <Link href="/favoris" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileFavorisItem}`} onClick={() => setMenuOpen(false)}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/coeur.png" alt="" className={styles.menuHeart} />
-            Mes favoris
+            Coups de cœur
           </Link>
         </div>
       )}

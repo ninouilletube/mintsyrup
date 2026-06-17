@@ -200,44 +200,48 @@
     border-radius: 1px;
   }
 
-  /* Menu déroulant — toutes catégories + favoris */
+  /* Menu déroulant — ajusté au contenu */
   .mobileMenu {
     display: flex;
     flex-direction: column;
     position: absolute;
     top: 100%;
     left: 0;
-    right: 0;
+    width: fit-content;
+    min-width: 200px;
     background: var(--cream);
-    border-bottom: 2.5px solid var(--dark);
+    border: 2.5px solid var(--dark);
+    border-top: none;
+    border-radius: 0 0 12px 0;
     z-index: 99;
-    padding: 0.4rem 0.75rem 1rem;
-    gap: 0.1rem;
-    box-shadow: 0 8px 24px rgba(26,10,0,0.12);
+    padding: 0.4rem 0.5rem 0.75rem;
+    gap: 0.05rem;
+    box-shadow: 4px 6px 0 var(--dark);
   }
 
   .mobileMenuItem {
     display: flex !important;
     align-items: center;
-    width: 100%;
     text-align: left;
-    min-height: 50px;
-    font-size: 0.95rem;
+    min-height: 48px;
+    font-size: 0.92rem;
     padding: 0 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
     white-space: nowrap;
+    width: 100%;
+  }
+
+  .mobileMenuSeason {
+    font-size: 1.5rem !important;
   }
 
   .mobileFavorisItem {
     gap: 0.5rem;
-    margin-top: 0.25rem;
-    border-top: 1px solid rgba(26,10,0,0.08);
-    padding-top: 0.25rem;
   }
 
   .menuHeart {
     display: block;
-    width: 18px;
+    width: 26px;
     height: auto;
   }
 }
