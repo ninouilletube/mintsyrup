@@ -7,6 +7,7 @@ import { SubcategoriesProvider } from '@/context/SubcategoriesContext';
 import { TagsProvider } from '@/context/TagsContext';
 import VisitTracker from '@/components/VisitTracker';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import SpotifyPlayer from '@/components/SpotifyPlayer';
 import './globals.css';
 
 const dmSans = DM_Sans({ subsets: ['latin'], variable: '--font-dm-sans' });
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <ShopProvider>
             <ProductsProvider><SubcategoriesProvider><TagsProvider>
               <LoadingOverlay />
+              <SpotifyPlayer />
               <VisitTracker />
               {children}
             </TagsProvider></SubcategoriesProvider></ProductsProvider>

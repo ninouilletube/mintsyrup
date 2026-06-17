@@ -1,0 +1,77 @@
+.wrap {
+  position: fixed;
+  left: 0;
+  bottom: 6rem;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+}
+
+.tab {
+  width: 32px;
+  height: 48px;
+  background: var(--dark);
+  border-radius: 0 8px 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.icon {
+  font-size: 1rem;
+  color: #5ECEC0;
+  line-height: 1;
+}
+
+.panel {
+  width: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: width 0.3s ease, opacity 0.3s ease;
+  background: white;
+  border: 2.5px solid var(--dark);
+  border-left: none;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 4px 4px 0 var(--dark);
+  position: relative;
+  padding: 0;
+}
+
+.wrap:hover .panel {
+  width: 340px;
+  opacity: 1;
+  pointer-events: all;
+  padding: 0.6rem 0.6rem 0.6rem 0.5rem;
+}
+
+.wrap:hover .tab {
+  background: #5ECEC0;
+}
+
+.wrap:hover .icon {
+  color: white;
+}
+
+.close {
+  position: absolute;
+  top: 0.3rem;
+  right: 0.4rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.7rem;
+  color: var(--mid);
+  line-height: 1;
+  padding: 0.1rem 0.2rem;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+  z-index: 1;
+}
+
+.close:hover {
+  opacity: 1;
+}
