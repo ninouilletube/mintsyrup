@@ -15,6 +15,7 @@ function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'e
   const gridRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  const [touchedId, setTouchedId] = useState<number | null>(null);
 
   const updateBounds = () => {
     const el = gridRef.current;
@@ -43,14 +44,25 @@ function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'e
         )}
         <div className={styles.relatedGrid} ref={gridRef}>
           {related.map((p) => (
-            <Link key={p.id} href={`/product/${p.id}`} className={styles.relatedCard}>
+            <Link
+              key={p.id}
+              href={`/product/${p.id}`}
+              className={styles.relatedCard}
+              onTouchStart={() => setTouchedId(p.id)}
+              onTouchEnd={() => setTouchedId(null)}
+              onTouchCancel={() => setTouchedId(null)}
+            >
               <div className={styles.relatedImg}>
                 {p.image
                   ? <Image src={p.image} alt={p.title[lang]} fill style={{ objectFit: 'cover' }} sizes="200px" />
                   : <div style={{ background: `linear-gradient(145deg, ${p.placeholder[0]}, ${p.placeholder[1]})`, width: '100%', height: '100%' }} />
                 }
                 {p.images?.[1] && (
-                  <img src={p.images[1]} alt="" className={styles.relatedImgHover} />
+                  <img
+                    src={p.images[1]}
+                    alt=""
+                    className={`${styles.relatedImgHover} ${touchedId === p.id ? styles.relatedImgHoverTouch : ''}`}
+                  />
                 )}
               </div>
               <div className={styles.relatedInfo}>
@@ -95,8 +107,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   }, [lightbox, images.length]);
 
   useEffect(() => {
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
+    window.scrollTo(0, 0);
   }, [id]);
 
   useEffect(() => {
@@ -142,7 +153,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   <button key={i} className={`${styles.thumb} ${i === activeIndex ? styles.thumbActive : ''}`} onClick={() => setActiveIndex(i)}>
                     <img src={src} alt="" className={styles.thumbImg} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
                   </button>
-                ))}
+                )).slice(0, 7)}
               </div>
             )}
             <div className={`${styles.imageWrap} ${current ? styles.imageWrapClickable : ''}`} onClick={() => current && setLightbox(true)}>
@@ -161,11 +172,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           </div>
           {/* Mobile uniquement : taille sous les images, alignée à droite */}
           {product.size && <span className={styles.mobileSizeBelow}>{product.size}</span>}
+          {/* Mobile uniquement : provenance sous l'image, à gauche */}
+          {product.provenance && (
+            <p className={styles.mobileProvenance}>
+              {lang === 'fr' ? 'Provenance' : 'Source'} : {product.provenance}
+            </p>
+          )}
           <div className={styles.info}>
             <h1 className={styles.title}>{product.title[lang]}</h1>
             {product.brand && <p className={styles.brand}>{product.brand}</p>}
-            {product.description[lang] && <p className={styles.desc}>{product.description[lang]}</p>}
-            {product.provenance && <p className={styles.provenance}>{lang === 'fr' ? 'Provenance' : 'Source'} : {product.provenance}</p>}
+            <div className={styles.descGroup}>
+              {product.description[lang] && <p className={styles.desc}>{product.description[lang]}</p>}
+              {product.provenance && <p className={styles.provenance}>{lang === 'fr' ? 'Provenance' : 'Source'} : {product.provenance}</p>}
+            </div>
             <a
               href={product.vintedUrl}
               target="_blank"
