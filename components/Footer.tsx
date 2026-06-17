@@ -1,6 +1,7 @@
 'use client';
 
 import { useLang } from '@/context/LangContext';
+import Link from 'next/link';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -10,9 +11,9 @@ export default function Footer() {
       <div>
         <div className={styles.logoRow}>
           <p className={styles.logo}>Mint Syrup</p>
-          <a href="/projet" className={styles.projetTag}>
+          <Link href="/projet" className={styles.projetTag}>
             {lang === 'fr' ? 'Le projet' : 'The project'}
-          </a>
+          </Link>
         </div>
         <p className={styles.tagline}>{lang === 'fr' ? 'Mode de seconde main • Pièces uniques' : 'Second-hand fashion • Unique pieces'}</p>
         <div className={styles.links}>

@@ -7,6 +7,7 @@ import type { Category } from '@/data/products';
 import styles from './Nav.module.css';
 import { getCurrentSeason, type SeasonKey } from '@/lib/season';
 import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const SEASON_LABEL: Record<SeasonKey, { fr: string; en: string }> = {
   summer: { fr: 'SUMMER', en: 'SUMMER' },
@@ -61,10 +62,10 @@ export default function Nav() {
             {cat.id === 'ete' ? SEASON_LABEL[season][lang] : (lang === 'fr' ? cat.fr : cat.en)}
           </button>
         ))}
-        <a href="/favoris" className={styles.heartLink}>
+        <Link href="/favoris" className={styles.heartLink}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/coeur.png" alt="Favoris" className={styles.heartNav} />
-        </a>
+        </Link>
       </div>
 
       <div className={styles.lang}>
