@@ -125,7 +125,7 @@ export default function ProductGrid() {
     return true;
   });
 
-  const hasFilters = !isDrops && (availableTypeIds.length > 0 || availableColorIds.length > 0);
+  const hasFilters = !isDrops && activeCategory !== 'ete' && (availableTypeIds.length > 0 || availableColorIds.length > 0);
   const hasSizeFilter = !isDrops && availableSizes.length > 0;
 
   const season = activeCategory === 'ete' ? getCurrentSeason() : null;
