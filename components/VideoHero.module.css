@@ -72,7 +72,8 @@
     height: 100dvh;
   }
   .content {
-    transform: translateY(-12vh);
+    /* Décale vers le bas de la moitié du header pour centrer entre header et bas d'écran */
+    transform: translateY(26px);
   }
   .titleHidden {
     opacity: 0;
