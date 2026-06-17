@@ -148,3 +148,41 @@
   .lang { justify-self: end; }
   .logoText { font-size: 1.9rem; }
 }
+
+@media (max-width: 768px) {
+  .nav {
+    padding: 0.5rem 1rem;
+    gap: 0.4rem;
+  }
+  .logoText {
+    font-size: 1.55rem;
+  }
+  .link {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0 0.65rem;
+    font-size: 0.8rem;
+  }
+  .linkSummer,
+  .linkAutumn,
+  .linkWinter,
+  .linkSpring {
+    font-size: 1.3rem;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .heartLink {
+    min-height: 44px;
+    align-items: center;
+    margin-left: 0.25rem;
+  }
+  .heartNav {
+    width: 22px;
+  }
+  .langBtn {
+    font-size: 0.62rem;
+    min-height: 32px;
+  }
+}
