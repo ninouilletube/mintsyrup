@@ -77,6 +77,15 @@ export default async function ProjetPage() {
               </div>
             )}
           </div>
+          <iframe
+            src="https://open.spotify.com/embed/playlist/00kyLTAqpS0J9HG4pEqI78?utm_source=generator&theme=0"
+            width="100%"
+            height="152"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+            className={styles.spotify}
+            style={{ border: 'none', borderRadius: '12px', marginTop: '1.5rem' }}
+          />
         </div>
       </main>
       <Footer />
