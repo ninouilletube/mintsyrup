@@ -16,7 +16,7 @@ export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
   useEffect(() => {
     if (!open) return;
     const timer = setTimeout(() => {
-      wrapRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      wrapRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }, 150);
     return () => clearTimeout(timer);
   }, [open]);

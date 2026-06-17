@@ -35,35 +35,52 @@ export default async function ProjetPage() {
           <div className={styles.layout}>
             <div className={styles.layoutTop}>
               <div className={styles.blocksTop}>
-                {[blocks[0], blocks[1]].map((b, i) => b && (
-                  <div key={i} className={`${styles.blockNaked} ${i === 1 ? styles.blockNakedNarrow : ''} ${i === 0 ? styles.mobileBlock0 : styles.mobileBlock1}`}>
-                    {b.title && <h2 className={styles.blockTitle}>{b.title}</h2>}
-                    {b.text && b.text.split('\n').filter(Boolean).map((p, j) => (
+
+                {/* ── Groupe A : texte 1 (desktop flex + mobile grid col-1 row-1) ── */}
+                {blocks[0] && (
+                  <div className={`${styles.blockNaked} ${styles.mobileBlock0}`}>
+                    {blocks[0].title && <h2 className={styles.blockTitle}>{blocks[0].title}</h2>}
+                    {blocks[0].text && blocks[0].text.split('\n').filter(Boolean).map((p, j) => (
                       <p key={j}>{p}</p>
                     ))}
-                    {i === 0 && (
-                      /* Logo + bloc 2 côte à côte sur mobile ; logo seul sur desktop */
-                      <div className={styles.mobileLogoRow}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src="/icon.png" alt="Mint Syrup" className={styles.projetLogo} />
-                        {blocks[1] && (
-                          <div className={styles.mobileBlock1Inner}>
-                            {blocks[1].title && <h2 className={styles.blockTitle}>{blocks[1].title}</h2>}
-                            {blocks[1].text && blocks[1].text.split('\n').filter(Boolean).map((p, j) => (
-                              <p key={j}>{p}</p>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    )}
+                    {/* Logo desktop uniquement — masqué sur mobile */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/icon.png" alt="Mint Syrup" className={`${styles.projetLogo} ${styles.desktopOnly}`} />
                   </div>
-                ))}
+                )}
+
+                {/* ── Texte 2 desktop uniquement (masqué sur mobile) ── */}
+                {blocks[1] && (
+                  <div className={`${styles.blockNaked} ${styles.blockNakedNarrow} ${styles.mobileBlock1}`}>
+                    {blocks[1].title && <h2 className={styles.blockTitle}>{blocks[1].title}</h2>}
+                    {blocks[1].text && blocks[1].text.split('\n').filter(Boolean).map((p, j) => (
+                      <p key={j}>{p}</p>
+                    ))}
+                  </div>
+                )}
+
+                {/* ── Groupe B mobile : logo + texte 2, pleine largeur row-2 ── */}
+                {/* Avec display:contents sur blocksTop, ce div devient enfant direct du grid layoutTop */}
+                <div className={styles.mobileLogoRow}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/icon.png" alt="Mint Syrup" className={styles.projetLogo} />
+                  {blocks[1] && (
+                    <div className={styles.mobileBlock1Inner}>
+                      {blocks[1].title && <h2 className={styles.blockTitle}>{blocks[1].title}</h2>}
+                      {blocks[1].text && blocks[1].text.split('\n').filter(Boolean).map((p, j) => (
+                        <p key={j}>{p}</p>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
               </div>
               <div className={styles.photoWrap}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/nina - copie.png" alt="Nina" className={styles.photo} />
               </div>
             </div>
+
             {blocks[2] && (
               <>
                 {/* Desktop : carte pleine */}
@@ -94,7 +111,6 @@ export default async function ProjetPage() {
               </>
             )}
           </div>
-
         </div>
       </main>
       <Footer />
