@@ -181,9 +181,11 @@
   .brand { margin-bottom: 0.15rem; }
 }
 
-/* Désactiver les effets hover sur appareils tactiles (évite le "hover collant" au toucher) */
+/* Sur appareils tactiles : désactiver le "hover collant" mais garder
+   la 2e image visible quand le doigt appuie activement sur la carte */
 @media (hover: none) {
   .card:hover { transform: none; box-shadow: 5px 5px 0 var(--dark); }
   .card:hover .image { transform: none; }
-  .card:hover .imageHover { opacity: 0 !important; }
+  .card:hover .imageHover { opacity: 0; }
+  .cardLink:active .imageHover { opacity: 1; }
 }
