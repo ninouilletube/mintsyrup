@@ -26,11 +26,11 @@
   color: #5ECEC0;
 }
 
-.wrap:hover .tab {
+.tab:hover {
   background: #5ECEC0;
 }
 
-.wrap:hover .icon {
+.tab:hover .icon {
   color: white;
 }
 
@@ -41,7 +41,7 @@
   clip-path: inset(0 0 0 100%);
 }
 
-.wrap:hover .panel {
+.panelOpen {
   opacity: 1;
   pointer-events: all;
   clip-path: inset(0 0 0 0);
