@@ -1,6 +1,7 @@
 @font-face {
   font-family: 'MyUglyHandwriting';
   src: url('/MyUglyHandwriting-Regular.otf') format('opentype');
+  font-display: block;
 }
 
 :root {

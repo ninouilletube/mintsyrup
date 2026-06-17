@@ -21,6 +21,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
+      <head>
+        <link rel="preload" href="/MyUglyHandwriting-Regular.otf" as="font" type="font/otf" crossOrigin="anonymous" />
+      </head>
       <body className={`${dmSans.variable} ${playfair.variable}`}>
         <LangProvider>
           <ShopProvider>
