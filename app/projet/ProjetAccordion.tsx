@@ -13,7 +13,7 @@ export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
   const [open, setOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const tooltipRef = useRef<HTMLDivElement>(null);
+  const tooltipInnerRef = useRef<HTMLDivElement>(null);
 
   // Scroll pour voir le bas du bloc accordéon au déploiement
   useEffect(() => {
@@ -31,13 +31,11 @@ export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
   useEffect(() => {
     if (!infoOpen) return;
     const timer = setTimeout(() => {
-      if (!tooltipRef.current) return;
-      const rect = tooltipRef.current.getBoundingClientRect();
+      if (!tooltipInnerRef.current) return;
+      const rect = tooltipInnerRef.current.getBoundingClientRect();
       const targetScrollY = window.scrollY + rect.bottom - window.innerHeight + 24;
-      if (targetScrollY > window.scrollY) {
-        window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
-      }
-    }, 100);
+      window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+    }, 150);
     return () => clearTimeout(timer);
   }, [infoOpen]);
 
@@ -64,8 +62,8 @@ export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
                 className={styles.infoIcon}
                 onClick={() => setInfoOpen(!infoOpen)}
               >i</span>
-              <div ref={tooltipRef} className={styles.infoTooltip}>
-                <div className={styles.infoTooltipInner}>
+              <div className={styles.infoTooltip}>
+                <div ref={tooltipInnerRef} className={styles.infoTooltipInner}>
                   <span>{tooltip3}</span>
                   <a
                     href="https://www.vinted.pt/member/3125590380"
