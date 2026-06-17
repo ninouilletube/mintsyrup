@@ -11,8 +11,8 @@ export default function CategoryInit() {
 
   useEffect(() => {
     const cat = params.get('cat');
-    if (cat) setActiveCategory(cat as Category);
-  }, []);
+    setActiveCategory(cat ? (cat as Category) : null);
+  }, [params]);
 
   return null;
 }

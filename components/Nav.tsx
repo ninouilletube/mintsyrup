@@ -36,13 +36,20 @@ export default function Nav() {
   const handleLogo = () => {
     setActiveCategory(null);
     setMenuOpen(false);
-    if (!isHome) router.push('/');
+    if (isHome) {
+      router.replace('/', { scroll: false });
+    } else {
+      router.push('/');
+    }
   };
 
   const handleCategory = (catId: Category) => {
     setMenuOpen(false);
     if (isHome) {
-      setActiveCategory(activeCategory === catId ? null : catId);
+      const newCat = activeCategory === catId ? null : catId;
+      setActiveCategory(newCat);
+      // Sync URL so "back" from a product page restores the correct category
+      router.replace(newCat ? `/?cat=${newCat}` : '/', { scroll: false });
     } else {
       router.push(`/?cat=${catId}`);
     }
