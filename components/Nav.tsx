@@ -51,26 +51,18 @@ export default function Nav() {
   return (
     <nav className={styles.nav}>
 
-      {/* ── Mobile gauche : burger + SUMMER ── */}
-      <div className={styles.mobileLeft}>
-        <button
-          className={styles.burger}
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Menu"
-        >
-          <span className={styles.burgerBar} />
-          <span className={styles.burgerBar} />
-          <span className={styles.burgerBar} />
-        </button>
-        <button
-          className={`${styles.link} ${SEASON_CLASS[season]}`}
-          onClick={() => handleCategory('ete' as Category)}
-        >
-          {SEASON_LABEL[season][lang]}
-        </button>
-      </div>
+      {/* ── Mobile : burger seul à gauche ── */}
+      <button
+        className={styles.burger}
+        onClick={() => setMenuOpen(!menuOpen)}
+        aria-label="Menu"
+      >
+        <span className={styles.burgerBar} />
+        <span className={styles.burgerBar} />
+        <span className={styles.burgerBar} />
+      </button>
 
-      {/* ── Logo (desktop : colonne 1 / mobile : colonne 2 centré) ── */}
+      {/* ── Logo ── */}
       <div className={styles.logoWrap}>
         <div className={styles.logo} onClick={handleLogo}>
           <span className={styles.logoText}>Mint Syrup</span>
@@ -101,15 +93,17 @@ export default function Nav() {
         <button className={`${styles.langBtn} ${lang === 'en' ? styles.active : ''}`} onClick={() => setLang('en')}>EN</button>
       </div>
 
-      {/* ── Mobile droite : favoris ── */}
-      <Link href="/favoris" className={styles.mobileFavoris}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/coeur.png" alt="Favoris" className={styles.heartNav} />
-      </Link>
-
-      {/* ── Mobile : menu déroulant ── */}
+      {/* ── Mobile : menu déroulant (toutes catégories + favoris) ── */}
       {menuOpen && (
         <div className={styles.mobileMenu}>
+          {/* Saison */}
+          <button
+            className={`${styles.link} ${styles.mobileMenuItem} ${SEASON_CLASS[season]}`}
+            onClick={() => handleCategory('ete' as Category)}
+          >
+            {SEASON_LABEL[season][lang]}
+          </button>
+          {/* Autres catégories */}
           {CATEGORIES.filter((cat) => cat.id !== 'ete').map((cat) => (
             <button
               key={cat.id}
@@ -119,6 +113,12 @@ export default function Nav() {
               {lang === 'fr' ? cat.fr : cat.en}
             </button>
           ))}
+          {/* Favoris */}
+          <Link href="/favoris" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileFavorisItem}`} onClick={() => setMenuOpen(false)}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/coeur.png" alt="" className={styles.menuHeart} />
+            Mes favoris
+          </Link>
         </div>
       )}
     </nav>

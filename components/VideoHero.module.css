@@ -66,3 +66,16 @@
   letter-spacing: 0.02em;
   mix-blend-mode: difference;
 }
+
+@media (max-width: 768px) {
+  .hero {
+    height: 100dvh;
+  }
+  .content {
+    /* Remonte légèrement pour compenser la nav et centrer visuellement */
+    transform: translateY(-12vh);
+  }
+  .title {
+    font-size: clamp(3.2rem, 18vw, 5.5rem);
+  }
+}
