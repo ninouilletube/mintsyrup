@@ -1,8 +1,11 @@
 'use client';
 
+import { useShop } from '@/context/ShopContext';
 import styles from './VideoHero.module.css';
 
 export default function VideoHero() {
+  const { activeCategory } = useShop();
+
   return (
     <section className={styles.hero}>
       <video
@@ -17,7 +20,9 @@ export default function VideoHero() {
       <div className={styles.grain} aria-hidden />
       <div className={styles.overlay} aria-hidden />
       <div className={styles.content}>
-        <h1 className={styles.title}>Mint Syrup</h1>
+        <h1 className={`${styles.title} ${activeCategory === 'drops' ? styles.titleHidden : ''}`}>
+          Mint Syrup
+        </h1>
       </div>
     </section>
   );

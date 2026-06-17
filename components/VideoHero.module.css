@@ -74,7 +74,9 @@
   .content {
     transform: translateY(-12vh);
   }
-  .title {
-    display: none;
+  .titleHidden {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
   }
 }

@@ -27,8 +27,8 @@ export default async function ProjetPage() {
   return (
     <>
       <Nav />
-      <PageArrow href="/favoris" label="Mes favoris" direction="left" />
-      <RetourArrow direction="right" />
+      <span className={styles.mobileHidden}><PageArrow href="/favoris" label="Mes favoris" direction="left" /></span>
+      <span className={styles.mobileHidden}><RetourArrow direction="right" /></span>
       <main className={styles.main}>
         <div className={styles.container}>
           <div className={styles.layout}>

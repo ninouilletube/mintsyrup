@@ -20,8 +20,8 @@ export default async function FavorisPage() {
   return (
     <>
       <Nav />
-      <RetourArrow direction="left" />
-      <PageArrow href="/projet" label="Le projet" direction="right" />
+      <span className={styles.mobileHidden}><RetourArrow direction="left" /></span>
+      <span className={styles.mobileHidden}><PageArrow href="/projet" label="Le projet" direction="right" /></span>
       <main className={styles.main}>
         <div className={styles.container}>
           {products.length === 0 ? (
