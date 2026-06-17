@@ -6,6 +6,7 @@
   display: flex;
   align-items: center;
   flex-direction: row-reverse;
+  pointer-events: none;
 }
 
 .tab {
@@ -19,6 +20,7 @@
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.25s;
+  pointer-events: all;
 }
 
 .icon {
@@ -43,7 +45,7 @@
 
 .panelOpen {
   opacity: 1;
-  pointer-events: all;
+  pointer-events: all !important;
   clip-path: inset(0 0 0 0);
 }
 
