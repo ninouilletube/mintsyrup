@@ -91,9 +91,12 @@
 @media (max-width: 768px) {
   .footer {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;   /* enfants pleine largeur */
     padding: 1.5rem 1.25rem 2rem;
     gap: 0.75rem;
+  }
+  .logoRow {
+    justify-content: space-between;  /* Mint Syrup à gauche, Le projet à droite */
   }
   .logo {
     font-size: 1.75rem;
@@ -109,5 +112,7 @@
   }
   .copy {
     margin-top: 0.5rem;
+    text-align: center;     /* copyright centré */
+    width: 100%;
   }
 }

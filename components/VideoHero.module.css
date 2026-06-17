@@ -69,10 +69,19 @@
 
 @media (max-width: 768px) {
   .hero {
-    height: 100dvh;
+    /* svh = hauteur stable (barre d'adresse visible), évite le redimensionnement au scroll */
+    height: 100svh;
+    /* Force le compositing GPU pour éviter les glitches iOS (ligne noire, zoom) */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+  .video {
+    /* Dépasse d'1px pour éliminer la ligne noire du bas */
+    height: calc(100% + 1px);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
   .content {
-    /* Décale vers le bas de la moitié du header pour centrer entre header et bas d'écran */
     transform: translateY(26px);
   }
   .titleHidden {
