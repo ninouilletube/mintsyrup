@@ -255,9 +255,9 @@
   .mobileBlock1  { display: none; } /* texte 2 original (rendu dans mobileLogoRow) */
 
   /* ── Conteneurs ── */
-  .main      { padding: calc(52px + 1.5rem) 1rem 4rem; align-items: flex-start; }
+  .main      { padding: calc(52px + 2.5rem) 1rem 4rem; align-items: flex-start; }
   .container { max-width: 100%; }
-  .layout    { gap: 2rem; padding-top: 0; }
+  .layout    { gap: 2.5rem; padding-top: 0; }
 
   /* ── Groupe A + B : grid 2 colonnes, 2 lignes ── */
   .layoutTop {
@@ -265,7 +265,7 @@
     grid-template-columns: 1fr 88px;
     grid-template-rows: auto auto;
     column-gap: 0.75rem;
-    row-gap: 1.5rem;         /* espace entre Groupe A et Groupe B */
+    row-gap: 2rem;           /* espace entre Groupe A et Groupe B */
     align-items: flex-start;
   }
 
@@ -362,18 +362,20 @@
     font-size: 0.82rem;
     line-height: 1.65;
     color: var(--dark);
-    position: relative;
+    display: flex;
+    flex-direction: column;
   }
 
   .accordionBody p { margin-bottom: 0.75rem; }
   .accordionBody p:last-child { margin-bottom: 0; }
 
+  /* (i) en bas à droite du bloc */
   .accordionBody .infoWrap {
     position: relative;
     top: auto;
     right: auto;
-    display: inline-block;
-    margin-bottom: 0.75rem;
+    align-self: flex-end;
+    margin-top: 0.85rem;
   }
 
   .accordionBody .infoTooltip {

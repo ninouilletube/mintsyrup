@@ -16,7 +16,11 @@ export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
   useEffect(() => {
     if (!open) return;
     const timer = setTimeout(() => {
-      wrapRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      if (!wrapRef.current) return;
+      const rect = wrapRef.current.getBoundingClientRect();
+      // Scroll pour que le bas du bloc soit à 24px du bas de l'écran
+      const targetScrollY = window.scrollY + rect.bottom - window.innerHeight + 24;
+      window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
     }, 150);
     return () => clearTimeout(timer);
   }, [open]);
@@ -35,6 +39,11 @@ export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
       </button>
       {open && (
         <div className={styles.accordionBody}>
+          {/* Texte d'abord */}
+          {text && text.split('\n').filter(Boolean).map((p, j) => (
+            <p key={j}>{p}</p>
+          ))}
+          {/* (i) en bas à droite */}
           {tooltip3 && (
             <div className={styles.infoWrap}>
               <span className={styles.infoIcon}>i</span>
@@ -53,9 +62,6 @@ export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
               </div>
             </div>
           )}
-          {text && text.split('\n').filter(Boolean).map((p, j) => (
-            <p key={j}>{p}</p>
-          ))}
         </div>
       )}
     </div>
