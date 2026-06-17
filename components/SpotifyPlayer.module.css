@@ -35,19 +35,18 @@
 }
 
 .panel {
-  width: 0;
-  overflow: hidden;
   opacity: 0;
   pointer-events: none;
-  transition: width 0.3s ease, opacity 0.25s ease;
+  transition: opacity 0.25s ease, clip-path 0.3s ease;
   background: transparent;
   position: relative;
+  clip-path: inset(0 0 0 100%);
 }
 
 .wrap:hover .panel {
-  width: 340px;
   opacity: 1;
   pointer-events: all;
+  clip-path: inset(0 0 0 0);
 }
 
 .close {
@@ -76,6 +75,13 @@
 .embedTarget {
   border-radius: 8px;
   overflow: hidden;
+}
+
+.iframe {
+  border: none;
+  outline: none;
+  display: block;
+  border-radius: 12px;
 }
 
 .controls {

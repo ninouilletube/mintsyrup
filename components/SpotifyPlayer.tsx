@@ -16,7 +16,6 @@ export default function SpotifyPlayer() {
         <span className={styles.icon}>♫</span>
       </div>
       <div className={styles.panel}>
-        <button className={styles.close} onClick={() => setHidden(true)} aria-label="Fermer">✕</button>
         <div className={styles.content}>
           <iframe
             src={`https://open.spotify.com/embed/playlist/${PLAYLIST_ID}?utm_source=generator&theme=0`}
