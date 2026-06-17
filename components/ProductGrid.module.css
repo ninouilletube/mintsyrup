@@ -345,20 +345,24 @@
 
 @media (max-width: 768px) {
   .overlay {
-    padding: 0 0.75rem 2rem;
+    padding: 0;
     margin-top: -100vh;
+    align-items: flex-start;
   }
   .panel {
     width: 100%;
-    background: transparent;
+    min-height: 100vh;
+    background: #FFF8E0;
     border: none;
     box-shadow: none;
     border-radius: 0;
-    padding: calc(52px + 1rem) 0 2rem;
+    /* padding-top pousse les cartes sous le header fixe (52px) */
+    padding: calc(52px + 1.5rem) 0.75rem 3rem;
   }
   .panelOpen {
     width: 100%;
-    padding: calc(52px + 1rem) 0 2rem;
+    min-height: 100vh;
+    padding: calc(52px + 1.5rem) 0.75rem 3rem;
   }
   /* Masquer le filigrane sur mobile */
   .watermark { display: none; }
@@ -400,7 +404,7 @@
 }
 
 @media (max-width: 480px) {
-  .overlay { padding: 1rem 0.5rem; }
-  .panel { width: 98%; }
+  .overlay { padding: 0; }
+  .panel { width: 100%; padding: calc(52px + 1.5rem) 0.5rem 3rem; }
   .grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
 }
