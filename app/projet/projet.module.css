@@ -331,22 +331,22 @@
     display: block;
     flex: 1;
     font-family: var(--font-dm-sans), sans-serif;
-    font-size: 0.79rem;
+    font-size: 0.92rem;
     font-style: italic;
     color: white;
     line-height: 1.55;
   }
 
   .mobileBlock1Inner .blockTitle {
-    font-size: 0.92rem;
+    font-size: 1.08rem;
     color: white;
     margin-bottom: 0.35rem;
   }
 
   /* ── Blocs texte blanc ── */
-  .blockNaked { font-size: 0.79rem; line-height: 1.55; padding: 0; animation: mFadeUp 0.5s ease both; }
+  .blockNaked { font-size: 0.92rem; line-height: 1.55; padding: 0; animation: mFadeUp 0.5s ease both; }
   .blockNakedNarrow { margin-top: 0; animation-delay: 0.12s; }
-  .blockNaked .blockTitle { font-size: 0.95rem; margin-bottom: 0.4rem; }
+  .blockNaked .blockTitle { font-size: 1.08rem; margin-bottom: 0.4rem; }
 
   /* projetLogo hors mobileLogoRow (desktopOnly, donc masqué de toute façon) */
   .projetLogo { width: 3rem; height: 3rem; margin-top: 0.75rem; }
