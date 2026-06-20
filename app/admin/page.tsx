@@ -164,6 +164,8 @@ export default function AdminPage() {
   const [editNewSubLabel, setEditNewSubLabel] = useState('');
   const [editAddingSel, setEditAddingSel] = useState(false);
   const [editNewSelLabel, setEditNewSelLabel] = useState('');
+  const [renamingSelId, setRenamingSelId] = useState<string | null>(null);
+  const [renameSelValue, setRenameSelValue] = useState('');
 
   // Add-article step form
   const [form, setForm] = useState(emptyForm);
@@ -177,7 +179,13 @@ export default function AdminPage() {
 
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const { subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder } = useSubcategories();
-  const { selections, addSelection } = useSelections();
+  const { selections, addSelection, renameSelection } = useSelections();
+
+  const confirmRenameSel = () => {
+    if (renamingSelId && renameSelValue.trim()) renameSelection(renamingSelId, renameSelValue.trim());
+    setRenamingSelId(null);
+    setRenameSelValue('');
+  };
 
   // Catalog drag-and-drop state
   const [dragSub, setDragSub] = useState<string | null>(null);
@@ -839,10 +847,21 @@ export default function AdminPage() {
             <div className={styles.editField}>
               <label className={styles.editLabel}>Sélections</label>
               <div className={styles.subRowPills}>
-                {selections.map((sel) => (
+                {selections.map((sel) => renamingSelId === sel.id ? (
+                  <div key={sel.id} className={styles.inlineSubInput}>
+                    <input autoFocus className={styles.inlineInput} value={renameSelValue}
+                      onChange={(e) => setRenameSelValue(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); confirmRenameSel(); } if (e.key === 'Escape') { setRenamingSelId(null); setRenameSelValue(''); } }}
+                      onBlur={confirmRenameSel}
+                    />
+                    <button type="button" className={styles.inlineConfirm} onMouseDown={(e) => { e.preventDefault(); confirmRenameSel(); }}>✓</button>
+                    <button type="button" className={styles.inlineCancel} onMouseDown={(e) => { e.preventDefault(); setRenamingSelId(null); setRenameSelValue(''); }}>×</button>
+                  </div>
+                ) : (
                   <button key={sel.id} type="button"
                     className={`${styles.subPill} ${editForm.selections.includes(sel.id) ? styles.subPillActive : ''}`}
                     onClick={() => setEditForm({ ...editForm, selections: editForm.selections.includes(sel.id) ? editForm.selections.filter(id => id !== sel.id) : [...editForm.selections, sel.id] })}
+                    onDoubleClick={() => { setRenamingSelId(sel.id); setRenameSelValue(sel.name); }}
                   >{sel.name}</button>
                 ))}
                 {editAddingSel ? (
@@ -1448,10 +1467,21 @@ export default function AdminPage() {
               <div className={styles.stepField}>
                 <p className={styles.stepQ}>Dans quelle(s) sélection(s) ?</p>
                 <div className={styles.subRowPills}>
-                  {selections.map((sel) => (
+                  {selections.map((sel) => renamingSelId === sel.id ? (
+                    <div key={sel.id} className={styles.inlineSubInput}>
+                      <input autoFocus className={styles.inlineInput} value={renameSelValue}
+                        onChange={(e) => setRenameSelValue(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); confirmRenameSel(); } if (e.key === 'Escape') { setRenamingSelId(null); setRenameSelValue(''); } }}
+                        onBlur={confirmRenameSel}
+                      />
+                      <button type="button" className={styles.inlineConfirm} onMouseDown={(e) => { e.preventDefault(); confirmRenameSel(); }}>✓</button>
+                      <button type="button" className={styles.inlineCancel} onMouseDown={(e) => { e.preventDefault(); setRenamingSelId(null); setRenameSelValue(''); }}>×</button>
+                    </div>
+                  ) : (
                     <button key={sel.id} type="button"
                       className={`${styles.subPill} ${form.selections.includes(sel.id) ? styles.subPillActive : ''}`}
                       onClick={() => setForm({ ...form, selections: form.selections.includes(sel.id) ? form.selections.filter(id => id !== sel.id) : [...form.selections, sel.id] })}
+                      onDoubleClick={() => { setRenamingSelId(sel.id); setRenameSelValue(sel.name); }}
                     >{sel.name}</button>
                   ))}
                   {addingSel ? (
