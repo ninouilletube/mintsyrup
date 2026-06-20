@@ -124,19 +124,11 @@ export default function Nav() {
 
         {/* Catégories */}
         <div className={styles.dropWrap}>
-          <button className={`${styles.link} ${isCatActive || isSummerActive ? styles.active : ''}`}>
+          <button className={`${styles.link} ${isCatActive ? styles.active : ''}`}>
             {lang === 'fr' ? 'Catégories' : 'Categories'}
             <span className={styles.dropCaret}>▾</span>
           </button>
           <div className={styles.drop}>
-            {/* Summer en tête */}
-            <button
-              className={`${styles.dropItem} ${styles.dropItemSummer} ${isSummerActive ? styles.dropItemActive : ''}`}
-              onClick={() => handleCategory('ete')}
-            >
-              {SEASON_LABEL[season][lang]}
-            </button>
-            <hr className={styles.dropDivider} />
             {CATEGORY_CATS.map((catId) => {
               const cat = CATEGORIES.find((c) => c.id === catId)!;
               return (
@@ -154,11 +146,19 @@ export default function Nav() {
 
         {/* Sélections */}
         <div className={styles.dropWrap}>
-          <button className={`${styles.link} ${isSelActive || pathname === '/favoris' ? styles.active : ''}`}>
+          <button className={`${styles.link} ${isSelActive || isSummerActive || pathname === '/favoris' ? styles.active : ''}`}>
             {lang === 'fr' ? 'Sélections' : 'Selections'}
             <span className={styles.dropCaret}>▾</span>
           </button>
           <div className={styles.drop}>
+            {/* Summer en tête */}
+            <button
+              className={`${styles.dropItem} ${styles.dropItemSummer} ${isSummerActive ? styles.dropItemActive : ''}`}
+              onClick={() => handleCategory('ete')}
+            >
+              {SEASON_LABEL[season][lang]}
+            </button>
+            <hr className={styles.dropDivider} />
             {selections.map((sel) => (
               <button
                 key={sel.id}
