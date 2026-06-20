@@ -96,7 +96,7 @@
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translate(-50%, -48%) rotate(-2.5deg);
+  transform: translate(-50%, -62%) rotate(-2.5deg);
   z-index: 3;
   pointer-events: none;
   background: #FFF0B3;
