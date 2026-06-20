@@ -7,11 +7,13 @@ import type { Category } from '@/data/products';
 
 export default function CategoryInit() {
   const params = useSearchParams();
-  const { setActiveCategory } = useShop();
+  const { setActiveCategory, setActiveSelection } = useShop();
 
   useEffect(() => {
     const cat = params.get('cat');
-    if (cat) setActiveCategory(cat as Category);
+    const sel = params.get('sel');
+    if (cat) { setActiveCategory(cat as Category); setActiveSelection(null); }
+    if (sel) { setActiveSelection(sel); setActiveCategory(null); }
   }, []);
 
   return null;

@@ -4,6 +4,7 @@ import { LangProvider } from '@/context/LangContext';
 import { ShopProvider } from '@/context/ShopContext';
 import { ProductsProvider } from '@/context/ProductsContext';
 import { SubcategoriesProvider } from '@/context/SubcategoriesContext';
+import { SelectionsProvider } from '@/context/SelectionsContext';
 import { TagsProvider } from '@/context/TagsContext';
 import VisitTracker from '@/components/VisitTracker';
 import LoadingOverlay from '@/components/LoadingOverlay';
@@ -27,12 +28,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`${dmSans.variable} ${playfair.variable}`}>
         <LangProvider>
           <ShopProvider>
-            <ProductsProvider><SubcategoriesProvider><TagsProvider>
+            <ProductsProvider><SubcategoriesProvider><SelectionsProvider><TagsProvider>
               <LoadingOverlay />
               <SpotifyPlayer />
               <VisitTracker />
               {children}
-            </TagsProvider></SubcategoriesProvider></ProductsProvider>
+            </TagsProvider></SelectionsProvider></SubcategoriesProvider></ProductsProvider>
           </ShopProvider>
         </LangProvider>
       </body>

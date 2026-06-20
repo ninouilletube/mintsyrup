@@ -53,9 +53,104 @@
 .heartLink:hover { transform: scale(1.12); }
 
 .heartNav {
-  width: 28px;
+  width: 22px;
   height: auto;
   display: block;
+  flex-shrink: 0;
+}
+
+/* Lien cœur desktop (icône + texte, style lien nav) */
+.heartLinkDesktop {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none !important;
+}
+.heartLinkDesktop:hover { transform: none; }
+
+/* Lien Le projet desktop */
+.projetDesktopLink {
+  text-decoration: none !important;
+  font-style: italic;
+}
+
+/* ── Dropdowns desktop ── */
+.dropWrap {
+  position: relative;
+}
+
+.dropWrap > .link {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.dropCaret {
+  font-size: 0.7rem;
+  opacity: 0.6;
+  line-height: 1;
+}
+
+.drop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  background: var(--cream);
+  border: 2.5px solid var(--dark);
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 var(--dark);
+  padding: 0.35rem 0.3rem;
+  min-width: 170px;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.14s ease, transform 0.14s ease;
+}
+
+/* Pont invisible pour ne pas perdre le hover entre bouton et panel */
+.drop::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+}
+
+.dropWrap:hover .drop {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+.dropItem {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.42rem 0.85rem;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--mid);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  transition: background 0.12s, color 0.12s;
+}
+.dropItem:hover { color: var(--dark); background: rgba(224,85,48,0.11); }
+.dropItemActive { color: var(--coral); font-weight: 700; background: rgba(224,85,48,0.08); }
+
+.dropEmpty {
+  display: block;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.78rem;
+  color: var(--light);
+  font-style: italic;
+  white-space: nowrap;
 }
 
 .link {

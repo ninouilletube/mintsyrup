@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLang } from '@/context/LangContext';
 import { useShop } from '@/context/ShopContext';
+import { useSelections } from '@/context/SelectionsContext';
 import { CATEGORIES } from '@/data/categories';
 import type { Category } from '@/data/products';
 import styles from './Nav.module.css';
@@ -24,9 +25,12 @@ const SEASON_CLASS: Record<SeasonKey, string> = {
   spring: styles.linkSpring,
 };
 
+const CATEGORY_CATS: Category[] = ['manteaux', 'hauts', 'bas', 'robes', 'chaussures', 'accessoires'];
+
 export default function Nav() {
   const { lang, setLang } = useLang();
-  const { activeCategory, setActiveCategory } = useShop();
+  const { activeCategory, setActiveCategory, activeSelection, setActiveSelection } = useShop();
+  const { selections } = useSelections();
   const season = getCurrentSeason();
   const pathname = usePathname();
   const router = useRouter();
@@ -34,7 +38,6 @@ export default function Nav() {
   const [menuOpen, setMenuOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
 
-  // Fermer le menu burger au scroll ou au touch en dehors
   useEffect(() => {
     if (!menuOpen) return;
     const close = () => setMenuOpen(false);
@@ -51,32 +54,46 @@ export default function Nav() {
 
   const handleLogo = () => {
     setActiveCategory(null);
+    setActiveSelection(null);
     setMenuOpen(false);
-    if (isHome) {
-      window.history.replaceState(window.history.state, '', '/');
-    } else {
-      router.push('/');
-    }
+    if (isHome) window.history.replaceState(window.history.state, '', '/');
+    else router.push('/');
   };
 
   const handleCategory = (catId: Category) => {
     setMenuOpen(false);
+    setActiveSelection(null);
     if (isHome) {
-      const newCat = activeCategory === catId ? null : catId;
+      const newCat = activeCategory === catId && !activeSelection ? null : catId;
       setActiveCategory(newCat);
-      // Met à jour l'URL via l'API native (sans déclencher un event Next.js)
-      // pour que le bouton "retour" restaure la bonne catégorie
-      const url = newCat ? `/?cat=${newCat}` : '/';
-      window.history.replaceState(window.history.state, '', url);
+      window.history.replaceState(window.history.state, '', newCat ? `/?cat=${newCat}` : '/');
     } else {
       router.push(`/?cat=${catId}`);
     }
   };
 
+  const handleSelection = (selId: string) => {
+    setMenuOpen(false);
+    setActiveCategory(null);
+    if (isHome) {
+      const newSel = activeSelection === selId ? null : selId;
+      setActiveSelection(newSel);
+      window.history.replaceState(window.history.state, '', newSel ? `/?sel=${newSel}` : '/');
+    } else {
+      setActiveSelection(selId);
+      router.push(`/?sel=${selId}`);
+    }
+  };
+
+  const isDropsActive  = isHome && activeCategory === 'drops' && !activeSelection;
+  const isSummerActive = isHome && activeCategory === 'ete'   && !activeSelection;
+  const isCatActive    = isHome && CATEGORY_CATS.includes(activeCategory as Category) && !activeSelection;
+  const isSelActive    = activeSelection !== null;
+
   return (
     <nav className={styles.nav} ref={navRef}>
 
-      {/* ── Mobile : burger seul à gauche ── */}
+      {/* ── Mobile : burger ── */}
       <button
         className={`${styles.burger} ${menuOpen ? styles.burgerOpen : ''}`}
         onClick={() => setMenuOpen(!menuOpen)}
@@ -94,20 +111,88 @@ export default function Nav() {
         </div>
       </div>
 
-      {/* ── Desktop : liens catégories ── */}
+      {/* ── Desktop : nav restructurée ── */}
       <div className={styles.links}>
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat.id}
-            className={`${styles.link} ${activeCategory === cat.id && cat.id !== 'ete' ? styles.active : ''} ${cat.id === 'ete' ? SEASON_CLASS[season] : ''}`}
-            onClick={() => handleCategory(cat.id as Category)}
-          >
-            {cat.id === 'ete' ? SEASON_LABEL[season][lang] : (lang === 'fr' ? cat.fr : cat.en)}
+
+        {/* Derniers drops */}
+        <button
+          className={`${styles.link} ${isDropsActive ? styles.active : ''}`}
+          onClick={() => handleCategory('drops')}
+        >
+          {lang === 'fr' ? 'Derniers drops' : 'Latest drops'}
+        </button>
+
+        {/* Summer */}
+        <button
+          className={`${styles.link} ${SEASON_CLASS[season]} ${isSummerActive ? styles.active : ''}`}
+          onClick={() => handleCategory('ete')}
+        >
+          {SEASON_LABEL[season][lang]}
+        </button>
+
+        {/* Catégories */}
+        <div className={styles.dropWrap}>
+          <button className={`${styles.link} ${isCatActive ? styles.active : ''}`}>
+            {lang === 'fr' ? 'Catégories' : 'Categories'}
+            <span className={styles.dropCaret}>▾</span>
           </button>
-        ))}
-        <Link href="/favoris" className={styles.heartLink}>
+          <div className={styles.drop}>
+            {CATEGORY_CATS.map((catId) => {
+              const cat = CATEGORIES.find((c) => c.id === catId)!;
+              return (
+                <button
+                  key={catId}
+                  className={`${styles.dropItem} ${isHome && activeCategory === catId && !activeSelection ? styles.dropItemActive : ''}`}
+                  onClick={() => handleCategory(catId)}
+                >
+                  {lang === 'fr' ? cat.fr : cat.en}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Sélections */}
+        <div className={styles.dropWrap}>
+          <button className={`${styles.link} ${isSelActive ? styles.active : ''}`}>
+            {lang === 'fr' ? 'Sélections' : 'Selections'}
+            <span className={styles.dropCaret}>▾</span>
+          </button>
+          <div className={styles.drop}>
+            {selections.length === 0 ? (
+              <span className={styles.dropEmpty}>
+                {lang === 'fr' ? 'Aucune sélection' : 'No selections yet'}
+              </span>
+            ) : (
+              selections.map((sel) => (
+                <button
+                  key={sel.id}
+                  className={`${styles.dropItem} ${activeSelection === sel.id ? styles.dropItemActive : ''}`}
+                  onClick={() => handleSelection(sel.id)}
+                >
+                  {sel.name}
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Coups de cœur */}
+        <Link
+          href="/favoris"
+          className={`${styles.link} ${styles.heartLinkDesktop} ${pathname === '/favoris' ? styles.active : ''}`}
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/coeur.webp" alt="Favoris" className={styles.heartNav} />
+          <img src="/coeur.webp" alt="" className={styles.heartNav} />
+          <span>Coups de cœur</span>
+        </Link>
+
+        {/* Le projet */}
+        <Link
+          href="/projet"
+          className={`${styles.link} ${styles.projetDesktopLink} ${pathname === '/projet' ? styles.active : ''}`}
+        >
+          Le projet
         </Link>
       </div>
 
@@ -118,26 +203,23 @@ export default function Nav() {
         <button className={`${styles.langBtn} ${lang === 'en' ? styles.active : ''}`} onClick={() => setLang('en')}>EN</button>
       </div>
 
-      {/* ── Mobile : menu déroulant (toutes catégories + favoris) ── */}
+      {/* ── Mobile : menu déroulant ── */}
       {menuOpen && (
         <div className={styles.mobileMenu}>
-          {/* SUMMER en premier, puis les autres catégories */}
           {[...CATEGORIES.filter(c => c.id === 'ete'), ...CATEGORIES.filter(c => c.id !== 'ete')].map((cat) => (
             <button
               key={cat.id}
-              className={`${styles.link} ${styles.mobileMenuItem} ${cat.id === 'ete' ? `${SEASON_CLASS[season]} ${styles.mobileMenuSeason}` : ''} ${isHome && activeCategory === cat.id && cat.id !== 'ete' ? styles.active : ''}`}
+              className={`${styles.link} ${styles.mobileMenuItem} ${cat.id === 'ete' ? `${SEASON_CLASS[season]} ${styles.mobileMenuSeason}` : ''} ${isHome && activeCategory === cat.id && cat.id !== 'ete' && !activeSelection ? styles.active : ''}`}
               onClick={() => handleCategory(cat.id as Category)}
             >
               {cat.id === 'ete' ? SEASON_LABEL[season][lang] : (lang === 'fr' ? cat.fr : cat.en)}
             </button>
           ))}
-          {/* Coups de cœur */}
           <Link href="/favoris" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileFavorisItem} ${pathname === '/favoris' ? styles.active : ''}`} onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>
             Coups de cœur
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/coeur.webp" alt="" className={styles.menuHeart} />
           </Link>
-          {/* Le projet */}
           <Link href="/projet" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileMenuProjet}`} onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>
             Le projet
           </Link>

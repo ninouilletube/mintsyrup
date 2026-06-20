@@ -5,6 +5,7 @@ import { useLang } from '@/context/LangContext';
 import { useShop } from '@/context/ShopContext';
 import { useProducts } from '@/context/ProductsContext';
 import { useSubcategories } from '@/context/SubcategoriesContext';
+import { useSelections } from '@/context/SelectionsContext';
 import { getCurrentSeason, SEASON_TO_ID, type SeasonKey } from '@/lib/season';
 import { getColor } from '@/data/colors';
 import { CATEGORIES } from '@/data/categories';
@@ -14,9 +15,10 @@ import styles from './ProductGrid.module.css';
 
 export default function ProductGrid() {
   const { lang } = useLang();
-  const { activeCategory } = useShop();
+  const { activeCategory, activeSelection } = useShop();
   const { products } = useProducts();
   const { subcategories, colorOrder } = useSubcategories();
+  const { selections } = useSelections();
 
   const [filterType, setFilterType] = useState<string | null>(null);
   const [filterSizes, setFilterSizes] = useState<string[]>([]);
@@ -104,17 +106,19 @@ export default function ProductGrid() {
   const DROPS_VISIBLE = 4;
   const DROPS_MAX = 15;
 
-  if (activeCategory === null) return null;
+  if (activeCategory === null && !activeSelection) return null;
 
-  const isDrops = activeCategory === 'drops';
+  const isDrops = activeCategory === 'drops' && !activeSelection;
 
   const visible = products.filter((p) => !p.hidden);
 
-  const byCategory = isDrops
-    ? [...visible].sort((a, b) => b.id - a.id)
-    : activeCategory === 'ete'
-      ? [...visible.filter((p) => p.seasons?.includes(SEASON_TO_ID[getCurrentSeason()]))].sort((a, b) => b.id - a.id)
-      : [...visible.filter((p) => p.categories.includes(activeCategory))].sort((a, b) => b.id - a.id);
+  const byCategory = activeSelection
+    ? [...visible.filter((p) => p.selections?.includes(activeSelection))].sort((a, b) => b.id - a.id)
+    : isDrops
+      ? [...visible].sort((a, b) => b.id - a.id)
+      : activeCategory === 'ete'
+        ? [...visible.filter((p) => p.seasons?.includes(SEASON_TO_ID[getCurrentSeason()]))].sort((a, b) => b.id - a.id)
+        : [...visible.filter((p) => activeCategory ? p.categories.includes(activeCategory) : false)].sort((a, b) => b.id - a.id);
 
   const SIZE_ORDER = ['TU','XXXS / 30 / 2','XXS / 32 / 4','XS / 34 / 6','S / 36 / 8','M / 38 / 10','L / 40 / 12','XL / 42 / 14','2XL / 44 / 16','3XL / 46 / 18','4XL / 48 / 20'];
 
@@ -159,7 +163,7 @@ export default function ProductGrid() {
     return true;
   });
 
-  const hasFilters = !isDrops && activeCategory !== 'ete' && (availableTypeIds.length > 0 || availableColorIds.length > 0);
+  const hasFilters = !isDrops && !activeSelection && activeCategory !== 'ete' && (availableTypeIds.length > 0 || availableColorIds.length > 0);
   const hasSizeFilter = !isDrops && availableSizes.length > 0;
 
   const season = activeCategory === 'ete' ? getCurrentSeason() : null;
@@ -171,7 +175,8 @@ export default function ProductGrid() {
     : dropsIndex + DROPS_VISIBLE < dropsPool.length;
 
   const activeCat = CATEGORIES.find(c => c.id === activeCategory);
-  const catLabel = activeCat ? (lang === 'fr' ? activeCat.fr : activeCat.en) : '';
+  const selectionName = activeSelection ? (selections.find(s => s.id === activeSelection)?.name ?? null) : null;
+  const catLabel = selectionName ?? (activeCat ? (lang === 'fr' ? activeCat.fr : activeCat.en) : '');
   const activeFilterCount = [filterType, ...filterSizes, filterColor].filter(Boolean).length;
 
   return (

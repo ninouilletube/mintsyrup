@@ -9,6 +9,7 @@ import { COLORS, getColor } from '@/data/colors';
 import type { Category, Season, Product } from '@/data/products';
 import { getCurrentSeason } from '@/lib/season';
 import { getData, setData } from '@/lib/supabase';
+import { useSelections } from '@/context/SelectionsContext';
 import styles from './Admin.module.css';
 import MobileAdmin from './MobileAdmin';
 
@@ -104,6 +105,7 @@ const emptyForm = {
   favoriteText: '',
   purchasePrice: '',
   provenance: '',
+  selections: [] as string[],
 };
 
 export default function AdminPage() {
@@ -160,17 +162,22 @@ export default function AdminPage() {
   const [editForm, setEditForm] = useState(emptyForm);
   const [editAddingSubFor, setEditAddingSubFor] = useState<Category | null>(null);
   const [editNewSubLabel, setEditNewSubLabel] = useState('');
+  const [editAddingSel, setEditAddingSel] = useState(false);
+  const [editNewSelLabel, setEditNewSelLabel] = useState('');
 
   // Add-article step form
   const [form, setForm] = useState(emptyForm);
   const [success, setSuccess] = useState(false);
   const [addingSubFor, setAddingSubFor] = useState<Category | null>(null);
   const [newSubLabel, setNewSubLabel] = useState('');
+  const [addingSel, setAddingSel] = useState(false);
+  const [newSelLabel, setNewSelLabel] = useState('');
   const [step, setStep] = useState(0);
-  const TOTAL_STEPS = 10;
+  const TOTAL_STEPS = 11;
 
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const { subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder } = useSubcategories();
+  const { selections, addSelection } = useSelections();
 
   // Catalog drag-and-drop state
   const [dragSub, setDragSub] = useState<string | null>(null);
@@ -313,6 +320,7 @@ export default function AdminPage() {
       favoriteText: p.favoriteText || '',
       purchasePrice: String(p.purchasePrice ?? ''),
       provenance: p.provenance || '',
+      selections: p.selections || [],
     });
     setView('edit-article');
   };
@@ -342,6 +350,7 @@ export default function AdminPage() {
       favoriteOrder: favOrder,
       purchasePrice: editForm.purchasePrice ? parseFloat(editForm.purchasePrice) : undefined,
       provenance: editForm.provenance || undefined,
+      selections: editForm.selections.length > 0 ? editForm.selections : undefined,
     });
     setView('articles');
     setEditingProduct(null);
@@ -390,6 +399,7 @@ export default function AdminPage() {
       favoriteOrder: form.favorite ? Date.now() : undefined,
       purchasePrice: form.purchasePrice ? parseFloat(form.purchasePrice) : undefined,
       provenance: form.provenance || undefined,
+      selections: form.selections.length > 0 ? form.selections : undefined,
     });
     setSuccess(true);
     setTimeout(() => { setSuccess(false); setForm(emptyForm); setStep(0); setView('dashboard'); }, 1800);
@@ -824,6 +834,29 @@ export default function AdminPage() {
                     onClick={() => setEditForm({ ...editForm, tags: editForm.tags.includes(c.id) ? editForm.tags.filter((id) => id !== c.id) : [...editForm.tags, c.id] })}
                   />
                 ))}
+              </div>
+            </div>
+            <div className={styles.editField}>
+              <label className={styles.editLabel}>Sélections</label>
+              <div className={styles.subRowPills}>
+                {selections.map((sel) => (
+                  <button key={sel.id} type="button"
+                    className={`${styles.subPill} ${editForm.selections.includes(sel.id) ? styles.subPillActive : ''}`}
+                    onClick={() => setEditForm({ ...editForm, selections: editForm.selections.includes(sel.id) ? editForm.selections.filter(id => id !== sel.id) : [...editForm.selections, sel.id] })}
+                  >{sel.name}</button>
+                ))}
+                {editAddingSel ? (
+                  <div className={styles.inlineSubInput}>
+                    <input autoFocus className={styles.inlineInput} value={editNewSelLabel} placeholder="Nom de la sélection..."
+                      onChange={(e) => setEditNewSelLabel(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (editNewSelLabel.trim()) { const id = addSelection(editNewSelLabel.trim()); setEditForm(f => ({ ...f, selections: [...f.selections, id] })); } setEditNewSelLabel(''); setEditAddingSel(false); } if (e.key === 'Escape') { setEditNewSelLabel(''); setEditAddingSel(false); } }}
+                    />
+                    <button type="button" className={styles.inlineConfirm} onClick={() => { if (editNewSelLabel.trim()) { const id = addSelection(editNewSelLabel.trim()); setEditForm(f => ({ ...f, selections: [...f.selections, id] })); } setEditNewSelLabel(''); setEditAddingSel(false); }}>✓</button>
+                    <button type="button" className={styles.inlineCancel} onClick={() => { setEditNewSelLabel(''); setEditAddingSel(false); }}>×</button>
+                  </div>
+                ) : (
+                  <button type="button" className={styles.inlineAddBtn} onClick={() => { setEditAddingSel(true); setEditNewSelLabel(''); }}>+</button>
+                )}
               </div>
             </div>
             <div className={styles.editField}>
@@ -1412,6 +1445,34 @@ export default function AdminPage() {
               </div>
             )}
             {step === 10 && (
+              <div className={styles.stepField}>
+                <p className={styles.stepQ}>Dans quelle(s) sélection(s) ?</p>
+                <div className={styles.subRowPills}>
+                  {selections.map((sel) => (
+                    <button key={sel.id} type="button"
+                      className={`${styles.subPill} ${form.selections.includes(sel.id) ? styles.subPillActive : ''}`}
+                      onClick={() => setForm({ ...form, selections: form.selections.includes(sel.id) ? form.selections.filter(id => id !== sel.id) : [...form.selections, sel.id] })}
+                    >{sel.name}</button>
+                  ))}
+                  {addingSel ? (
+                    <div className={styles.inlineSubInput}>
+                      <input autoFocus className={styles.inlineInput} value={newSelLabel} placeholder="Nom de la sélection..."
+                        onChange={(e) => setNewSelLabel(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (newSelLabel.trim()) { const id = addSelection(newSelLabel.trim()); setForm(f => ({ ...f, selections: [...f.selections, id] })); } setNewSelLabel(''); setAddingSel(false); } if (e.key === 'Escape') { setNewSelLabel(''); setAddingSel(false); } }}
+                      />
+                      <button type="button" className={styles.inlineConfirm} onClick={() => { if (newSelLabel.trim()) { const id = addSelection(newSelLabel.trim()); setForm(f => ({ ...f, selections: [...f.selections, id] })); } setNewSelLabel(''); setAddingSel(false); }}>✓</button>
+                      <button type="button" className={styles.inlineCancel} onClick={() => { setNewSelLabel(''); setAddingSel(false); }}>×</button>
+                    </div>
+                  ) : (
+                    <button type="button" className={styles.inlineAddBtn} onClick={() => { setAddingSel(true); setNewSelLabel(''); }}>+</button>
+                  )}
+                </div>
+                <div className={styles.stepActions}>
+                  <button className={styles.stepNext} onClick={next}>Continuer →</button>
+                </div>
+              </div>
+            )}
+            {step === 11 && (
               <div className={styles.stepField}>
                 <p className={styles.stepQ}>Récap — tout est bon ?</p>
                 <div className={styles.stepRecap}>

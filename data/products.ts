@@ -24,6 +24,7 @@ export type Product = {
   sold?: boolean;
   soldAt?: number;
   soldPrice?: number;
+  selections?: string[];
 };
 
 export type Season = 'printemps' | 'ete' | 'automne' | 'hiver';
