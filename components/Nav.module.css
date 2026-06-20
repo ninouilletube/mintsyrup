@@ -144,6 +144,16 @@
 .dropItem:hover { color: var(--dark); background: rgba(224,85,48,0.11); }
 .dropItemActive { color: var(--coral); font-weight: 700; background: rgba(224,85,48,0.08); }
 
+.dropItemSummer {
+  font-family: 'MyUglyHandwriting', cursive;
+  font-size: 1.3rem;
+  color: #F0A020;
+  letter-spacing: 0.02em;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+.dropItemSummer:hover { color: #F0A020; }
+
 .dropEmpty {
   display: block;
   padding: 0.5rem 0.85rem;

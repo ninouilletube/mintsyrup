@@ -122,21 +122,21 @@ export default function Nav() {
           {lang === 'fr' ? 'Derniers drops' : 'Latest drops'}
         </button>
 
-        {/* Summer */}
-        <button
-          className={`${styles.link} ${SEASON_CLASS[season]} ${isSummerActive ? styles.active : ''}`}
-          onClick={() => handleCategory('ete')}
-        >
-          {SEASON_LABEL[season][lang]}
-        </button>
-
         {/* Catégories */}
         <div className={styles.dropWrap}>
-          <button className={`${styles.link} ${isCatActive ? styles.active : ''}`}>
+          <button className={`${styles.link} ${isCatActive || isSummerActive ? styles.active : ''}`}>
             {lang === 'fr' ? 'Catégories' : 'Categories'}
             <span className={styles.dropCaret}>▾</span>
           </button>
           <div className={styles.drop}>
+            {/* Summer en tête */}
+            <button
+              className={`${styles.dropItem} ${styles.dropItemSummer} ${isSummerActive ? styles.dropItemActive : ''}`}
+              onClick={() => handleCategory('ete')}
+            >
+              {SEASON_LABEL[season][lang]}
+            </button>
+            <hr className={styles.dropDivider} />
             {CATEGORY_CATS.map((catId) => {
               const cat = CATEGORIES.find((c) => c.id === catId)!;
               return (
