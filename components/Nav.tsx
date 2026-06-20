@@ -158,7 +158,6 @@ export default function Nav() {
             >
               {SEASON_LABEL[season][lang]}
             </button>
-            <hr className={styles.dropDivider} />
             {selections.map((sel) => (
               <button
                 key={sel.id}
@@ -168,7 +167,6 @@ export default function Nav() {
                 {sel.name}
               </button>
             ))}
-            {selections.length > 0 && <hr className={styles.dropDivider} />}
             <Link
               href="/favoris"
               className={`${styles.dropItemLink} ${pathname === '/favoris' ? styles.dropItemActive : ''}`}
