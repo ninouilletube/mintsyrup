@@ -188,6 +188,14 @@ export default function ProductGrid() {
           <p className={styles.eteLead}>SUMMER</p>
         )}
 
+        {/* Texte de présentation d'une sélection */}
+        {activeSelection && selectionName && (() => {
+          const sel = selections.find(s => s.id === activeSelection);
+          return sel?.description ? (
+            <p className={styles.selectionIntro}>{sel.description}</p>
+          ) : null;
+        })()}
+
         {/* Mobile uniquement : titre de catégorie encadré */}
         <div className={styles.mobileCategoryHeader}>
           <span className={`${styles.mobileCategoryBadge} ${activeCategory === 'ete' ? styles.mobileCategoryBadgeSummer : ''}`}>

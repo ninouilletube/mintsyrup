@@ -6,10 +6,10 @@ import PageArrow from './PageArrow';
 import styles from './VideoHero.module.css';
 
 export default function VideoHero() {
-  const { activeCategory } = useShop();
+  const { activeCategory, activeSelection } = useShop();
   // null uniquement : dans le hero → disparaissent au scroll sur mobile (transform crée le containing block)
   // drops géré par DropsArrow hors du hero → position:fixed au viewport même sur mobile
-  const showArrows = activeCategory === null;
+  const showArrows = activeCategory === null && activeSelection === null;
   const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {

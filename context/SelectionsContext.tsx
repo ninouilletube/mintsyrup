@@ -8,9 +8,10 @@ const LS_KEY = 'ms_selections';
 
 type SelectionsContextType = {
   selections: Selection[];
-  addSelection: (name: string) => string;
+  addSelection: (name: string, description?: string) => string;
   deleteSelection: (id: string) => void;
   renameSelection: (id: string, name: string) => void;
+  updateSelection: (id: string, name: string, description?: string) => void;
 };
 
 const SelectionsContext = createContext<SelectionsContextType>({
@@ -56,9 +57,9 @@ export function SelectionsProvider({ children }: { children: React.ReactNode }) 
     setData('selections', items).catch(() => {});
   };
 
-  const addSelection = (name: string): string => {
+  const addSelection = (name: string, description?: string): string => {
     const id = Date.now().toString();
-    save([...selections, { id, name }]);
+    save([...selections, { id, name, ...(description ? { description } : {}) }]);
     return id;
   };
 
@@ -67,10 +68,13 @@ export function SelectionsProvider({ children }: { children: React.ReactNode }) 
   const renameSelection = (id: string, name: string) =>
     save(selections.map((s) => (s.id === id ? { ...s, name } : s)));
 
+  const updateSelection = (id: string, name: string, description?: string) =>
+    save(selections.map((s) => (s.id === id ? { ...s, name, description: description ?? s.description } : s)));
+
   if (!loaded) return null;
 
   return (
-    <SelectionsContext.Provider value={{ selections, addSelection, deleteSelection, renameSelection }}>
+    <SelectionsContext.Provider value={{ selections, addSelection, deleteSelection, renameSelection, updateSelection }}>
       {children}
     </SelectionsContext.Provider>
   );

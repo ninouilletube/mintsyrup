@@ -735,6 +735,27 @@
 .inlineCancel { background: white; color: var(--mid); }
 .inlineCancel:hover { border-color: var(--crimson); color: var(--crimson); }
 
+.selEditBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.selDescInput {
+  width: 100%;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.8rem;
+  color: var(--dark);
+  background: white;
+  border: 2px solid var(--dark);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  resize: vertical;
+  line-height: 1.5;
+}
+.selDescInput:focus { outline: none; box-shadow: 2px 2px 0 var(--dark); }
+
 @media (max-width: 600px) {
   .row { grid-template-columns: 1fr; }
   .productRow { grid-template-columns: 26px 50px 1fr; }

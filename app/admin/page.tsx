@@ -164,8 +164,10 @@ export default function AdminPage() {
   const [editNewSubLabel, setEditNewSubLabel] = useState('');
   const [editAddingSel, setEditAddingSel] = useState(false);
   const [editNewSelLabel, setEditNewSelLabel] = useState('');
+  const [editNewSelDesc, setEditNewSelDesc] = useState('');
   const [renamingSelId, setRenamingSelId] = useState<string | null>(null);
   const [renameSelValue, setRenameSelValue] = useState('');
+  const [renameSelDesc, setRenameSelDesc] = useState('');
 
   // Add-article step form
   const [form, setForm] = useState(emptyForm);
@@ -174,17 +176,19 @@ export default function AdminPage() {
   const [newSubLabel, setNewSubLabel] = useState('');
   const [addingSel, setAddingSel] = useState(false);
   const [newSelLabel, setNewSelLabel] = useState('');
+  const [newSelDesc, setNewSelDesc] = useState('');
   const [step, setStep] = useState(0);
   const TOTAL_STEPS = 11;
 
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const { subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder } = useSubcategories();
-  const { selections, addSelection, renameSelection } = useSelections();
+  const { selections, addSelection, renameSelection, updateSelection } = useSelections();
 
   const confirmRenameSel = () => {
-    if (renamingSelId && renameSelValue.trim()) renameSelection(renamingSelId, renameSelValue.trim());
+    if (renamingSelId && renameSelValue.trim()) updateSelection(renamingSelId, renameSelValue.trim(), renameSelDesc.trim() || undefined);
     setRenamingSelId(null);
     setRenameSelValue('');
+    setRenameSelDesc('');
   };
 
   // Catalog drag-and-drop state
@@ -848,33 +852,43 @@ export default function AdminPage() {
               <label className={styles.editLabel}>Sélections</label>
               <div className={styles.subRowPills}>
                 {selections.map((sel) => renamingSelId === sel.id ? (
-                  <div key={sel.id} className={styles.inlineSubInput}>
-                    <input autoFocus className={styles.inlineInput} value={renameSelValue}
-                      onChange={(e) => setRenameSelValue(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); confirmRenameSel(); } if (e.key === 'Escape') { setRenamingSelId(null); setRenameSelValue(''); } }}
-                      onBlur={confirmRenameSel}
+                  <div key={sel.id} className={styles.selEditBlock}>
+                    <div className={styles.inlineSubInput}>
+                      <input autoFocus className={styles.inlineInput} value={renameSelValue} placeholder="Nom..."
+                        onChange={(e) => setRenameSelValue(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Escape') { setRenamingSelId(null); setRenameSelValue(''); setRenameSelDesc(''); } }}
+                      />
+                      <button type="button" className={styles.inlineConfirm} onMouseDown={(e) => { e.preventDefault(); confirmRenameSel(); }}>✓</button>
+                      <button type="button" className={styles.inlineCancel} onMouseDown={(e) => { e.preventDefault(); setRenamingSelId(null); setRenameSelValue(''); setRenameSelDesc(''); }}>×</button>
+                    </div>
+                    <textarea className={styles.selDescInput} value={renameSelDesc} placeholder="Texte de présentation (optionnel)..."
+                      onChange={(e) => setRenameSelDesc(e.target.value)} rows={2}
                     />
-                    <button type="button" className={styles.inlineConfirm} onMouseDown={(e) => { e.preventDefault(); confirmRenameSel(); }}>✓</button>
-                    <button type="button" className={styles.inlineCancel} onMouseDown={(e) => { e.preventDefault(); setRenamingSelId(null); setRenameSelValue(''); }}>×</button>
                   </div>
                 ) : (
                   <button key={sel.id} type="button"
                     className={`${styles.subPill} ${editForm.selections.includes(sel.id) ? styles.subPillActive : ''}`}
                     onClick={() => setEditForm({ ...editForm, selections: editForm.selections.includes(sel.id) ? editForm.selections.filter(id => id !== sel.id) : [...editForm.selections, sel.id] })}
-                    onDoubleClick={() => { setRenamingSelId(sel.id); setRenameSelValue(sel.name); }}
+                    onDoubleClick={() => { setRenamingSelId(sel.id); setRenameSelValue(sel.name); setRenameSelDesc(sel.description ?? ''); }}
+                    title="Double-clic pour renommer"
                   >{sel.name}</button>
                 ))}
                 {editAddingSel ? (
-                  <div className={styles.inlineSubInput}>
-                    <input autoFocus className={styles.inlineInput} value={editNewSelLabel} placeholder="Nom de la sélection..."
-                      onChange={(e) => setEditNewSelLabel(e.target.value)}
-                      onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (editNewSelLabel.trim()) { const id = addSelection(editNewSelLabel.trim()); setEditForm(f => ({ ...f, selections: [...f.selections, id] })); } setEditNewSelLabel(''); setEditAddingSel(false); } if (e.key === 'Escape') { setEditNewSelLabel(''); setEditAddingSel(false); } }}
+                  <div className={styles.selEditBlock}>
+                    <div className={styles.inlineSubInput}>
+                      <input autoFocus className={styles.inlineInput} value={editNewSelLabel} placeholder="Nom de la sélection..."
+                        onChange={(e) => setEditNewSelLabel(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Escape') { setEditNewSelLabel(''); setEditNewSelDesc(''); setEditAddingSel(false); } }}
+                      />
+                      <button type="button" className={styles.inlineConfirm} onClick={() => { if (editNewSelLabel.trim()) { const id = addSelection(editNewSelLabel.trim(), editNewSelDesc.trim() || undefined); setEditForm(f => ({ ...f, selections: [...f.selections, id] })); } setEditNewSelLabel(''); setEditNewSelDesc(''); setEditAddingSel(false); }}>✓</button>
+                      <button type="button" className={styles.inlineCancel} onClick={() => { setEditNewSelLabel(''); setEditNewSelDesc(''); setEditAddingSel(false); }}>×</button>
+                    </div>
+                    <textarea className={styles.selDescInput} value={editNewSelDesc} placeholder="Texte de présentation (optionnel)..."
+                      onChange={(e) => setEditNewSelDesc(e.target.value)} rows={2}
                     />
-                    <button type="button" className={styles.inlineConfirm} onClick={() => { if (editNewSelLabel.trim()) { const id = addSelection(editNewSelLabel.trim()); setEditForm(f => ({ ...f, selections: [...f.selections, id] })); } setEditNewSelLabel(''); setEditAddingSel(false); }}>✓</button>
-                    <button type="button" className={styles.inlineCancel} onClick={() => { setEditNewSelLabel(''); setEditAddingSel(false); }}>×</button>
                   </div>
                 ) : (
-                  <button type="button" className={styles.inlineAddBtn} onClick={() => { setEditAddingSel(true); setEditNewSelLabel(''); }}>+</button>
+                  <button type="button" className={styles.inlineAddBtn} onClick={() => { setEditAddingSel(true); setEditNewSelLabel(''); setEditNewSelDesc(''); }}>+</button>
                 )}
               </div>
             </div>
@@ -1485,16 +1499,19 @@ export default function AdminPage() {
                     >{sel.name}</button>
                   ))}
                   {addingSel ? (
-                    <div className={styles.inlineSubInput}>
-                      <input autoFocus className={styles.inlineInput} value={newSelLabel} placeholder="Nom de la sélection..."
-                        onChange={(e) => setNewSelLabel(e.target.value)}
-                        onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); if (newSelLabel.trim()) { const id = addSelection(newSelLabel.trim()); setForm(f => ({ ...f, selections: [...f.selections, id] })); } setNewSelLabel(''); setAddingSel(false); } if (e.key === 'Escape') { setNewSelLabel(''); setAddingSel(false); } }}
-                      />
-                      <button type="button" className={styles.inlineConfirm} onClick={() => { if (newSelLabel.trim()) { const id = addSelection(newSelLabel.trim()); setForm(f => ({ ...f, selections: [...f.selections, id] })); } setNewSelLabel(''); setAddingSel(false); }}>✓</button>
-                      <button type="button" className={styles.inlineCancel} onClick={() => { setNewSelLabel(''); setAddingSel(false); }}>×</button>
+                    <div className={styles.selEditBlock}>
+                      <div className={styles.inlineSubInput}>
+                        <input autoFocus className={styles.inlineInput} value={newSelLabel} placeholder="Nom de la sélection..."
+                          onChange={(e) => setNewSelLabel(e.target.value)}
+                          onKeyDown={(e) => { if (e.key === 'Escape') { setNewSelLabel(''); setNewSelDesc(''); setAddingSel(false); } }}
+                        />
+                        <button type="button" className={styles.inlineConfirm} onClick={() => { if (newSelLabel.trim()) { const id = addSelection(newSelLabel.trim(), newSelDesc.trim() || undefined); setForm(f => ({ ...f, selections: [...f.selections, id] })); } setNewSelLabel(''); setNewSelDesc(''); setAddingSel(false); }}>✓</button>
+                        <button type="button" className={styles.inlineCancel} onClick={() => { setNewSelLabel(''); setNewSelDesc(''); setAddingSel(false); }}>×</button>
+                      </div>
+                      <textarea className={styles.selDescInput} value={newSelDesc} placeholder="Texte de présentation (optionnel)..." rows={2} onChange={(e) => setNewSelDesc(e.target.value)} />
                     </div>
                   ) : (
-                    <button type="button" className={styles.inlineAddBtn} onClick={() => { setAddingSel(true); setNewSelLabel(''); }}>+</button>
+                    <button type="button" className={styles.inlineAddBtn} onClick={() => { setAddingSel(true); setNewSelLabel(''); setNewSelDesc(''); }}>+</button>
                   )}
                 </div>
                 <div className={styles.stepActions}>
