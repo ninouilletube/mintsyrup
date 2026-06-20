@@ -31,13 +31,8 @@ export default async function FavorisPage() {
               {/* Desktop : grid avec post-it */}
               <div className={styles.gridWrap}>
                 <span className={styles.postit}>
-                  <span className={styles.postitInner}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/coeur.webp" alt="" className={styles.postitHeart} />
-                    <span>MES COUPS<br />DE COEUR</span>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/coeur.webp" alt="" className={styles.postitHeart} />
-                  </span>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/postit-coeur.png" alt="mes coups de coeur" className={styles.postitHandwriting} />
                 </span>
                 <div className={styles.grid}>
                   {products.map((p) => {

@@ -72,21 +72,21 @@
 .projetDesktopLink {
   text-decoration: none !important;
   font-style: normal;
-  border: 2px solid var(--coral) !important;
+  border: 2px solid #C0185A !important;
   border-radius: 50px !important;
-  color: var(--coral) !important;
+  color: #C0185A !important;
   background: transparent !important;
   box-shadow: none !important;
 }
 .projetDesktopLink:hover {
-  background: rgba(224,85,48,0.08) !important;
-  border-color: var(--coral) !important;
-  color: var(--coral) !important;
+  background: rgba(192,24,90,0.08) !important;
+  border-color: #C0185A !important;
+  color: #C0185A !important;
 }
 .projetDesktopLink.active {
   background: transparent !important;
-  color: var(--coral) !important;
-  border-color: var(--coral) !important;
+  color: #C0185A !important;
+  border-color: #C0185A !important;
   box-shadow: none !important;
   font-weight: 700;
 }

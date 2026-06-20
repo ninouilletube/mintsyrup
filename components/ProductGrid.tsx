@@ -185,7 +185,10 @@ export default function ProductGrid() {
 
         {/* Desktop : note été post-it */}
         {activeCategory === 'ete' && (
-          <p className={styles.eteLead}>SUMMER</p>
+          <div className={styles.eteLead}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/postit-summer.png" alt="SUMMER" className={styles.eteLeadImg} />
+          </div>
         )}
 
         {/* Texte de présentation d'une sélection */}
