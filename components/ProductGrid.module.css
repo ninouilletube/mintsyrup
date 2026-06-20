@@ -88,7 +88,7 @@
 .scrollTop:hover { background: var(--cream); transform: translateY(-2px); }
 
 .panelSummer {
-  margin-top: 7rem;
+  margin-top: 3.5rem;
   padding-top: 1.5rem;
 }
 
@@ -96,7 +96,7 @@
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translate(-50%, -80%) rotate(-2.5deg);
+  transform: translate(-50%, -48%) rotate(-2.5deg);
   z-index: 3;
   pointer-events: none;
   background: #FFF0B3;
@@ -110,7 +110,7 @@
 
 .eteLeadImg {
   display: block;
-  width: 100px;
+  width: 115px;
   height: auto;
 }
 
