@@ -203,6 +203,7 @@
   transition: background 0.12s, color 0.12s;
 }
 .dropItemLink:hover { color: var(--dark); background: rgba(224,85,48,0.11); }
+.dropItemLink.dropItemActive { color: var(--coral); font-weight: 700; background: rgba(224,85,48,0.08); }
 
 .dropHeart {
   width: 16px;
