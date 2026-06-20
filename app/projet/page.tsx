@@ -2,6 +2,7 @@ import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import PageArrow from '@/components/PageArrow';
 import RetourArrow from '@/components/RetourArrow';
+import ScrollToTop from '@/components/ScrollToTop';
 import { getData } from '@/lib/supabase';
 import styles from './projet.module.css';
 import ProjetAccordion from './ProjetAccordion';
@@ -27,6 +28,7 @@ export default async function ProjetPage() {
 
   return (
     <>
+      <ScrollToTop />
       <Nav />
       <span className={styles.mobileHidden}><PageArrow href="/favoris" label="Mes favoris" direction="left" /></span>
       <span className={styles.mobileHidden}><RetourArrow direction="right" /></span>

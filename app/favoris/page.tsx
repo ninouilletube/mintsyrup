@@ -4,6 +4,7 @@ import Link from 'next/link';
 import PageArrow from '@/components/PageArrow';
 import RetourArrow from '@/components/RetourArrow';
 import FavorisCarousel from '@/components/FavorisCarousel';
+import ScrollToTop from '@/components/ScrollToTop';
 import { getData } from '@/lib/supabase';
 import type { Product } from '@/data/products';
 import styles from './favoris.module.css';
@@ -19,6 +20,7 @@ export default async function FavorisPage() {
 
   return (
     <>
+      <ScrollToTop />
       <Nav />
       <span className={styles.mobileHidden}><RetourArrow direction="left" /></span>
       <span className={styles.mobileHidden}><PageArrow href="/projet" label="Le projet" direction="right" /></span>
