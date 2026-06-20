@@ -39,3 +39,12 @@ export async function trackVintedClick(productId: number) {
   const current = stats[key] || { views: 0, vinted: 0 };
   await setData('article_stats', { ...stats, [key]: { ...current, vinted: (current.vinted || 0) + 1 } });
 }
+
+export async function uploadPostitImage(file: File, selectionId: string): Promise<string | null> {
+  const ext = file.name.split('.').pop();
+  const path = `postits/${selectionId}.${ext}`;
+  const { error } = await supabase.storage.from('mint-assets').upload(path, file, { upsert: true });
+  if (error) { console.error('[uploadPostitImage]', error.message); return null; }
+  const { data } = supabase.storage.from('mint-assets').getPublicUrl(path);
+  return data.publicUrl;
+}

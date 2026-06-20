@@ -8,7 +8,7 @@ import { CATEGORIES } from '@/data/categories';
 import { COLORS, getColor } from '@/data/colors';
 import type { Category, Season, Product } from '@/data/products';
 import { getCurrentSeason } from '@/lib/season';
-import { getData, setData } from '@/lib/supabase';
+import { getData, setData, uploadPostitImage } from '@/lib/supabase';
 import { useSelections } from '@/context/SelectionsContext';
 import styles from './Admin.module.css';
 import MobileAdmin from './MobileAdmin';
@@ -182,7 +182,9 @@ export default function AdminPage() {
 
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const { subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder } = useSubcategories();
-  const { selections, addSelection, deleteSelection, renameSelection, updateSelection } = useSelections();
+  const { selections, addSelection, deleteSelection, renameSelection, updateSelection, setPostitImage } = useSelections();
+
+  const [postitUploading, setPostitUploading] = useState<string | null>(null);
 
   // Gestion sélections dans le catalogue
   const [catalogSelEditId, setCatalogSelEditId] = useState<string | null>(null);
@@ -1256,7 +1258,29 @@ export default function AdminPage() {
                 <span className={styles.catalogItemLabel}>
                   <strong>{sel.name}</strong>
                   {sel.description && <em style={{ marginLeft: '0.5rem', fontWeight: 400, opacity: 0.7, fontSize: '0.8rem' }}>{sel.description}</em>}
+                  {sel.postitImage && <span style={{ marginLeft: '0.4rem', fontSize: '0.72rem', color: '#1a9e6e' }}>post-it ✓</span>}
                 </span>
+                <label
+                  title={sel.postitImage ? "Image post-it liée — cliquer pour changer" : "Lier une image post-it"}
+                  style={{ background: 'none', color: sel.postitImage ? '#1a9e6e' : 'rgba(58,24,8,0.35)', fontSize: '0.8rem', padding: '0 0.4rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', border: 'none' }}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    disabled={postitUploading === sel.id}
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      setPostitUploading(sel.id);
+                      const url = await uploadPostitImage(file, sel.id);
+                      if (url) setPostitImage(sel.id, url);
+                      setPostitUploading(null);
+                      e.target.value = '';
+                    }}
+                  />
+                  {postitUploading === sel.id ? '…' : '⬆'}
+                </label>
                 <button className={styles.catalogItemDelete} title="Modifier" style={{ background: 'none', color: 'var(--orange)', fontSize: '0.8rem', width: 'auto', padding: '0 0.4rem' }}
                   onClick={() => { setCatalogSelEditId(sel.id); setCatalogSelName(sel.name); setCatalogSelDesc(sel.description ?? ''); }}
                 >✎</button>

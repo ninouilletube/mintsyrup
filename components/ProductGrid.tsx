@@ -175,13 +175,15 @@ export default function ProductGrid() {
     : dropsIndex + DROPS_VISIBLE < dropsPool.length;
 
   const activeCat = CATEGORIES.find(c => c.id === activeCategory);
-  const selectionName = activeSelection ? (selections.find(s => s.id === activeSelection)?.name ?? null) : null;
+  const activeSelObj = activeSelection ? (selections.find(s => s.id === activeSelection) ?? null) : null;
+  const selectionName = activeSelObj?.name ?? null;
   const catLabel = selectionName ?? (activeCat ? (lang === 'fr' ? activeCat.fr : activeCat.en) : '');
   const activeFilterCount = [filterType, ...filterSizes, filterColor].filter(Boolean).length;
+  const hasSelPostit = !!activeSelObj?.postitImage;
 
   return (
     <div className={styles.overlay}>
-      <div className={`${isDrops ? styles.panelOpen : styles.panel}${activeCategory === 'ete' ? ` ${styles.panelSummer}` : ''}`} ref={panelRef}>
+      <div className={`${isDrops ? styles.panelOpen : styles.panel}${activeCategory === 'ete' ? ` ${styles.panelSummer}` : ''}${hasSelPostit ? ` ${styles.panelWithPostit}` : ''}`} ref={panelRef}>
 
         {/* Desktop : note été post-it */}
         {activeCategory === 'ete' && (
@@ -191,13 +193,18 @@ export default function ProductGrid() {
           </div>
         )}
 
+        {/* Post-it pour sélection avec image liée */}
+        {activeSelObj?.postitImage && (
+          <div className={styles.selectionPostit}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={activeSelObj.postitImage} alt={activeSelObj.name} className={styles.selectionPostitImg} />
+          </div>
+        )}
+
         {/* Texte de présentation d'une sélection */}
-        {activeSelection && selectionName && (() => {
-          const sel = selections.find(s => s.id === activeSelection);
-          return sel?.description ? (
-            <p className={styles.selectionIntro}>{sel.description}</p>
-          ) : null;
-        })()}
+        {activeSelObj?.description && (
+          <p className={styles.selectionIntro}>{activeSelObj.description}</p>
+        )}
 
         {/* Mobile uniquement : titre de catégorie encadré */}
         <div className={styles.mobileCategoryHeader}>
