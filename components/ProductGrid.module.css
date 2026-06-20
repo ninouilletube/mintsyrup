@@ -88,18 +88,19 @@
 .scrollTop:hover { background: var(--cream); transform: translateY(-2px); }
 
 .panelSummer {
-  padding-top: 5.5rem;
+  margin-top: 7rem;
+  padding-top: 1.5rem;
 }
 
 .eteLead {
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translate(-50%, -55%) rotate(-2.5deg);
+  transform: translate(-50%, -80%) rotate(-2.5deg);
   z-index: 3;
   pointer-events: none;
-  background: #FFE566;
-  padding: 0.75rem 1.1rem 0.6rem;
+  background: #FFF0B3;
+  padding: 0.6rem 0.9rem 0.5rem;
   border-radius: 2px;
   box-shadow:
     2px 3px 6px rgba(0,0,0,0.18),
@@ -109,7 +110,7 @@
 
 .eteLeadImg {
   display: block;
-  width: 130px;
+  width: 100px;
   height: auto;
 }
 
