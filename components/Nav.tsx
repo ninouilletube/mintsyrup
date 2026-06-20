@@ -154,38 +154,31 @@ export default function Nav() {
 
         {/* Sélections */}
         <div className={styles.dropWrap}>
-          <button className={`${styles.link} ${isSelActive ? styles.active : ''}`}>
+          <button className={`${styles.link} ${isSelActive || pathname === '/favoris' ? styles.active : ''}`}>
             {lang === 'fr' ? 'Sélections' : 'Selections'}
             <span className={styles.dropCaret}>▾</span>
           </button>
           <div className={styles.drop}>
-            {selections.length === 0 ? (
-              <span className={styles.dropEmpty}>
-                {lang === 'fr' ? 'Aucune sélection' : 'No selections yet'}
-              </span>
-            ) : (
-              selections.map((sel) => (
-                <button
-                  key={sel.id}
-                  className={`${styles.dropItem} ${activeSelection === sel.id ? styles.dropItemActive : ''}`}
-                  onClick={() => handleSelection(sel.id)}
-                >
-                  {sel.name}
-                </button>
-              ))
-            )}
+            {selections.map((sel) => (
+              <button
+                key={sel.id}
+                className={`${styles.dropItem} ${activeSelection === sel.id ? styles.dropItemActive : ''}`}
+                onClick={() => handleSelection(sel.id)}
+              >
+                {sel.name}
+              </button>
+            ))}
+            {selections.length > 0 && <hr className={styles.dropDivider} />}
+            <Link
+              href="/favoris"
+              className={`${styles.dropItemLink} ${pathname === '/favoris' ? styles.dropItemActive : ''}`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/coeur.webp" alt="" className={styles.dropHeart} />
+              Coups de cœur
+            </Link>
           </div>
         </div>
-
-        {/* Coups de cœur */}
-        <Link
-          href="/favoris"
-          className={`${styles.link} ${styles.heartLinkDesktop} ${pathname === '/favoris' ? styles.active : ''}`}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/coeur.webp" alt="" className={styles.heartNav} />
-          <span>Coups de cœur</span>
-        </Link>
 
         {/* Le projet */}
         <Link
