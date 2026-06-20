@@ -71,7 +71,24 @@
 /* Lien Le projet desktop */
 .projetDesktopLink {
   text-decoration: none !important;
-  font-style: italic;
+  font-style: normal;
+  border: 2px solid var(--coral) !important;
+  border-radius: 50px !important;
+  color: var(--coral) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.projetDesktopLink:hover {
+  background: rgba(224,85,48,0.08) !important;
+  border-color: var(--coral) !important;
+  color: var(--coral) !important;
+}
+.projetDesktopLink.active {
+  background: transparent !important;
+  color: var(--coral) !important;
+  border-color: var(--coral) !important;
+  box-shadow: none !important;
+  font-weight: 700;
 }
 
 /* ── Dropdowns desktop ── */
