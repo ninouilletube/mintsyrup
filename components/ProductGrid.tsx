@@ -60,6 +60,16 @@ export default function ProductGrid() {
     setDropsIndex(index);
   };
 
+  // Précharger les images post-it des sélections dès le montage
+  useEffect(() => {
+    selections.forEach(sel => {
+      if (sel.postitImage) {
+        const img = new window.Image();
+        img.src = sel.postitImage;
+      }
+    });
+  }, [selections]);
+
   // Reset filters and scroll on category change
   useEffect(() => {
     setFilterType(null);
