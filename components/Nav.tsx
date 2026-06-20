@@ -159,7 +159,7 @@ export default function Nav() {
             {selections.map((sel) => (
               <button
                 key={sel.id}
-                className={`${styles.dropItem} ${activeSelection === sel.id ? styles.dropItemActive : ''}`}
+                className={`${styles.dropItem} ${activeSelection === sel.id && pathname !== '/favoris' ? styles.dropItemActive : ''}`}
                 onClick={() => handleSelection(sel.id)}
               >
                 {sel.name}
@@ -168,20 +168,21 @@ export default function Nav() {
             <Link
               href="/favoris"
               className={`${styles.dropItemLink} ${pathname === '/favoris' ? styles.dropItemActive : ''}`}
+              onClick={() => { setActiveCategory(null); setActiveSelection(null); }}
             >
               Coups de cœur
             </Link>
           </div>
         </div>
-
-        {/* Le projet */}
-        <Link
-          href="/projet"
-          className={`${styles.link} ${styles.projetDesktopLink} ${pathname === '/projet' ? styles.active : ''}`}
-        >
-          Le projet
-        </Link>
       </div>
+
+      {/* Le projet — tout à droite */}
+      <Link
+        href="/projet"
+        className={`${styles.link} ${styles.projetDesktopLink} ${pathname === '/projet' ? styles.active : ''}`}
+      >
+        Le projet
+      </Link>
 
       {/* ── Mobile : menu déroulant ── */}
       {menuOpen && (
