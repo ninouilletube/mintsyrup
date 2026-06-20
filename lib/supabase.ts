@@ -42,8 +42,8 @@ export async function trackVintedClick(productId: number) {
 
 export async function uploadPostitImage(file: File, selectionId: string): Promise<string | null> {
   const ext = file.name.split('.').pop();
-  const path = `postits/${selectionId}.${ext}`;
-  const { error } = await supabase.storage.from('mint-assets').upload(path, file, { upsert: true });
+  const path = `postits/${selectionId}-${Date.now()}.${ext}`;
+  const { error } = await supabase.storage.from('mint-assets').upload(path, file);
   if (error) { console.error('[uploadPostitImage]', error.message); return null; }
   const { data } = supabase.storage.from('mint-assets').getPublicUrl(path);
   return data.publicUrl;
