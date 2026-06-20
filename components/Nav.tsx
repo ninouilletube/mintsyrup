@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { useLang } from '@/context/LangContext';
 import { useShop } from '@/context/ShopContext';
 import { useSelections } from '@/context/SelectionsContext';
 import { CATEGORIES } from '@/data/categories';
@@ -11,11 +10,11 @@ import { getCurrentSeason, type SeasonKey } from '@/lib/season';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
-const SEASON_LABEL: Record<SeasonKey, { fr: string; en: string }> = {
-  summer: { fr: 'SUMMER', en: 'SUMMER' },
-  autumn: { fr: 'AUTUMN', en: 'AUTUMN' },
-  winter: { fr: 'WINTER', en: 'WINTER' },
-  spring: { fr: 'SPRING', en: 'SPRING' },
+const SEASON_LABEL: Record<SeasonKey, string> = {
+  summer: 'SUMMER',
+  autumn: 'AUTUMN',
+  winter: 'WINTER',
+  spring: 'SPRING',
 };
 
 const SEASON_CLASS: Record<SeasonKey, string> = {
@@ -28,7 +27,6 @@ const SEASON_CLASS: Record<SeasonKey, string> = {
 const CATEGORY_CATS: Category[] = ['manteaux', 'hauts', 'bas', 'robes', 'chaussures', 'accessoires'];
 
 export default function Nav() {
-  const { lang, setLang } = useLang();
   const { activeCategory, setActiveCategory, activeSelection, setActiveSelection } = useShop();
   const { selections } = useSelections();
   const season = getCurrentSeason();
@@ -119,13 +117,13 @@ export default function Nav() {
           className={`${styles.link} ${isDropsActive ? styles.active : ''}`}
           onClick={() => handleCategory('drops')}
         >
-          {lang === 'fr' ? 'Derniers drops' : 'Latest drops'}
+          Derniers drops
         </button>
 
         {/* Catégories */}
         <div className={styles.dropWrap}>
           <button className={`${styles.link} ${isCatActive ? styles.active : ''}`}>
-            {lang === 'fr' ? 'Catégories' : 'Categories'}
+            Catégories
             <span className={styles.dropCaret}>▾</span>
           </button>
           <div className={styles.drop}>
@@ -137,7 +135,7 @@ export default function Nav() {
                   className={`${styles.dropItem} ${isHome && activeCategory === catId && !activeSelection ? styles.dropItemActive : ''}`}
                   onClick={() => handleCategory(catId)}
                 >
-                  {lang === 'fr' ? cat.fr : cat.en}
+                  {cat.fr}
                 </button>
               );
             })}
@@ -147,7 +145,7 @@ export default function Nav() {
         {/* Sélections */}
         <div className={styles.dropWrap}>
           <button className={`${styles.link} ${isSelActive || isSummerActive || pathname === '/favoris' ? styles.active : ''}`}>
-            {lang === 'fr' ? 'Sélections' : 'Selections'}
+            Sélections
             <span className={styles.dropCaret}>▾</span>
           </button>
           <div className={styles.drop}>
@@ -156,7 +154,7 @@ export default function Nav() {
               className={`${styles.dropItem} ${styles.dropItemSummer} ${isSummerActive ? styles.dropItemActive : ''}`}
               onClick={() => handleCategory('ete')}
             >
-              {SEASON_LABEL[season][lang]}
+              {SEASON_LABEL[season]}
             </button>
             {selections.map((sel) => (
               <button
@@ -185,13 +183,6 @@ export default function Nav() {
         </Link>
       </div>
 
-      {/* ── Desktop : langue ── */}
-      <div className={styles.lang}>
-        <button className={`${styles.langBtn} ${lang === 'fr' ? styles.active : ''}`} onClick={() => setLang('fr')}>FR</button>
-        <span className={styles.langSep}>/</span>
-        <button className={`${styles.langBtn} ${lang === 'en' ? styles.active : ''}`} onClick={() => setLang('en')}>EN</button>
-      </div>
-
       {/* ── Mobile : menu déroulant ── */}
       {menuOpen && (
         <div className={styles.mobileMenu}>
@@ -201,7 +192,7 @@ export default function Nav() {
               className={`${styles.link} ${styles.mobileMenuItem} ${cat.id === 'ete' ? `${SEASON_CLASS[season]} ${styles.mobileMenuSeason}` : ''} ${isHome && activeCategory === cat.id && cat.id !== 'ete' && !activeSelection ? styles.active : ''}`}
               onClick={() => handleCategory(cat.id as Category)}
             >
-              {cat.id === 'ete' ? SEASON_LABEL[season][lang] : (lang === 'fr' ? cat.fr : cat.en)}
+              {cat.id === 'ete' ? SEASON_LABEL[season] : cat.fr}
             </button>
           ))}
           <Link href="/favoris" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileFavorisItem} ${pathname === '/favoris' ? styles.active : ''}`} onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>

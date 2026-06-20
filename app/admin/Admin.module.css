@@ -735,6 +735,17 @@
 .inlineCancel { background: white; color: var(--mid); }
 .inlineCancel:hover { border-color: var(--crimson); color: var(--crimson); }
 
+.catalogSelEditBlock {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid var(--dark);
+  border-radius: 8px;
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
 .selEditBlock {
   display: flex;
   flex-direction: column;

@@ -182,7 +182,15 @@ export default function AdminPage() {
 
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const { subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder } = useSubcategories();
-  const { selections, addSelection, renameSelection, updateSelection } = useSelections();
+  const { selections, addSelection, deleteSelection, renameSelection, updateSelection } = useSelections();
+
+  // Gestion sélections dans le catalogue
+  const [catalogSelEditId, setCatalogSelEditId] = useState<string | null>(null);
+  const [catalogSelName, setCatalogSelName] = useState('');
+  const [catalogSelDesc, setCatalogSelDesc] = useState('');
+  const [catalogAddingSel, setCatalogAddingSel] = useState(false);
+  const [catalogNewSelName, setCatalogNewSelName] = useState('');
+  const [catalogNewSelDesc, setCatalogNewSelDesc] = useState('');
 
   const confirmRenameSel = () => {
     if (renamingSelId && renameSelValue.trim()) updateSelection(renamingSelId, renameSelValue.trim(), renameSelDesc.trim() || undefined);
@@ -1213,6 +1221,82 @@ export default function AdminPage() {
               </div>
             );
           })}
+
+          {/* Sélections */}
+          <h3 className={styles.sectionTitle} style={{ marginTop: '2rem' }}>Sélections</h3>
+          <div className={styles.catalogList}>
+            {selections.map((sel) => catalogSelEditId === sel.id ? (
+              <div key={sel.id} className={styles.catalogSelEditBlock}>
+                <input
+                  autoFocus
+                  className={styles.inlineInput}
+                  value={catalogSelName}
+                  placeholder="Nom..."
+                  onChange={(e) => setCatalogSelName(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Escape') setCatalogSelEditId(null); }}
+                  style={{ width: '100%', marginBottom: '0.4rem' }}
+                />
+                <textarea
+                  className={styles.selDescInput}
+                  value={catalogSelDesc}
+                  placeholder="Texte de présentation (optionnel)..."
+                  rows={2}
+                  onChange={(e) => setCatalogSelDesc(e.target.value)}
+                />
+                <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.35rem' }}>
+                  <button className={styles.inlineConfirm} style={{ width: 'auto', padding: '0 0.75rem', borderRadius: '6px' }} onClick={() => {
+                    if (catalogSelName.trim()) updateSelection(sel.id, catalogSelName.trim(), catalogSelDesc.trim() || undefined);
+                    setCatalogSelEditId(null);
+                  }}>✓ Enregistrer</button>
+                  <button className={styles.inlineCancel} style={{ width: 'auto', padding: '0 0.75rem', borderRadius: '6px' }} onClick={() => setCatalogSelEditId(null)}>Annuler</button>
+                </div>
+              </div>
+            ) : (
+              <div key={sel.id} className={styles.catalogItem}>
+                <span className={styles.catalogItemLabel}>
+                  <strong>{sel.name}</strong>
+                  {sel.description && <em style={{ marginLeft: '0.5rem', fontWeight: 400, opacity: 0.7, fontSize: '0.8rem' }}>{sel.description}</em>}
+                </span>
+                <button className={styles.catalogItemDelete} title="Modifier" style={{ background: 'none', color: 'var(--orange)', fontSize: '0.8rem', width: 'auto', padding: '0 0.4rem' }}
+                  onClick={() => { setCatalogSelEditId(sel.id); setCatalogSelName(sel.name); setCatalogSelDesc(sel.description ?? ''); }}
+                >✎</button>
+                <button className={styles.catalogItemDelete} title="Supprimer"
+                  onClick={() => { if (confirm(`Supprimer la sélection "${sel.name}" ?`)) deleteSelection(sel.id); }}
+                >×</button>
+              </div>
+            ))}
+            {catalogAddingSel ? (
+              <div className={styles.catalogSelEditBlock}>
+                <input
+                  autoFocus
+                  className={styles.inlineInput}
+                  value={catalogNewSelName}
+                  placeholder="Nom de la sélection..."
+                  onChange={(e) => setCatalogNewSelName(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Escape') { setCatalogAddingSel(false); } }}
+                  style={{ width: '100%', marginBottom: '0.4rem' }}
+                />
+                <textarea
+                  className={styles.selDescInput}
+                  value={catalogNewSelDesc}
+                  placeholder="Texte de présentation (optionnel)..."
+                  rows={2}
+                  onChange={(e) => setCatalogNewSelDesc(e.target.value)}
+                />
+                <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.35rem' }}>
+                  <button className={styles.inlineConfirm} style={{ width: 'auto', padding: '0 0.75rem', borderRadius: '6px' }} onClick={() => {
+                    if (catalogNewSelName.trim()) addSelection(catalogNewSelName.trim(), catalogNewSelDesc.trim() || undefined);
+                    setCatalogAddingSel(false); setCatalogNewSelName(''); setCatalogNewSelDesc('');
+                  }}>✓ Créer</button>
+                  <button className={styles.inlineCancel} style={{ width: 'auto', padding: '0 0.75rem', borderRadius: '6px' }} onClick={() => { setCatalogAddingSel(false); setCatalogNewSelName(''); setCatalogNewSelDesc(''); }}>Annuler</button>
+                </div>
+              </div>
+            ) : (
+              <button className={styles.inlineAddBtn} onClick={() => { setCatalogAddingSel(true); setCatalogNewSelName(''); setCatalogNewSelDesc(''); }}>
+                + Nouvelle sélection
+              </button>
+            )}
+          </div>
 
           {/* Couleurs */}
           <h3 className={styles.sectionTitle} style={{ marginTop: '2rem' }}>Couleurs</h3>

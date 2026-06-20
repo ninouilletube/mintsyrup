@@ -19,6 +19,7 @@ const SelectionsContext = createContext<SelectionsContextType>({
   addSelection: () => '',
   deleteSelection: () => {},
   renameSelection: () => {},
+  updateSelection: () => {},
 });
 
 export function SelectionsProvider({ children }: { children: React.ReactNode }) {
