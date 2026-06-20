@@ -171,9 +171,6 @@ export default function Nav() {
               href="/favoris"
               className={`${styles.dropItemLink} ${pathname === '/favoris' ? styles.dropItemActive : ''}`}
             >
-              <svg className={styles.dropHeart} viewBox="0 0 20 18" fill="currentColor" aria-hidden="true">
-                <path d="M10 17S1 11 1 5.5A4.5 4.5 0 0 1 10 3.38 4.5 4.5 0 0 1 19 5.5C19 11 10 17 10 17z"/>
-              </svg>
               Coups de cœur
             </Link>
           </div>
