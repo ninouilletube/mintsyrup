@@ -181,7 +181,7 @@ export default function ProductGrid() {
 
   return (
     <div className={styles.overlay}>
-      <div className={isDrops ? styles.panelOpen : styles.panel} ref={panelRef}>
+      <div className={`${isDrops ? styles.panelOpen : styles.panel}${activeCategory === 'ete' ? ` ${styles.panelSummer}` : ''}`} ref={panelRef}>
 
         {/* Desktop : note été post-it */}
         {activeCategory === 'ete' && (
