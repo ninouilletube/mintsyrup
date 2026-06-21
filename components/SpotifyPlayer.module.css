@@ -53,6 +53,15 @@
   clip-path: inset(0 0 0 0);
 }
 
+.tip {
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.55);
+  text-align: center;
+  padding: 0.4rem 0.6rem 0.3rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
 .iframe {
   border: none;
   outline: none;
