@@ -764,6 +764,10 @@ export default function AdminPage() {
               <label className={styles.editLabel}>Photos</label>
               {editForm.imageUrls.map((url, i) => (
                 <div key={i} className={styles.imageUrlRow}>
+                  {url && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={url} alt="" className={styles.imageUrlThumb} onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                  )}
                   {editForm.imageUrls.length > 1 && (
                     <div className={styles.imgOrderBtns}>
                       <button type="button" disabled={i === 0} onClick={() => {
