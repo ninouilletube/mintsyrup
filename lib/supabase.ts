@@ -48,3 +48,12 @@ export async function uploadPostitImage(file: File, selectionId: string): Promis
   const { data } = supabase.storage.from('mint-assets').getPublicUrl(path);
   return data.publicUrl;
 }
+
+export async function uploadSpecialPostit(file: File, key: 'summer' | 'coeur'): Promise<string | null> {
+  const ext = file.name.split('.').pop();
+  const path = `postits/special-${key}-${Date.now()}.${ext}`;
+  const { error } = await supabase.storage.from('mint-assets').upload(path, file);
+  if (error) { console.error('[uploadSpecialPostit]', error.message); return null; }
+  const { data } = supabase.storage.from('mint-assets').getPublicUrl(path);
+  return data.publicUrl;
+}

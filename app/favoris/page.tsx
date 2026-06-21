@@ -13,6 +13,7 @@ export const revalidate = 60;
 
 export default async function FavorisPage() {
   const allProducts = (await getData('products') as Product[] | null) ?? [];
+  const specialPostits = (await getData('config_special_postits') as { summer?: string; coeur?: string } | null) ?? {};
   const products = allProducts
     .filter((p) => p.favorite && !p.hidden)
     .sort((a, b) => (b.favoriteOrder ?? 0) - (a.favoriteOrder ?? 0))
@@ -34,7 +35,7 @@ export default async function FavorisPage() {
               <div className={styles.gridWrap}>
                 <span className={styles.postit}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/postit-coeur.png" alt="mes coups de coeur" className={styles.postitHandwriting} />
+                  <img src={specialPostits.coeur ?? '/postit-coeur.png'} alt="mes coups de coeur" className={styles.postitHandwriting} />
                 </span>
                 <div className={styles.grid}>
                   {products.map((p) => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { getData } from '@/lib/supabase';
 import { useLang } from '@/context/LangContext';
 import { useShop } from '@/context/ShopContext';
 import { useProducts } from '@/context/ProductsContext';
@@ -23,6 +24,7 @@ export default function ProductGrid() {
   const [filterType, setFilterType] = useState<string | null>(null);
   const [filterSizes, setFilterSizes] = useState<string[]>([]);
   const [filterColor, setFilterColor] = useState<string | null>(null);
+  const [specialPostits, setSpecialPostits] = useState<{ summer?: string; coeur?: string }>({});
   const [dropsIndex, setDropsIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
@@ -37,6 +39,10 @@ export default function ProductGrid() {
     const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
     mq.addEventListener('change', handler);
     return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  useEffect(() => {
+    getData('config_special_postits').then((v) => v && setSpecialPostits(v as { summer?: string; coeur?: string }));
   }, []);
 
   useLayoutEffect(() => {
@@ -206,7 +212,7 @@ export default function ProductGrid() {
         {activeCategory === 'ete' && (
           <div className={styles.eteLead}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/postit-summer.png" alt="SUMMER" className={styles.eteLeadImg} />
+            <img src={specialPostits.summer ?? '/postit-summer.png'} alt="SUMMER" className={styles.eteLeadImg} />
           </div>
         )}
 

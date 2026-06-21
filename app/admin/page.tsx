@@ -8,7 +8,7 @@ import { CATEGORIES } from '@/data/categories';
 import { COLORS, getColor } from '@/data/colors';
 import type { Category, Season, Product } from '@/data/products';
 import { getCurrentSeason } from '@/lib/season';
-import { getData, setData, uploadPostitImage } from '@/lib/supabase';
+import { getData, setData, uploadPostitImage, uploadSpecialPostit } from '@/lib/supabase';
 import { useSelections } from '@/context/SelectionsContext';
 import styles from './Admin.module.css';
 import MobileAdmin from './MobileAdmin';
@@ -186,6 +186,8 @@ export default function AdminPage() {
   const { selections, addSelection, deleteSelection, renameSelection, updateSelection, setPostitImage, reorderSelections } = useSelections();
 
   const [postitUploading, setPostitUploading] = useState<string | null>(null);
+  const [specialPostits, setSpecialPostits] = useState<{ summer?: string; coeur?: string }>({});
+  const [specialPostitUploading, setSpecialPostitUploading] = useState<'summer' | 'coeur' | null>(null);
 
   // Gestion sélections dans le catalogue
   const [catalogSelEditId, setCatalogSelEditId] = useState<string | null>(null);
@@ -229,6 +231,7 @@ export default function AdminPage() {
     getData('bioTitle2').then((v) => v && setBioTitle2(v as string));
     getData('bioTitle3').then((v) => v && setBioTitle3(v as string));
     getData('bio3Tooltip').then((v) => v && setBio3Tooltip(v as string));
+    getData('config_special_postits').then((v) => v && setSpecialPostits(v as { summer?: string; coeur?: string }));
   }, [auth]);
 
   const login = () => {
@@ -1407,6 +1410,39 @@ export default function AdminPage() {
                       }}
                     >{colorLabels[colorId] ?? color.label}</span>
                   )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Post-its spéciaux */}
+          <h3 className={styles.sectionTitle} style={{ marginTop: '2rem' }}>Post-its spéciaux</h3>
+          <div className={styles.catalogList}>
+            {(['summer', 'coeur'] as const).map((key) => {
+              const label = key === 'summer' ? 'SUMMER' : 'Coups de cœur';
+              const url = specialPostits[key];
+              return (
+                <div key={key} className={styles.catalogItem} style={{ alignItems: 'center' }}>
+                  {url && <img src={url} alt={label} style={{ width: 48, height: 48, objectFit: 'contain', borderRadius: 4, marginRight: '0.5rem', background: '#f5f0eb' }} />}
+                  <span className={styles.catalogItemLabel}><strong>{label}</strong></span>
+                  <label style={{ background: 'none', color: url ? '#1a9e6e' : 'rgba(58,24,8,0.35)', fontSize: '0.8rem', padding: '0 0.4rem', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', border: 'none' }}
+                    title={url ? 'Image liée — cliquer pour changer' : 'Lier une image post-it'}>
+                    <input type="file" accept="image/*" style={{ display: 'none' }} disabled={specialPostitUploading === key}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        setSpecialPostitUploading(key);
+                        const newUrl = await uploadSpecialPostit(file, key);
+                        if (newUrl) {
+                          const next = { ...specialPostits, [key]: newUrl };
+                          setSpecialPostits(next);
+                          setData('config_special_postits', next);
+                        }
+                        setSpecialPostitUploading(null);
+                        e.target.value = '';
+                      }} />
+                    {specialPostitUploading === key ? '…' : '⬆'}
+                  </label>
                 </div>
               );
             })}
