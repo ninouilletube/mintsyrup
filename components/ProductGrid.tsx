@@ -42,7 +42,16 @@ export default function ProductGrid() {
   }, []);
 
   useEffect(() => {
-    getData('config_special_postits').then((v) => v && setSpecialPostits(v as { summer?: string; coeur?: string }));
+    try {
+      const cached = localStorage.getItem('ms_special_postits');
+      if (cached) setSpecialPostits(JSON.parse(cached) as { summer?: string; coeur?: string });
+    } catch {}
+    getData('config_special_postits').then((v) => {
+      if (v) {
+        setSpecialPostits(v as { summer?: string; coeur?: string });
+        try { localStorage.setItem('ms_special_postits', JSON.stringify(v)); } catch {}
+      }
+    });
   }, []);
 
   useLayoutEffect(() => {
