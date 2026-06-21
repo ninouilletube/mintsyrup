@@ -211,6 +211,13 @@ export default function ProductGrid() {
           </div>
         )}
 
+        {/* Desktop : badge catégorie flottant sur la vidéo */}
+        {!hasSelPostit && activeCategory !== 'ete' && catLabel && (
+          <div className={styles.categoryBadgeFloat}>
+            <span className={styles.mobileCategoryBadge}>{catLabel}</span>
+          </div>
+        )}
+
         {/* Texte de présentation d'une sélection */}
         {activeSelObj?.description && (
           <p className={styles.selectionIntro}>{activeSelObj.description}</p>

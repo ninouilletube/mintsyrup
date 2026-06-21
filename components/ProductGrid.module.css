@@ -390,12 +390,8 @@
 .mobileFilterWrap  { display: none; }
 .mobileFilterPanel { display: none; }
 
-/* Badge de catégorie — visible desktop et mobile */
-.mobileCategoryHeader {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1.25rem;
-}
+/* Badge catégorie — style partagé desktop flottant + mobile intérieur */
+.mobileCategoryHeader { display: none; }
 .mobileCategoryBadge {
   display: inline-block;
   background: var(--coral);
@@ -409,6 +405,16 @@
   font-size: 0.78rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+}
+
+/* Desktop : badge flottant sur la vidéo, au-dessus du bloc */
+.categoryBadgeFloat {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, calc(-100% - 0.75rem));
+  z-index: 3;
+  pointer-events: none;
 }
 
 @media (max-width: 900px) {
@@ -449,12 +455,13 @@
   }
   .watermark { display: none; }
 
-  /* Masquer les filtres desktop sur mobile */
+  /* Masquer les éléments desktop sur mobile */
   .filterBar         { display: none !important; }
   .filterSizesFloat  { display: none !important; }
   .eteLead           { display: none; }
   .selectionPostit   { display: none; }
   .selectionIntro    { display: none; }
+  .categoryBadgeFloat { display: none; }
 
   /* ── Titre de catégorie ── */
   .mobileCategoryHeader {
