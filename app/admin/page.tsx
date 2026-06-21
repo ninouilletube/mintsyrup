@@ -1439,7 +1439,7 @@ export default function AdminPage() {
                   return filtered.length > 0 ? (
                     <div className={styles.brandSuggestions}>
                       {filtered.map(brand => (
-                        <button key={brand} type="button" className={styles.brandSuggestion} onClick={() => setForm({ ...form, brand })}>
+                        <button key={brand} type="button" className={styles.brandSuggestion} onClick={() => { setForm({ ...form, brand }); next(); }}>
                           {brand}
                         </button>
                       ))}
