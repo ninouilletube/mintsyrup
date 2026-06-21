@@ -181,7 +181,7 @@ export default function AdminPage() {
   const TOTAL_STEPS = 11;
 
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
-  const { subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder } = useSubcategories();
+  const { subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder, colorLabels, setColorLabel } = useSubcategories();
   const { selections, addSelection, deleteSelection, renameSelection, updateSelection, setPostitImage, reorderSelections } = useSelections();
 
   const [postitUploading, setPostitUploading] = useState<string | null>(null);
@@ -206,6 +206,8 @@ export default function AdminPage() {
   const [dragOverSub, setDragOverSub] = useState<string | null>(null);
   const [dragColor, setDragColor] = useState<string | null>(null);
   const [dragOverColor, setDragOverColor] = useState<string | null>(null);
+  const [editingColorLabel, setEditingColorLabel] = useState<string | null>(null);
+  const [editingColorLabelVal, setEditingColorLabelVal] = useState('');
   const [dragSel, setDragSel] = useState<string | null>(null);
   const [dragOverSel, setDragOverSel] = useState<string | null>(null);
 
@@ -1377,7 +1379,32 @@ export default function AdminPage() {
                     className={styles.catalogColorSwatch}
                     style={{ background: color.bg }}
                   />
-                  <span>{color.label}</span>
+                  {editingColorLabel === colorId ? (
+                    <input
+                      autoFocus
+                      className={styles.colorLabelInput}
+                      value={editingColorLabelVal}
+                      onChange={(e) => setEditingColorLabelVal(e.target.value)}
+                      onBlur={() => {
+                        if (editingColorLabelVal.trim()) setColorLabel(colorId, editingColorLabelVal.trim());
+                        setEditingColorLabel(null);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') { if (editingColorLabelVal.trim()) setColorLabel(colorId, editingColorLabelVal.trim()); setEditingColorLabel(null); }
+                        if (e.key === 'Escape') setEditingColorLabel(null);
+                      }}
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                  ) : (
+                    <span
+                      title="Double-cliquer pour renommer"
+                      onDoubleClick={(e) => {
+                        e.preventDefault();
+                        setEditingColorLabel(colorId);
+                        setEditingColorLabelVal(colorLabels[colorId] ?? color.label);
+                      }}
+                    >{colorLabels[colorId] ?? color.label}</span>
+                  )}
                 </div>
               );
             })}

@@ -7,6 +7,7 @@ import { getData, setData } from '@/lib/supabase';
 
 const LS_KEY = 'ms_subcategories';
 const LS_COLOR_KEY = 'ms_color_order';
+const LS_COLOR_LABELS_KEY = 'ms_color_labels';
 const DEFAULT_COLOR_ORDER = COLORS.map((c) => c.id);
 
 type SubcategoriesContextType = {
@@ -16,6 +17,8 @@ type SubcategoriesContextType = {
   reorderSubcategories: (newOrder: Subcategory[]) => void;
   colorOrder: string[];
   setColorOrder: (order: string[]) => void;
+  colorLabels: Record<string, string>;
+  setColorLabel: (id: string, label: string) => void;
 };
 
 const SubcategoriesContext = createContext<SubcategoriesContextType>({
@@ -25,18 +28,22 @@ const SubcategoriesContext = createContext<SubcategoriesContextType>({
   reorderSubcategories: () => {},
   colorOrder: DEFAULT_COLOR_ORDER,
   setColorOrder: () => {},
+  colorLabels: {},
+  setColorLabel: () => {},
 });
 
 export function SubcategoriesProvider({ children }: { children: React.ReactNode }) {
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [colorOrder, setColorOrderState] = useState<string[]>(DEFAULT_COLOR_ORDER);
+  const [colorLabels, setColorLabelsState] = useState<Record<string, string>>({});
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     Promise.all([
       getData('subcategories'),
       getData('color_order'),
-    ]).then(([subVal, colorVal]) => {
+      getData('color_labels'),
+    ]).then(([subVal, colorVal, labelsVal]) => {
       if (subVal && Array.isArray(subVal) && (subVal as Subcategory[]).length > 0) {
         const items = subVal as Subcategory[];
         setSubcategories(items);
@@ -62,6 +69,17 @@ export function SubcategoriesProvider({ children }: { children: React.ReactNode 
             const parsed = JSON.parse(local) as string[];
             if (parsed.length > 0) setColorOrderState(parsed);
           }
+        } catch {}
+      }
+
+      if (labelsVal && typeof labelsVal === 'object' && !Array.isArray(labelsVal)) {
+        const labels = labelsVal as Record<string, string>;
+        setColorLabelsState(labels);
+        try { localStorage.setItem(LS_COLOR_LABELS_KEY, JSON.stringify(labels)); } catch {}
+      } else {
+        try {
+          const local = localStorage.getItem(LS_COLOR_LABELS_KEY);
+          if (local) setColorLabelsState(JSON.parse(local) as Record<string, string>);
         } catch {}
       }
 
@@ -99,10 +117,17 @@ export function SubcategoriesProvider({ children }: { children: React.ReactNode 
     setData('color_order', order).catch(() => {});
   };
 
+  const setColorLabel = (id: string, label: string) => {
+    const next = { ...colorLabels, [id]: label };
+    setColorLabelsState(next);
+    try { localStorage.setItem(LS_COLOR_LABELS_KEY, JSON.stringify(next)); } catch {}
+    setData('color_labels', next).catch(() => {});
+  };
+
   if (!loaded) return null;
 
   return (
-    <SubcategoriesContext.Provider value={{ subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder }}>
+    <SubcategoriesContext.Provider value={{ subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder, colorLabels, setColorLabel }}>
       {children}
     </SubcategoriesContext.Provider>
   );

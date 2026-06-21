@@ -2017,6 +2017,18 @@
   font-weight: 600;
 }
 
+.colorLabelInput {
+  font-size: 0.78rem;
+  font-family: inherit;
+  border: none;
+  border-bottom: 1.5px solid var(--orange);
+  outline: none;
+  background: transparent;
+  color: var(--dark);
+  width: 72px;
+  padding: 0;
+}
+
 .brandSuggestions {
   display: flex;
   flex-wrap: wrap;
