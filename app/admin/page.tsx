@@ -23,6 +23,7 @@ const SIZES = [
   'XL / 42 / 14',  '2XL / 44 / 16',
   '3XL / 46 / 18','4XL / 48 / 20',
 ];
+const SHOE_SIZES = ['35', '35.5', '36', '36.5', '37', '37.5', '38', '38.5', '39', '39.5', '40', '40.5', '41', '41.5', '42', '42.5', '43', '44', '45', '46'];
 type Analytics = { total: number; days: Record<string, number> };
 type ArticleStats = Record<string, { views: number; vinted: number }>;
 type SeasonKey = 'spring' | 'summer' | 'autumn' | 'winter';
@@ -401,6 +402,7 @@ export default function AdminPage() {
       ...f,
       categories: f.categories[0] === id ? [] : [id],
       subcategory: '',
+      size: f.categories[0] !== id ? '' : f.size,
     }));
 
   const handleAddSubmit = async (e: React.FormEvent) => {
@@ -720,9 +722,9 @@ export default function AdminPage() {
             </div>
             <div className={styles.editRow}>
               <div className={styles.editField}>
-                <label className={styles.editLabel}>Taille</label>
+                <label className={styles.editLabel}>{editForm.categories.includes('chaussures') ? 'Pointure' : 'Taille'}</label>
                 <div className={styles.sizeGrid}>
-                  {SIZES.map((s) => (
+                  {(editForm.categories.includes('chaussures') ? SHOE_SIZES : SIZES).map((s) => (
                     <button
                       key={s}
                       type="button"
@@ -1588,6 +1590,19 @@ export default function AdminPage() {
                       </div>
                     );
                   })()}
+                  {form.categories[0] === 'chaussures' && (
+                    <div className={styles.subRow} style={{ marginTop: '1rem' }}>
+                      <p className={styles.stepQSm}>La pointure ?</p>
+                      <div className={styles.sizeGrid}>
+                        {SHOE_SIZES.map((s) => (
+                          <button key={s} type="button"
+                            className={`${styles.sizeBtn} ${form.size === s ? styles.sizeBtnActive : ''}`}
+                            onClick={() => setForm({ ...form, size: s })}
+                          >{s}</button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className={styles.stepActions}>
                   <button className={styles.stepNext} onClick={next}>Continuer →</button>

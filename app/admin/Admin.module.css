@@ -356,6 +356,7 @@
   line-height: 1.3;
 }
 
+.stepQSm { font-size: 0.85rem; font-weight: 700; color: var(--dark); opacity: 0.65; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
 .stepRequired { color: var(--orange); font-size: 1rem; }
 .stepOptional { font-size: 0.7rem; font-weight: 400; color: var(--light); letter-spacing: 0.1em; text-transform: uppercase; margin-left: 0.5rem; }
 

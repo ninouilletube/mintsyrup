@@ -155,7 +155,13 @@ export default function ProductGrid() {
     if (filterColor && !p.tags?.includes(filterColor)) return false;
     return true;
   });
-  const availableSizes = [...new Set(forSizes.map((p) => p.size).filter(Boolean))].sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
+  const availableSizes = [...new Set(forSizes.map((p) => p.size).filter(Boolean))].sort((a, b) => {
+    const ai = SIZE_ORDER.indexOf(a), bi = SIZE_ORDER.indexOf(b);
+    if (ai !== -1 && bi !== -1) return ai - bi;
+    if (ai !== -1) return -1;
+    if (bi !== -1) return 1;
+    return parseFloat(a) - parseFloat(b);
+  });
 
   const forColors = byCategory.filter((p) => {
     if (filterType && p.subcategory !== filterType) return false;
