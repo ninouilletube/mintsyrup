@@ -1431,6 +1431,21 @@ export default function AdminPage() {
               <div className={styles.stepField}>
                 <p className={styles.stepQ}>La marque ?</p>
                 <input autoFocus className={styles.stepInput} value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} placeholder="Ex: Zara, H&M, Vintage..." onKeyDown={(e) => { if (e.key === 'Enter') next(); }} />
+                {(() => {
+                  const freq: Record<string, number> = {};
+                  products.forEach(p => { if (p.brand) freq[p.brand] = (freq[p.brand] || 0) + 1; });
+                  const all = Object.entries(freq).sort((a, b) => b[1] - a[1]).map(([b]) => b);
+                  const filtered = form.brand ? all.filter(b => b.toLowerCase().includes(form.brand.toLowerCase()) && b.toLowerCase() !== form.brand.toLowerCase()) : all;
+                  return filtered.length > 0 ? (
+                    <div className={styles.brandSuggestions}>
+                      {filtered.map(brand => (
+                        <button key={brand} type="button" className={styles.brandSuggestion} onClick={() => setForm({ ...form, brand })}>
+                          {brand}
+                        </button>
+                      ))}
+                    </div>
+                  ) : null;
+                })()}
                 <div className={styles.stepActions}>
                   <button className={styles.stepNext} onClick={next}>Continuer →</button>
                 </div>

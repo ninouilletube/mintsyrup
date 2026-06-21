@@ -2016,3 +2016,27 @@
   color: #1a9e6e;
   font-weight: 600;
 }
+
+.brandSuggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.brandSuggestion {
+  background: #fff;
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 0.2rem 0.8rem;
+  font-size: 0.75rem;
+  font-family: inherit;
+  cursor: pointer;
+  color: var(--dark);
+  transition: border-color 0.12s, background 0.12s;
+}
+
+.brandSuggestion:hover {
+  border-color: var(--dark);
+  background: var(--cream, #fdf6ee);
+}
