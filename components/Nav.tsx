@@ -66,6 +66,7 @@ export default function Nav() {
       setActiveCategory(newCat);
       window.history.replaceState(window.history.state, '', newCat ? `/?cat=${newCat}` : '/');
     } else {
+      setActiveCategory(catId);
       router.push(`/?cat=${catId}`);
     }
   };
