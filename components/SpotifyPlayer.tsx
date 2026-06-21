@@ -29,7 +29,6 @@ export default function SpotifyPlayer() {
         <span className={styles.icon}>♫</span>
       </div>
       <div className={`${styles.panel} ${open ? styles.panelOpen : ''}`} onMouseEnter={handlePanelEnter}>
-        <p className={styles.tip}>Assurez-vous d&apos;être connecté.e au web player Spotify pour profiter de cette playlist &lt;3</p>
         <iframe
           src={`https://open.spotify.com/embed/playlist/${PLAYLIST_ID}?utm_source=generator&theme=0`}
           width="320"
@@ -39,6 +38,7 @@ export default function SpotifyPlayer() {
           className={styles.iframe}
           title="Spotify"
         />
+        <p className={styles.tip}>Assurez-vous d&apos;être connecté.e au web player Spotify pour profiter de cette playlist &lt;3</p>
       </div>
     </div>
   );
