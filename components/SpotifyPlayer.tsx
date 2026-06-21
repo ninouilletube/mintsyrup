@@ -38,7 +38,7 @@ export default function SpotifyPlayer() {
           className={styles.iframe}
           title="Spotify"
         />
-        <p className={styles.tip}>Assurez-vous d&apos;être connecté.e au web player Spotify pour profiter de cette playlist &lt;3</p>
+        <p className={styles.tip}>Assurez-vous d&apos;être connecté.e au web player Spotify pour pouvoir profiter de cette playlist &lt;3</p>
       </div>
     </div>
   );
