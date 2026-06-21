@@ -13,6 +13,7 @@ type SelectionsContextType = {
   renameSelection: (id: string, name: string) => void;
   updateSelection: (id: string, name: string, description?: string) => void;
   setPostitImage: (id: string, url: string) => void;
+  reorderSelections: (newOrder: Selection[]) => void;
 };
 
 const SelectionsContext = createContext<SelectionsContextType>({
@@ -22,6 +23,7 @@ const SelectionsContext = createContext<SelectionsContextType>({
   renameSelection: () => {},
   updateSelection: () => {},
   setPostitImage: () => {},
+  reorderSelections: () => {},
 });
 
 export function SelectionsProvider({ children }: { children: React.ReactNode }) {
@@ -77,10 +79,12 @@ export function SelectionsProvider({ children }: { children: React.ReactNode }) 
   const setPostitImage = (id: string, url: string) =>
     save(selections.map((s) => (s.id === id ? { ...s, postitImage: url } : s)));
 
+  const reorderSelections = (newOrder: Selection[]) => save(newOrder);
+
   if (!loaded) return null;
 
   return (
-    <SelectionsContext.Provider value={{ selections, addSelection, deleteSelection, renameSelection, updateSelection, setPostitImage }}>
+    <SelectionsContext.Provider value={{ selections, addSelection, deleteSelection, renameSelection, updateSelection, setPostitImage, reorderSelections }}>
       {children}
     </SelectionsContext.Provider>
   );

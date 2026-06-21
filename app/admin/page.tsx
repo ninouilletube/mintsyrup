@@ -182,7 +182,7 @@ export default function AdminPage() {
 
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const { subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder } = useSubcategories();
-  const { selections, addSelection, deleteSelection, renameSelection, updateSelection, setPostitImage } = useSelections();
+  const { selections, addSelection, deleteSelection, renameSelection, updateSelection, setPostitImage, reorderSelections } = useSelections();
 
   const [postitUploading, setPostitUploading] = useState<string | null>(null);
 
@@ -206,6 +206,8 @@ export default function AdminPage() {
   const [dragOverSub, setDragOverSub] = useState<string | null>(null);
   const [dragColor, setDragColor] = useState<string | null>(null);
   const [dragOverColor, setDragOverColor] = useState<string | null>(null);
+  const [dragSel, setDragSel] = useState<string | null>(null);
+  const [dragOverSel, setDragOverSel] = useState<string | null>(null);
 
   useEffect(() => {
     setAuth(sessionStorage.getItem('msc_auth') === '1');
@@ -482,7 +484,7 @@ export default function AdminPage() {
                 else if (view === 'article-detail') setView(detailOrigin);
                 else setView('dashboard');
                 // Reset drag state when leaving catalog
-                setDragSub(null); setDragOverSub(null); setDragColor(null); setDragOverColor(null);
+                setDragSub(null); setDragOverSub(null); setDragColor(null); setDragOverColor(null); setDragSel(null); setDragOverSel(null);
               }}
             >
               ←
@@ -1254,7 +1256,26 @@ export default function AdminPage() {
                 </div>
               </div>
             ) : (
-              <div key={sel.id} className={styles.catalogItem}>
+              <div
+                key={sel.id}
+                className={`${styles.catalogItem} ${dragOverSel === sel.id && dragSel !== sel.id ? styles.catalogItemOver : ''}`}
+                draggable
+                onDragStart={() => setDragSel(sel.id)}
+                onDragOver={(e) => { e.preventDefault(); setDragOverSel(sel.id); }}
+                onDrop={() => {
+                  if (!dragSel || dragSel === sel.id) { setDragSel(null); setDragOverSel(null); return; }
+                  const fromIdx = selections.findIndex(s => s.id === dragSel);
+                  const toIdx = selections.findIndex(s => s.id === sel.id);
+                  if (fromIdx === -1) { setDragSel(null); setDragOverSel(null); return; }
+                  const newOrder = [...selections];
+                  const [moved] = newOrder.splice(fromIdx, 1);
+                  newOrder.splice(toIdx, 0, moved);
+                  reorderSelections(newOrder);
+                  setDragSel(null); setDragOverSel(null);
+                }}
+                onDragEnd={() => { setDragSel(null); setDragOverSel(null); }}
+              >
+                <span className={styles.catalogDragHandle}>⠿</span>
                 <span className={styles.catalogItemLabel}>
                   <strong>{sel.name}</strong>
                   {sel.description && <em style={{ marginLeft: '0.5rem', fontWeight: 400, opacity: 0.7, fontSize: '0.8rem' }}>{sel.description}</em>}
