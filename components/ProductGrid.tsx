@@ -70,7 +70,7 @@ export default function ProductGrid() {
     });
   }, [selections]);
 
-  // Reset filters and scroll on category change
+  // Reset filters and scroll on category/selection change
   useEffect(() => {
     setFilterType(null);
     setFilterSizes([]);
@@ -79,11 +79,12 @@ export default function ProductGrid() {
     if (activeCategory === 'drops') {
       carouselWindowRef.current?.scrollTo({ left: 0 });
     }
-    // Mobile : remonter en haut lors du changement de catégorie
-    if (typeof window !== 'undefined' && window.innerWidth <= 768) {
-      window.scrollTo({ top: 0 });
-    }
+    window.scrollTo({ top: 0 });
   }, [activeCategory]);
+
+  useEffect(() => {
+    if (activeSelection) window.scrollTo({ top: 0 });
+  }, [activeSelection]);
 
   // Mobile + drops : bloquer le scroll vertical de la page pour éviter
   // que le fond rose (PageBackground) ou la vidéo apparaissent derrière
