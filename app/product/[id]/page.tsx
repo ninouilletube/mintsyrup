@@ -90,10 +90,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const tracked = useRef(false);
   const swipeStartX = useRef<number | null>(null);
   const didSwipe = useRef(false);
-  const lightboxStripRef = useRef<HTMLDivElement>(null);
   const mainStripRef = useRef<HTMLDivElement>(null);
   const fromScroll = useRef(false);
-  const lightboxWasOpen = useRef(false);
 
   const product = products.find((p) => String(p.id) === id);
 
@@ -137,29 +135,6 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     return () => strip.removeEventListener('scrollend', onScrollEnd);
   }, []);
 
-  // Sync lightbox strip scroll position with activeIndex
-  useEffect(() => {
-    const strip = lightboxStripRef.current;
-    if (!strip) return;
-    if (!lightbox) { lightboxWasOpen.current = false; return; }
-    if (fromScroll.current) { fromScroll.current = false; return; }
-    const wasOpen = lightboxWasOpen.current;
-    lightboxWasOpen.current = true;
-    strip.scrollTo({ left: activeIndex * strip.clientWidth, behavior: wasOpen ? 'smooth' : 'instant' });
-  }, [lightbox, activeIndex]);
-
-  // Sync activeIndex from native swipe via scrollend
-  useEffect(() => {
-    const strip = lightboxStripRef.current;
-    if (!strip || !lightbox) return;
-    const onScrollEnd = () => {
-      const idx = Math.round(strip.scrollLeft / strip.clientWidth);
-      fromScroll.current = true;
-      setActiveIndex(idx);
-    };
-    strip.addEventListener('scrollend', onScrollEnd);
-    return () => strip.removeEventListener('scrollend', onScrollEnd);
-  }, [lightbox]);
 
   useEffect(() => {
     if (!product || tracked.current) return;
@@ -269,19 +244,24 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
       </div>
       {lightbox && current && (
         <div className={styles.lightbox} onClick={() => setLightbox(false)}>
-          <div className={styles.lightboxInner} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.lightboxInner} onClick={(e) => e.stopPropagation()}
+            onTouchStart={(e) => { swipeStartX.current = e.touches[0].clientX; }}
+            onTouchEnd={(e) => {
+              const dx = e.changedTouches[0].clientX - (swipeStartX.current ?? 0);
+              if (Math.abs(dx) > 40) {
+                if (dx < 0) setActiveIndex((i) => (i + 1) % images.length);
+                else setActiveIndex((i) => (i - 1 + images.length) % images.length);
+              }
+              swipeStartX.current = null;
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img key={activeIndex} src={images[activeIndex]} alt={product.title[lang]} className={styles.lightboxImg} />
             {images.length > 1 && (
-              <button className={`${styles.lightboxArrow} ${styles.lightboxArrowLeft}`} onClick={(e) => { e.stopPropagation(); setDirection('left'); setActiveIndex((activeIndex - 1 + images.length) % images.length); }}>←</button>
+              <button className={`${styles.lightboxArrow} ${styles.lightboxArrowLeft}`} onClick={(e) => { e.stopPropagation(); setActiveIndex((activeIndex - 1 + images.length) % images.length); }}>←</button>
             )}
-            <div className={styles.lightboxStrip} ref={lightboxStripRef}>
-              {images.map((src, i) => (
-                <div key={i} className={styles.lightboxSlide}>
-                  <img src={src} alt={product.title[lang]} className={styles.lightboxImg} />
-                </div>
-              ))}
-            </div>
             {images.length > 1 && (
-              <button className={`${styles.lightboxArrow} ${styles.lightboxArrowRight}`} onClick={(e) => { e.stopPropagation(); setDirection('right'); setActiveIndex((activeIndex + 1) % images.length); }}>→</button>
+              <button className={`${styles.lightboxArrow} ${styles.lightboxArrowRight}`} onClick={(e) => { e.stopPropagation(); setActiveIndex((activeIndex + 1) % images.length); }}>→</button>
             )}
           </div>
           <button className={styles.lightboxClose} onClick={() => setLightbox(false)}>×</button>
