@@ -22,17 +22,15 @@
 }
 
 
-.logoText {
-  font-family: 'MyUglyHandwriting', cursive;
-  font-size: 2.3rem;
-  color: var(--orange);
-  white-space: nowrap;
-  line-height: 1;
-  transition: color 0.2s;
+.logoImg {
+  height: 48px;
+  width: auto;
+  display: block;
+  transition: opacity 0.2s;
 }
 
-.logoWrap:hover .logoText {
-  color: #5ECEC0;
+.logoWrap:hover .logoImg {
+  opacity: 0.8;
 }
 
 

@@ -106,7 +106,8 @@ export default function Nav() {
       {/* ── Logo ── */}
       <div className={styles.logoWrap}>
         <div className={styles.logo} onClick={handleLogo}>
-          <span className={styles.logoText}>Mint Syrup</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo-text.png" alt="Mint Syrup" className={styles.logoImg} />
         </div>
       </div>
 
