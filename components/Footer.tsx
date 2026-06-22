@@ -17,7 +17,7 @@ export default function Footer() {
         </div>
         <p className={styles.tagline}>{lang === 'fr' ? 'Mode de seconde main • Pièces uniques' : 'Second-hand fashion • Unique pieces'}</p>
         <div className={styles.links}>
-          <a href="https://www.vinted.pt/member/mint-syrup-club" target="_blank" rel="noopener noreferrer" className={`${styles.link} ${styles.linkVinted}`}>
+          <a href="https://www.vinted.fr/member/288609653" target="_blank" rel="noopener noreferrer" className={`${styles.link} ${styles.linkVinted}`}>
             {lang === 'fr' ? 'Boutique Vinted' : 'Vinted Shop'}
           </a>
           <a href="https://www.youtube.com/@chatcheper" target="_blank" rel="noopener noreferrer" className={`${styles.link} ${styles.linkYoutube}`}>
