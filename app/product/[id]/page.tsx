@@ -98,7 +98,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const handleLbMouseMove = () => {
     setLbArrowsVisible(true);
     if (lbArrowTimer.current) clearTimeout(lbArrowTimer.current);
-    lbArrowTimer.current = setTimeout(() => setLbArrowsVisible(false), 1800);
+    lbArrowTimer.current = setTimeout(() => setLbArrowsVisible(false), 600);
   };
 
   const product = products.find((p) => String(p.id) === id);
@@ -265,13 +265,13 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img key={activeIndex} src={images[activeIndex]} alt={product.title[lang]} className={styles.lightboxImg} />
-            {images.length > 1 && (
-              <button className={`${styles.lightboxArrow} ${styles.lightboxArrowLeft} ${lbArrowsVisible ? styles.lightboxArrowVisible : ''}`} onClick={(e) => { e.stopPropagation(); setActiveIndex((activeIndex - 1 + images.length) % images.length); }}>←</button>
-            )}
-            {images.length > 1 && (
-              <button className={`${styles.lightboxArrow} ${styles.lightboxArrowRight} ${lbArrowsVisible ? styles.lightboxArrowVisible : ''}`} onClick={(e) => { e.stopPropagation(); setActiveIndex((activeIndex + 1) % images.length); }}>→</button>
-            )}
           </div>
+          {images.length > 1 && (
+            <button className={`${styles.lightboxArrow} ${styles.lightboxArrowLeft} ${lbArrowsVisible ? styles.lightboxArrowVisible : ''}`} onClick={(e) => { e.stopPropagation(); setActiveIndex((activeIndex - 1 + images.length) % images.length); }}>←</button>
+          )}
+          {images.length > 1 && (
+            <button className={`${styles.lightboxArrow} ${styles.lightboxArrowRight} ${lbArrowsVisible ? styles.lightboxArrowVisible : ''}`} onClick={(e) => { e.stopPropagation(); setActiveIndex((activeIndex + 1) % images.length); }}>→</button>
+          )}
           <button className={styles.lightboxClose} onClick={() => setLightbox(false)}>×</button>
         </div>
       )}

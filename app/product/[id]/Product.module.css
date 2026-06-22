@@ -215,8 +215,8 @@
 }
 .lightboxArrowVisible { opacity: 1; }
 .lightboxArrow:hover { background: white; transform: translateY(-50%) scale(1.08); }
-.lightboxArrowLeft  { left: -1.75rem; }
-.lightboxArrowRight { right: -1.75rem; }
+.lightboxArrowLeft  { left: 2rem; }
+.lightboxArrowRight { right: 2rem; }
 
 .lightboxClose {
   position: absolute;
