@@ -98,7 +98,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const handleLbMouseMove = () => {
     setLbArrowsVisible(true);
     if (lbArrowTimer.current) clearTimeout(lbArrowTimer.current);
-    lbArrowTimer.current = setTimeout(() => setLbArrowsVisible(false), 600);
+    lbArrowTimer.current = setTimeout(() => setLbArrowsVisible(false), 350);
   };
 
   const product = products.find((p) => String(p.id) === id);
