@@ -171,53 +171,50 @@
 }
 
 .lightboxImg {
-  max-width: 100%;
+  max-width: 95vw;
   max-height: 90vh;
   object-fit: contain;
   border-radius: 8px;
+  display: block;
+  animation: lbFadeIn 0.18s ease;
+}
+
+@keyframes lbFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 .lightboxInner {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  width: 100%;
-}
-
-.lightboxStrip {
-  flex: 1;
-  display: flex;
-  overflow: hidden;
-  align-items: center;
-}
-.lightboxStrip::-webkit-scrollbar { display: none; }
-
-.lightboxSlide {
-  flex-shrink: 0;
-  width: 100%;
-  display: flex;
+  position: relative;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  max-width: 95vw;
+  max-height: 90vh;
 }
 
 .lightboxArrow {
-  position: relative;
-  flex-shrink: 0;
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(6px);
-  border: 1.5px solid var(--amber);
-  color: var(--amber);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  font-size: 1rem;
+  border: 2.5px solid #1C1C1C;
+  background: rgba(255,255,255,0.92);
+  color: #1C1C1C;
+  box-shadow: 2px 2px 0 #1C1C1C;
+  font-size: 1.2rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background 0.15s, transform 0.15s;
+  z-index: 2;
 }
-.lightboxArrow:hover { background: rgba(255,255,255,0.3); transform: scale(1.08); }
+.lightboxArrow:hover { background: white; transform: translateY(-50%) scale(1.08); }
+.lightboxArrowLeft  { left: -1.5rem; }
+.lightboxArrowRight { right: -1.5rem; }
 
 .lightboxClose {
   position: absolute;
@@ -629,27 +626,8 @@
 
   /* Lightbox : carrousel natif avec scroll-snap */
   .lightbox { padding: 0; }
-  .lightboxInner {
-    width: 100%;
-    height: 100%;
-    gap: 0;
-  }
-  .lightboxStrip {
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    width: 100%;
-    height: 100%;
-    flex: none;
-    align-items: center;
-  }
-  .lightboxSlide {
-    width: 100vw;
-    height: 100%;
-    scroll-snap-align: center;
-  }
   .lightboxImg {
-    max-width: 92vw;
+    max-width: 96vw;
     max-height: 88svh;
   }
   .lightboxArrow { display: none; }
