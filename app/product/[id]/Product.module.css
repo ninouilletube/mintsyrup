@@ -209,12 +209,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s, transform 0.15s;
+  opacity: 0;
+  transition: opacity 0.3s, background 0.15s, transform 0.15s;
   z-index: 2;
 }
+.lightboxArrowVisible { opacity: 1; }
 .lightboxArrow:hover { background: white; transform: translateY(-50%) scale(1.08); }
-.lightboxArrowLeft  { left: -1.5rem; }
-.lightboxArrowRight { right: -1.5rem; }
+.lightboxArrowLeft  { left: -1.75rem; }
+.lightboxArrowRight { right: -1.75rem; }
 
 .lightboxClose {
   position: absolute;

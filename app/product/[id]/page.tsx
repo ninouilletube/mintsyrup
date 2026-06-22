@@ -87,11 +87,19 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [lightbox, setLightbox] = useState(false);
+  const [lbArrowsVisible, setLbArrowsVisible] = useState(false);
+  const lbArrowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tracked = useRef(false);
   const swipeStartX = useRef<number | null>(null);
   const didSwipe = useRef(false);
   const mainStripRef = useRef<HTMLDivElement>(null);
   const fromScroll = useRef(false);
+
+  const handleLbMouseMove = () => {
+    setLbArrowsVisible(true);
+    if (lbArrowTimer.current) clearTimeout(lbArrowTimer.current);
+    lbArrowTimer.current = setTimeout(() => setLbArrowsVisible(false), 1800);
+  };
 
   const product = products.find((p) => String(p.id) === id);
 
@@ -243,7 +251,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         </div>
       </div>
       {lightbox && current && (
-        <div className={styles.lightbox} onClick={() => setLightbox(false)}>
+        <div className={styles.lightbox} onClick={() => setLightbox(false)} onMouseMove={handleLbMouseMove}>
           <div className={styles.lightboxInner} onClick={(e) => e.stopPropagation()}
             onTouchStart={(e) => { swipeStartX.current = e.touches[0].clientX; }}
             onTouchEnd={(e) => {
@@ -258,10 +266,10 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img key={activeIndex} src={images[activeIndex]} alt={product.title[lang]} className={styles.lightboxImg} />
             {images.length > 1 && (
-              <button className={`${styles.lightboxArrow} ${styles.lightboxArrowLeft}`} onClick={(e) => { e.stopPropagation(); setActiveIndex((activeIndex - 1 + images.length) % images.length); }}>←</button>
+              <button className={`${styles.lightboxArrow} ${styles.lightboxArrowLeft} ${lbArrowsVisible ? styles.lightboxArrowVisible : ''}`} onClick={(e) => { e.stopPropagation(); setActiveIndex((activeIndex - 1 + images.length) % images.length); }}>←</button>
             )}
             {images.length > 1 && (
-              <button className={`${styles.lightboxArrow} ${styles.lightboxArrowRight}`} onClick={(e) => { e.stopPropagation(); setActiveIndex((activeIndex + 1) % images.length); }}>→</button>
+              <button className={`${styles.lightboxArrow} ${styles.lightboxArrowRight} ${lbArrowsVisible ? styles.lightboxArrowVisible : ''}`} onClick={(e) => { e.stopPropagation(); setActiveIndex((activeIndex + 1) % images.length); }}>→</button>
             )}
           </div>
           <button className={styles.lightboxClose} onClick={() => setLightbox(false)}>×</button>
