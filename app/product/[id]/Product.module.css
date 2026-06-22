@@ -214,7 +214,7 @@
   z-index: 2;
 }
 .lightboxArrowVisible { opacity: 1; }
-.lightboxArrow:hover { background: white; transform: translateY(-50%) scale(1.08); }
+.lightboxArrow:hover { background: white; transform: translateY(-50%) scale(1.08); opacity: 1; }
 .lightboxArrowLeft  { left: 28%; }
 .lightboxArrowRight { right: 28%; }
 
