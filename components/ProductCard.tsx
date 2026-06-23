@@ -35,7 +35,8 @@ export default function ProductCard({ product }: { product: Product }) {
           </span>
           {recentlySold && (
             <div className={styles.soldWatermark}>
-              <span className={styles.soldWatermarkText}>Vendu</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/postit-vendu.png" alt="Vendu" className={styles.soldWatermarkImg} />
             </div>
           )}
         </div>
