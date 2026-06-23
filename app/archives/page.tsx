@@ -4,11 +4,12 @@ import { useMemo, useState } from 'react';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
+import type { Product } from '@/data/products';
 import { useProducts } from '@/context/ProductsContext';
 import { useLang } from '@/context/LangContext';
 import styles from './Archives.module.css';
 
-function ArchiveCard({ product, lang }: { product: { id: number; title: { fr: string; en: string }; brand?: string; image?: string; images?: string[]; price: number; soldPrice?: number; placeholder: string[] }; lang: 'fr' | 'en' }) {
+function ArchiveCard({ product, lang }: { product: Product; lang: 'fr' | 'en' }) {
   const [hovered, setHovered] = useState(false);
   const hasSecond = !!(product.images?.[1]);
 
