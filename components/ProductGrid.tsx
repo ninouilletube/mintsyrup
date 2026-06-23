@@ -140,7 +140,7 @@ export default function ProductGrid() {
   const isRecentlySold = (p: (typeof products)[0]) =>
     !!p.sold && !!p.soldAt && Date.now() - p.soldAt < SOLD_DELAY;
 
-  const visible = products.filter((p) => !p.hidden && (!p.sold || isRecentlySold(p)));
+  const visible = products.filter((p) => (!p.hidden && !p.sold) || isRecentlySold(p));
 
   const byCategory = activeSelection
     ? [...visible.filter((p) => p.selections?.includes(activeSelection))].sort((a, b) => b.id - a.id)
