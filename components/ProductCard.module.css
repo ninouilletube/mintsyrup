@@ -144,7 +144,7 @@
   height: auto;
   object-fit: contain;
   transform: rotate(-8deg);
-  opacity: 0.92;
+  mix-blend-mode: multiply;
 }
 
 .btnWrap { padding: 0 1.25rem 1.1rem; }
