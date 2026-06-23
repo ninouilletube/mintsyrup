@@ -131,9 +131,9 @@
 
 .soldWatermark {
   position: absolute;
-  top: 62%;
-  left: 18%;
-  transform: rotate(-4deg);
+  top: 6%;
+  right: 6%;
+  transform: rotate(4deg);
   z-index: 3;
   pointer-events: none;
   background: #FFF0B3;
