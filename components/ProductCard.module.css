@@ -18,6 +18,9 @@
   box-shadow: 7px 7px 0 var(--dark);
 }
 
+.cardSold { cursor: default; }
+.cardSold:hover { transform: none; box-shadow: 5px 5px 0 var(--dark); }
+
 .imageWrapper {
   position: relative;
   aspect-ratio: 4 / 4;
@@ -129,7 +132,6 @@
 .soldWatermark {
   position: absolute;
   inset: 0;
-  background: rgba(20, 10, 10, 0.42);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -149,6 +151,7 @@
   transform: rotate(-20deg);
   opacity: 0.92;
   border-radius: 2px;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.5);
 }
 
 .btnWrap { padding: 0 1.25rem 1.1rem; }
