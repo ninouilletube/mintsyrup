@@ -67,7 +67,7 @@ export default function ArchivesPage() {
           </div>
 
           {sold.length === 0 ? (
-            <p className={styles.empty}>C&apos;est vide, pour le moment. Soyez la première à remplir cet espace &lt;3</p>
+            <p className={styles.empty}>C&apos;est vide, pour le moment. Soyez la première personne à remplir cet espace &lt;3</p>
           ) : (
             <div className={styles.grid}>
               {sold.map((p) => (
