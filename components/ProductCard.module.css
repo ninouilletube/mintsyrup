@@ -126,6 +126,31 @@
   z-index: 2;
 }
 
+.soldWatermark {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 10, 10, 0.42);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.soldWatermarkText {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: white;
+  border: 2.5px solid rgba(255,255,255,0.85);
+  padding: 0.25rem 0.75rem;
+  transform: rotate(-20deg);
+  opacity: 0.92;
+  border-radius: 2px;
+}
+
 .btnWrap { padding: 0 1.25rem 1.1rem; }
 
 .btn {

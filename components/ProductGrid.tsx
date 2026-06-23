@@ -136,7 +136,11 @@ export default function ProductGrid() {
 
   const isDrops = activeCategory === 'drops' && !activeSelection;
 
-  const visible = products.filter((p) => !p.hidden);
+  const SOLD_DELAY = 24 * 60 * 60 * 1000;
+  const isRecentlySold = (p: (typeof products)[0]) =>
+    !!p.sold && !!p.soldAt && Date.now() - p.soldAt < SOLD_DELAY;
+
+  const visible = products.filter((p) => !p.hidden && (!p.sold || isRecentlySold(p)));
 
   const byCategory = activeSelection
     ? [...visible.filter((p) => p.selections?.includes(activeSelection))].sort((a, b) => b.id - a.id)
@@ -200,7 +204,7 @@ export default function ProductGrid() {
 
   const season = activeCategory === 'ete' ? getCurrentSeason() : null;
 
-  const dropsPool = isDrops ? filtered.slice(0, DROPS_MAX) : [];
+  const dropsPool = isDrops ? filtered.filter((p) => !p.sold).slice(0, DROPS_MAX) : [];
   const canPrev = dropsIndex > 0;
   const canNext = isMobile
     ? dropsIndex + 1 < dropsPool.length

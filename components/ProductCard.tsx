@@ -6,8 +6,11 @@ import { useLang } from '@/context/LangContext';
 import type { Product } from '@/data/products';
 import styles from './ProductCard.module.css';
 
+const SOLD_DELAY = 24 * 60 * 60 * 1000;
+
 export default function ProductCard({ product }: { product: Product }) {
   const { lang } = useLang();
+  const recentlySold = !!product.sold && !!product.soldAt && Date.now() - product.soldAt < SOLD_DELAY;
 
   return (
     <article className={styles.card}>
@@ -26,6 +29,11 @@ export default function ProductCard({ product }: { product: Product }) {
           <span className={styles.priceTag}>
             {product.price} €
           </span>
+          {recentlySold && (
+            <div className={styles.soldWatermark}>
+              <span className={styles.soldWatermarkText}>Vendu</span>
+            </div>
+          )}
         </div>
         <div className={styles.body}>
           <div className={styles.titleRow}>
