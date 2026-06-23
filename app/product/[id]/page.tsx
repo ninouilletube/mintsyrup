@@ -1,6 +1,7 @@
 'use client';
 
 import { use, useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Product } from '@/data/products';
@@ -82,6 +83,7 @@ function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'e
 
 export default function ProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const router = useRouter();
   const { products } = useProducts();
   const { lang } = useLang();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -156,7 +158,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <Nav />
         <div className={styles.notFound}>
           <p>Article introuvable.</p>
-          <Link href="/" className={styles.back}>← Retour</Link>
+          <button onClick={() => router.back()} className={styles.back}>← Retour</button>
         </div>
         <Footer />
       </>
@@ -169,7 +171,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     <>
       <Nav />
       <div className={styles.page}>
-      <Link href="/" className={styles.back}>← Retour</Link>
+      <button onClick={() => router.back()} className={styles.back}>← Retour</button>
       <div className={styles.cardWrap}>
         {/* Mobile uniquement : titre + marque centrés au-dessus de la carte */}
         <div className={styles.mobileCardHeader}>

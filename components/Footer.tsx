@@ -11,8 +11,8 @@ export default function Footer() {
       <div className={styles.col}>
         <div className={styles.logoRow}>
           <p className={styles.logo}>Mint Syrup</p>
-          <Link href="/projet" className={styles.projetTag}>
-            {lang === 'fr' ? 'Le projet' : 'The project'}
+          <Link href="/archives" className={styles.projetTag}>
+            Les Archives
           </Link>
         </div>
         <p className={styles.tagline}>{lang === 'fr' ? 'Mode de seconde main • Pièces uniques' : 'Second-hand fashion • Unique pieces'}</p>
