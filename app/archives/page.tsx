@@ -13,10 +13,11 @@ export default function ArchivesPage() {
   const { products } = useProducts();
   const { lang } = useLang();
 
+  // TEST VISUEL — à retirer
   const sold = useMemo(() =>
     products
-      .filter((p) => p.sold)
-      .sort((a, b) => (b.soldAt ?? b.id) - (a.soldAt ?? a.id)),
+      .filter((p) => !p.hidden)
+      .slice(0, 20),
     [products]
   );
 
