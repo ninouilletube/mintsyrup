@@ -33,7 +33,6 @@ function ArchiveCard({ product, lang }: { product: Product; lang: 'fr' | 'en' })
         )}
         <div className={styles.overlay}>
           <span className={styles.badge}>Vendu</span>
-          {product.soldPrice && <span className={styles.soldPrice}>{product.soldPrice} €</span>}
         </div>
       </div>
       <div className={styles.info}>
