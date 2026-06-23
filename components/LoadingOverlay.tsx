@@ -12,17 +12,23 @@ export default function LoadingOverlay() {
 
   // ── Chargement initial (attend la vidéo) ──
   useEffect(() => {
+    // Si la page a déjà été chargée dans cet onglet (rechargement silencieux
+    // du navigateur après inactivité), on ferme l'overlay immédiatement.
+    if (sessionStorage.getItem('ms_loaded')) {
+      setInitVisible(false);
+      return;
+    }
+
     let done = false;
     const hide = () => {
       if (done) return;
       done = true;
+      sessionStorage.setItem('ms_loaded', '1');
       setInitFading(true);
       setTimeout(() => setInitVisible(false), 400);
     };
     window.addEventListener('video-ready', hide, { once: true });
     const fallback = setTimeout(hide, 4000);
-    // Si l'onglet revient au premier plan alors que l'overlay tourne encore,
-    // la page est déjà chargée → on ferme immédiatement
     const onVisibility = () => { if (document.visibilityState === 'visible') hide(); };
     document.addEventListener('visibilitychange', onVisibility);
     return () => {
