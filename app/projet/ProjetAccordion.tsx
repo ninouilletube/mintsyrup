@@ -66,7 +66,7 @@ export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
                 <div ref={tooltipInnerRef} className={styles.infoTooltipInner}>
                   <span>{tooltip3}</span>
                   <a
-                    href="https://www.vinted.pt/member/3125590380"
+                    href="https://www.vinted.fr/member/3125590380"
                     target="_blank"
                     rel="noopener noreferrer"
                     className={styles.infoLink}
