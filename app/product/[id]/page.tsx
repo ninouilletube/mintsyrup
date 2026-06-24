@@ -226,18 +226,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           </div>
           {/* Mobile uniquement : taille sous les images, alignée à droite */}
           {product.size && <span className={styles.mobileSizeBelow}>{product.size}</span>}
-          {/* Mobile uniquement : provenance sous l'image, à gauche */}
-          {product.provenance && (
-            <p className={styles.mobileProvenance}>
-              {lang === 'fr' ? 'Provenance' : 'Source'} : {product.provenance}
-            </p>
-          )}
           <div className={styles.info}>
             <h1 className={styles.title}>{product.title[lang]}</h1>
             {product.brand && <p className={styles.brand}>{product.brand}</p>}
             <div className={styles.descGroup}>
               {product.description[lang] && <p className={styles.desc}>{product.description[lang]}</p>}
-              {product.provenance && <p className={styles.provenance}>{lang === 'fr' ? 'Provenance' : 'Source'} : {product.provenance}</p>}
             </div>
             <a
               href={product.vintedUrl}
