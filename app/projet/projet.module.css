@@ -248,12 +248,10 @@
 .mobileBlock1Inner { display: none; }
 .accordionWrap   { display: none; }
 .mobilePageHeader { display: none; }
-.mobileOnly      { display: none; }
 
 @media (max-width: 768px) {
   /* ── Masquages ── */
   .mobileHidden  { display: none; }
-  .mobileOnly    { display: inline; }
   .desktopOnly   { display: none; }
   .desktopBlock2 { display: none; }
   .mobileBlock1  { display: none; }

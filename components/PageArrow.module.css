@@ -37,6 +37,9 @@
   white-space: nowrap;
 }
 
+.desktopOnly { display: block; }
+.mobileOnly  { display: none; }
+
 @media (max-width: 768px) {
   .arrow {
     top: auto;
@@ -51,4 +54,6 @@
     font-size: 0.72rem;
     text-shadow: 0 1px 4px rgba(0,0,0,0.55);
   }
+  .desktopOnly { display: none; }
+  .mobileOnly  { display: block; }
 }

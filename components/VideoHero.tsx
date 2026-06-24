@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useShop } from '@/context/ShopContext';
 import PageArrow from './PageArrow';
+import pageArrowStyles from './PageArrow.module.css';
 import styles from './VideoHero.module.css';
 
 export default function VideoHero() {
@@ -51,7 +52,12 @@ export default function VideoHero() {
       {showArrows && (
         <>
           <PageArrow href="/projet" label="Le projet" direction="left" />
-          <PageArrow href="/favoris" label="Mes favoris" direction="right" />
+          <span className={pageArrowStyles.desktopOnly}>
+            <PageArrow href="/favoris" label="Mes favoris" direction="right" />
+          </span>
+          <span className={pageArrowStyles.mobileOnly}>
+            <PageArrow href="/?cat=drops" label="Derniers drops" direction="right" />
+          </span>
         </>
       )}
     </section>
