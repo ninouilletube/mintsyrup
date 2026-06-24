@@ -258,8 +258,6 @@ export default function Nav() {
             </div>
           )}
 
-          <hr className={styles.mobileMenuDivider} />
-
           <Link
             href="/projet"
             className={`${styles.mobileMenuItem} ${styles.mobileMenuProjet} ${pathname === '/projet' ? styles.active : ''}`}

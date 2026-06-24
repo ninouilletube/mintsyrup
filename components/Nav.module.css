@@ -427,8 +427,6 @@
     display: flex;
     flex-direction: column;
     padding: 0 0 0.3rem 1rem;
-    border-left: 2px solid rgba(224,85,48,0.25);
-    margin-left: 0.1rem;
     margin-bottom: 0.2rem;
   }
 
