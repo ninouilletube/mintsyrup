@@ -10,7 +10,8 @@ export default function VideoHero() {
   const { activeCategory, activeSelection } = useShop();
   // null uniquement : dans le hero → disparaissent au scroll sur mobile (transform crée le containing block)
   // drops géré par DropsArrow hors du hero → position:fixed au viewport même sur mobile
-  const showArrows = (activeCategory === null || activeCategory === 'drops') && activeSelection === null;
+  // Drops actif → DropsArrow (hors hero) prend le relais sur desktop ; rien sur mobile
+  const showArrows = activeCategory === null && activeSelection === null;
   const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
