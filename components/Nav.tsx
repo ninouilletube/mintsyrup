@@ -34,10 +34,11 @@ export default function Nav() {
   const router = useRouter();
   const isHome = pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileOpenSection, setMobileOpenSection] = useState<'categories' | 'selections' | null>(null);
   const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (!menuOpen) return;
+    if (!menuOpen) { setMobileOpenSection(null); return; }
     const close = () => setMenuOpen(false);
     const onTouch = (e: TouchEvent) => {
       if (navRef.current && !navRef.current.contains(e.target as Node)) close();
@@ -188,21 +189,82 @@ export default function Nav() {
       {/* ── Mobile : menu déroulant ── */}
       {menuOpen && (
         <div className={styles.mobileMenu}>
-          {[...CATEGORIES.filter(c => c.id === 'ete'), ...CATEGORIES.filter(c => c.id !== 'ete')].map((cat) => (
-            <button
-              key={cat.id}
-              className={`${styles.link} ${styles.mobileMenuItem} ${cat.id === 'ete' ? `${SEASON_CLASS[season]} ${styles.mobileMenuSeason}` : ''} ${isHome && activeCategory === cat.id && cat.id !== 'ete' && !activeSelection ? styles.active : ''}`}
-              onClick={() => handleCategory(cat.id as Category)}
-            >
-              {cat.id === 'ete' ? SEASON_LABEL[season] : cat.fr}
-            </button>
-          ))}
-          <Link href="/favoris" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileFavorisItem} ${pathname === '/favoris' ? styles.active : ''}`} onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>
-            Coups de cœur
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/coeur.webp" alt="" className={styles.menuHeart} />
-          </Link>
-          <Link href="/projet" className={`${styles.link} ${styles.mobileMenuItem} ${styles.mobileMenuProjet}`} onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none' }}>
+
+          {/* Derniers drops */}
+          <button
+            className={`${styles.mobileMenuItem} ${isDropsActive ? styles.active : ''}`}
+            onClick={() => handleCategory('drops')}
+          >
+            Derniers drops
+          </button>
+
+          {/* Catégories — accordéon */}
+          <button
+            className={`${styles.mobileMenuItem} ${styles.mobileMenuExpandable} ${isCatActive ? styles.active : ''}`}
+            onClick={() => setMobileOpenSection(mobileOpenSection === 'categories' ? null : 'categories')}
+          >
+            Catégories
+            <span className={`${styles.mobileMenuCaret} ${mobileOpenSection === 'categories' ? styles.mobileMenuCaretOpen : ''}`}>▾</span>
+          </button>
+          {mobileOpenSection === 'categories' && (
+            <div className={styles.mobileMenuSub}>
+              {CATEGORY_CATS.map((catId) => {
+                const cat = CATEGORIES.find((c) => c.id === catId)!;
+                return (
+                  <button
+                    key={catId}
+                    className={`${styles.mobileMenuSubItem} ${isHome && activeCategory === catId && !activeSelection ? styles.mobileMenuSubItemActive : ''}`}
+                    onClick={() => handleCategory(catId)}
+                  >
+                    {cat.fr}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Sélections — accordéon */}
+          <button
+            className={`${styles.mobileMenuItem} ${styles.mobileMenuExpandable} ${isSelActive || isSummerActive ? styles.active : ''}`}
+            onClick={() => setMobileOpenSection(mobileOpenSection === 'selections' ? null : 'selections')}
+          >
+            Sélections
+            <span className={`${styles.mobileMenuCaret} ${mobileOpenSection === 'selections' ? styles.mobileMenuCaretOpen : ''}`}>▾</span>
+          </button>
+          {mobileOpenSection === 'selections' && (
+            <div className={styles.mobileMenuSub}>
+              <button
+                className={`${styles.mobileMenuSubItem} ${styles.mobileMenuSubSummer} ${isSummerActive ? styles.mobileMenuSubItemActive : ''}`}
+                onClick={() => handleCategory('ete')}
+              >
+                {SEASON_LABEL[season]}
+              </button>
+              {selections.map((sel) => (
+                <button
+                  key={sel.id}
+                  className={`${styles.mobileMenuSubItem} ${activeSelection === sel.id ? styles.mobileMenuSubItemActive : ''}`}
+                  onClick={() => handleSelection(sel.id)}
+                >
+                  {sel.name}
+                </button>
+              ))}
+              <Link
+                href="/favoris"
+                className={`${styles.mobileMenuSubItem} ${pathname === '/favoris' ? styles.mobileMenuSubItemActive : ''}`}
+                onClick={() => { setActiveCategory(null); setActiveSelection(null); setMenuOpen(false); }}
+              >
+                Coups de cœur
+              </Link>
+            </div>
+          )}
+
+          <hr className={styles.mobileMenuDivider} />
+
+          <Link
+            href="/projet"
+            className={`${styles.mobileMenuItem} ${styles.mobileMenuProjet} ${pathname === '/projet' ? styles.active : ''}`}
+            onClick={() => setMenuOpen(false)}
+          >
             Le projet
           </Link>
         </div>
