@@ -444,7 +444,7 @@
     border: none;
     box-shadow: none;
     border-radius: 0;
-    padding: calc(52px + 1.4rem) 0.75rem 3rem;
+    padding: calc(52px + 2rem) 0.75rem 3rem;
   }
   /* Le post-it est caché sur mobile → annuler le margin-top qu'il ajoute */
   .panelWithPostit { margin-top: 0; }
@@ -655,6 +655,6 @@
 
 @media (max-width: 480px) {
   .overlay { padding: 0; }
-  .panel { width: 100%; padding: calc(52px + 1.4rem) 0.5rem 3rem; }
+  .panel { width: 100%; padding: calc(52px + 2rem) 0.5rem 3rem; }
   .grid { grid-template-columns: repeat(2, 1fr); gap: 0.6rem; }
 }

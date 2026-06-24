@@ -51,7 +51,9 @@ export default function LoadingOverlay() {
         href.startsWith('mailto') ||
         href.startsWith('tel')
       ) return;
-      if (href !== pathname) setNavVisible(true);
+      // Ne montrer l'overlay que si le chemin change (pas juste les query params)
+      const hrefPath = href.split('?')[0];
+      if (hrefPath !== pathname) setNavVisible(true);
     };
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
