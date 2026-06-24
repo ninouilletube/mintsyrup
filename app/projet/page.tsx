@@ -3,7 +3,6 @@ import Footer from '@/components/Footer';
 import PageArrow from '@/components/PageArrow';
 import RetourArrow from '@/components/RetourArrow';
 import ScrollToTop from '@/components/ScrollToTop';
-import ArchivesSection from '@/components/ArchivesSection';
 import { getData } from '@/lib/supabase';
 import styles from './projet.module.css';
 import ProjetAccordion from './ProjetAccordion';
@@ -120,7 +119,6 @@ export default async function ProjetPage() {
             )}
           </div>
 
-          <ArchivesSection />
         </div>
       </main>
       <Footer />
