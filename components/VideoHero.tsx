@@ -10,8 +10,7 @@ export default function VideoHero() {
   const { activeCategory, activeSelection } = useShop();
   // null uniquement : dans le hero → disparaissent au scroll sur mobile (transform crée le containing block)
   // drops géré par DropsArrow hors du hero → position:fixed au viewport même sur mobile
-  // Sur mobile : flèches uniquement quand aucune catégorie (drops → DropsArrow, qui les cache sur mobile)
-  const showArrows = activeCategory === null && activeSelection === null;
+  const showArrows = (activeCategory === null || activeCategory === 'drops') && activeSelection === null;
   const [videoReady, setVideoReady] = useState(false);
 
   useEffect(() => {
@@ -53,11 +52,9 @@ export default function VideoHero() {
       {showArrows && (
         <>
           <PageArrow href="/projet" label="Le projet" direction="left" />
+          {/* Desktop uniquement — mobile géré par DropsArrow hors du hero (pas de transform) */}
           <span className={pageArrowStyles.desktopOnly}>
             <PageArrow href="/favoris" label="Mes favoris" direction="right" />
-          </span>
-          <span className={pageArrowStyles.mobileOnly}>
-            <PageArrow href="/?cat=drops" label="Derniers drops" direction="right" />
           </span>
         </>
       )}

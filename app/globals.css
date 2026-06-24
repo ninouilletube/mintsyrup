@@ -27,6 +27,7 @@
   margin: 0; padding: 0; box-sizing: border-box;
   -webkit-user-select: none;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 input, textarea, select, [contenteditable="true"] {
   -webkit-user-select: text;
