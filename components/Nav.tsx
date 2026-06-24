@@ -56,7 +56,9 @@ export default function Nav() {
     setActiveSelection(null);
     setMenuOpen(false);
     if (isHome) window.history.replaceState(window.history.state, '', '/');
-    else router.push('/');
+    // Navigation complète pour éviter que le router cache du App Router
+    // restaure l'ancienne catégorie via CategoryInit non relancé
+    else window.location.assign('/');
   };
 
   const handleCategory = (catId: Category) => {
