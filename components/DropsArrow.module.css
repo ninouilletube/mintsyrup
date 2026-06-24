@@ -1,0 +1,5 @@
+.wrap { display: contents; }
+
+@media (max-width: 768px) {
+  .wrap { display: none; }
+}
