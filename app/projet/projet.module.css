@@ -248,6 +248,7 @@
 .mobileBlock1Inner { display: none; }
 .accordionWrap   { display: none; }
 .mobilePageHeader { display: none; }
+.favorisLinkWrap { display: none; }
 
 @media (max-width: 768px) {
   /* ── Masquages ── */
@@ -255,6 +256,21 @@
   .desktopOnly   { display: none; }
   .desktopBlock2 { display: none; }
   .mobileBlock1  { display: none; }
+
+  /* ── Lien coups de cœur (au-dessus de l'accordéon) ── */
+  .favorisLinkWrap {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.6rem;
+  }
+  .favorisLink {
+    font-family: var(--font-dm-sans), sans-serif;
+    font-size: 0.8rem;
+    font-style: italic;
+    color: var(--coral);
+    text-decoration: none;
+    opacity: 0.85;
+  }
 
   /* ── Badge "Le projet" ── */
   .mobilePageHeader {

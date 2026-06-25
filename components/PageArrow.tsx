@@ -7,11 +7,13 @@ type Props = {
   href: string;
   label: string;
   direction: 'left' | 'right';
+  onClick?: () => void;
 };
 
-export default function PageArrow({ href, label, direction }: Props) {
-  return (
-    <Link href={href} className={`${styles.arrow} ${direction === 'left' ? styles.left : styles.right}`}>
+export default function PageArrow({ href, label, direction, onClick }: Props) {
+  const className = `${styles.arrow} ${direction === 'left' ? styles.left : styles.right}`;
+  const inner = (
+    <>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/fleche-droite.webp"
@@ -19,6 +21,10 @@ export default function PageArrow({ href, label, direction }: Props) {
         className={`${styles.arrowImg} ${direction === 'left' ? styles.arrowImgFlip : ''}`}
       />
       <span className={styles.label}>{label}</span>
-    </Link>
+    </>
   );
+  if (onClick) {
+    return <button className={className} onClick={onClick}>{inner}</button>;
+  }
+  return <Link href={href} className={className}>{inner}</Link>;
 }

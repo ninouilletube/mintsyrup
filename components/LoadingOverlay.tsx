@@ -9,6 +9,7 @@ export default function LoadingOverlay() {
   const [navVisible, setNavVisible] = useState(false);
   const pathname = usePathname();
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const maxNavTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ── Chargement initial (attend la vidéo) ──
   useEffect(() => {
@@ -53,7 +54,12 @@ export default function LoadingOverlay() {
       ) return;
       // Ne montrer l'overlay que si le chemin change (pas juste les query params)
       const hrefPath = href.split('?')[0];
-      if (hrefPath !== pathname) setNavVisible(true);
+      if (hrefPath !== pathname) {
+        setNavVisible(true);
+        // Max 350ms : évite un overlay infini sur les pages serveur lentes
+        if (maxNavTimer.current) clearTimeout(maxNavTimer.current);
+        maxNavTimer.current = setTimeout(() => setNavVisible(false), 350);
+      }
     };
     document.addEventListener('click', handleClick);
     return () => document.removeEventListener('click', handleClick);
@@ -62,7 +68,8 @@ export default function LoadingOverlay() {
   // ── Masquer quand la nouvelle page est prête (pathname change) ──
   useEffect(() => {
     if (hideTimer.current) clearTimeout(hideTimer.current);
-    hideTimer.current = setTimeout(() => setNavVisible(false), 150);
+    if (maxNavTimer.current) clearTimeout(maxNavTimer.current);
+    hideTimer.current = setTimeout(() => setNavVisible(false), 50);
     return () => { if (hideTimer.current) clearTimeout(hideTimer.current); };
   }, [pathname]);
 

@@ -6,14 +6,22 @@ import pageArrowStyles from './PageArrow.module.css';
 import styles from './DropsArrow.module.css';
 
 export default function DropsArrow() {
-  const { activeCategory } = useShop();
+  const { activeCategory, setActiveCategory } = useShop();
 
-  // Accueil (aucune catégorie) : flèche Derniers drops sur mobile uniquement,
-  // hors du hero pour éviter le containing block créé par ses transforms
+  // Accueil (aucune catégorie) : bouton Derniers drops sur mobile uniquement,
+  // hors du hero (pas de transform) ; appel direct au contexte pour fiabilité
   if (activeCategory === null) {
     return (
       <span className={pageArrowStyles.mobileOnly}>
-        <PageArrow href="/?cat=drops" label="Derniers drops" direction="right" />
+        <PageArrow
+          href="/?cat=drops"
+          label="Derniers drops"
+          direction="right"
+          onClick={() => {
+            setActiveCategory('drops');
+            window.history.replaceState(null, '', '/?cat=drops');
+          }}
+        />
       </span>
     );
   }

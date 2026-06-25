@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
+import Link from 'next/link';
 import PageArrow from '@/components/PageArrow';
 import RetourArrow from '@/components/RetourArrow';
 import ScrollToTop from '@/components/ScrollToTop';
@@ -113,7 +114,10 @@ export default async function ProjetPage() {
                     <p key={j}>{p}</p>
                   ))}
                 </div>
-                {/* Mobile : accordéon repliable */}
+                {/* Mobile : lien coups de cœur + accordéon */}
+                <div className={styles.favorisLinkWrap}>
+                  <Link href="/favoris" className={styles.favorisLink}>Voir mes coups de cœur →</Link>
+                </div>
                 <ProjetAccordion title={blocks[2].title} text={blocks[2].text} tooltip3={tooltip3} />
               </>
             )}
