@@ -453,7 +453,7 @@
     height: auto;
     overflow-y: visible;
     min-height: 100vh;
-    padding: calc(52px + 3.5rem) 0.75rem 3rem;
+    padding: calc(52px + 7rem) 0.75rem 3rem;
   }
   .watermark { display: none; }
 
