@@ -95,7 +95,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const swipeStartX = useRef<number | null>(null);
   const didSwipe = useRef(false);
   const mainStripRef = useRef<HTMLDivElement>(null);
-  const fromScroll = useRef(false);
+  const isProgrammaticScroll = useRef(false);
 
   const handleLbMouseMove = () => {
     setLbArrowsVisible(true);
@@ -124,21 +124,21 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     window.scrollTo(0, 0);
   }, [id]);
 
-  // Sync main gallery strip (mobile) to activeIndex
+  // Sync main gallery strip (mobile) to activeIndex (miniature ou flèche cliquée)
   useEffect(() => {
     const strip = mainStripRef.current;
     if (!strip || images.length <= 1 || lightbox) return;
-    if (fromScroll.current) { fromScroll.current = false; return; }
-    strip.scrollTo({ left: activeIndex * strip.clientWidth, behavior: 'smooth' });
+    isProgrammaticScroll.current = true;
+    strip.scrollTo({ left: activeIndex * strip.clientWidth, behavior: 'instant' });
   }, [activeIndex, images.length, lightbox]);
 
-  // scrollend listener for main gallery strip
+  // scrollend listener : met à jour activeIndex uniquement sur swipe utilisateur
   useEffect(() => {
     const strip = mainStripRef.current;
     if (!strip) return;
     const onScrollEnd = () => {
+      if (isProgrammaticScroll.current) { isProgrammaticScroll.current = false; return; }
       const idx = Math.round(strip.scrollLeft / strip.clientWidth);
-      fromScroll.current = true;
       setActiveIndex(idx);
     };
     strip.addEventListener('scrollend', onScrollEnd);
