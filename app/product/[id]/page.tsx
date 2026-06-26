@@ -121,6 +121,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   }, [lightbox, images.length]);
 
   useEffect(() => {
+    setActiveIndex(0);
     window.scrollTo(0, 0);
   }, [id]);
 
