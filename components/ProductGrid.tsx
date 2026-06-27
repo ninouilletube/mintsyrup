@@ -18,7 +18,7 @@ export default function ProductGrid() {
   const { lang } = useLang();
   const { activeCategory, activeSelection } = useShop();
   const { products } = useProducts();
-  const { subcategories, colorOrder } = useSubcategories();
+  const { subcategories, colorOrder, colorLabels } = useSubcategories();
   const { selections } = useSelections();
 
   const [filterType, setFilterType] = useState<string | null>(null);
@@ -295,7 +295,7 @@ export default function ProductGrid() {
                   return (
                     <button
                       key={id}
-                      title={color.label}
+                      title={colorLabels[id] ?? color.label}
                       className={`${styles.filterColorDot} ${filterColor === id ? styles.filterColorDotActive : ''}`}
                       style={{ background: color.bg }}
                       onClick={() => setFilterColor(filterColor === id ? null : id)}
@@ -371,7 +371,7 @@ export default function ProductGrid() {
                         return (
                           <button
                             key={id}
-                            title={color.label}
+                            title={colorLabels[id] ?? color.label}
                             className={`${styles.filterColorDot} ${filterColor === id ? styles.filterColorDotActive : ''}`}
                             style={{ background: color.bg }}
                             onClick={() => setFilterColor(filterColor === id ? null : id)}

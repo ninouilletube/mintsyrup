@@ -863,7 +863,7 @@ export default function AdminPage() {
                   <button
                     key={c.id}
                     type="button"
-                    title={c.label}
+                    title={colorLabels[c.id] ?? c.label}
                     className={`${styles.colorSwatch} ${editForm.tags.includes(c.id) ? styles.colorSwatchActive : ''}`}
                     style={{ background: c.bg }}
                     onClick={() => setEditForm({ ...editForm, tags: editForm.tags.includes(c.id) ? editForm.tags.filter((id) => id !== c.id) : [...editForm.tags, c.id] })}
@@ -1669,7 +1669,7 @@ export default function AdminPage() {
                     <button
                       key={c.id}
                       type="button"
-                      title={c.label}
+                      title={colorLabels[c.id] ?? c.label}
                       className={`${styles.colorSwatch} ${form.tags.includes(c.id) ? styles.colorSwatchActive : ''}`}
                       style={{ background: c.bg }}
                       onClick={() => setForm({ ...form, tags: form.tags.includes(c.id) ? form.tags.filter((id) => id !== c.id) : [...form.tags, c.id] })}
