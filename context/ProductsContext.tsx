@@ -6,6 +6,18 @@ import { getData, setData } from '@/lib/supabase';
 
 const LS_KEY = 'ms_products';
 
+type SavedData = { products: Product[]; savedAt: number };
+
+function toSavedData(val: unknown): SavedData | null {
+  if (!val) return null;
+  // Old format: plain array
+  if (Array.isArray(val)) return { products: val as Product[], savedAt: 0 };
+  // New format: { products, savedAt }
+  const d = val as Partial<SavedData>;
+  if (Array.isArray(d?.products)) return { products: d.products!, savedAt: d.savedAt ?? 0 };
+  return null;
+}
+
 type ProductsContextType = {
   products: Product[];
   addProduct: (p: Omit<Product, 'id'>) => Promise<void>;
@@ -25,44 +37,46 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    // 1. Charge depuis Supabase en priorité
+    // Lire localStorage d'abord (synchrone, toujours disponible)
+    let localData: SavedData | null = null;
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (raw) localData = toSavedData(JSON.parse(raw));
+    } catch {}
+
     getData('products').then((val) => {
-      if (val && Array.isArray(val) && (val as Product[]).length > 0) {
-        const prods = val as Product[];
-        setProducts(prods);
-        // Met à jour localStorage avec la version Supabase
-        try { localStorage.setItem(LS_KEY, JSON.stringify(prods)); } catch {}
-      } else {
-        // 2. Fallback localStorage + re-sync vers Supabase
-        try {
-          const local = localStorage.getItem(LS_KEY);
-          if (local) {
-            const parsed = JSON.parse(local) as Product[];
-            setProducts(parsed);
-            if (parsed.length > 0) setData('products', parsed).catch(() => {});
-          }
-        } catch {}
+      const supaData = toSavedData(val);
+
+      // Préférer la version la plus récente entre Supabase et localStorage
+      const supabaseIsNewer = supaData && supaData.products.length > 0 &&
+        (!localData || supaData.savedAt >= localData.savedAt);
+
+      if (supabaseIsNewer && supaData) {
+        setProducts(supaData.products);
+        try { localStorage.setItem(LS_KEY, JSON.stringify(supaData)); } catch {}
+      } else if (localData && localData.products.length > 0) {
+        setProducts(localData.products);
+        // Re-sync Supabase si localStorage est plus récent
+        setData('products', localData).catch(() => {});
       }
       setLoaded(true);
     }).catch(() => {
-      try {
-        const local = localStorage.getItem(LS_KEY);
-        if (local) {
-          const parsed = JSON.parse(local) as Product[];
-          setProducts(parsed);
-          if (parsed.length > 0) setData('products', parsed).catch(() => {});
-        }
-      } catch {}
+      // Supabase inaccessible : utiliser localStorage
+      if (localData && localData.products.length > 0) {
+        setProducts(localData.products);
+        setData('products', localData).catch(() => {});
+      }
       setLoaded(true);
     });
   }, []);
 
   const save = async (prods: Product[]) => {
     setProducts(prods);
-    // localStorage en premier — toujours fiable
-    try { localStorage.setItem(LS_KEY, JSON.stringify(prods)); } catch {}
+    const payload: SavedData = { products: prods, savedAt: Date.now() };
+    // localStorage en premier — toujours fiable et synchrone
+    try { localStorage.setItem(LS_KEY, JSON.stringify(payload)); } catch {}
     // Supabase en parallèle — best effort
-    setData('products', prods).catch(() => {});
+    setData('products', payload).catch(() => {});
   };
 
   const addProduct    = async (p: Omit<Product, 'id'>) => save([...products, { ...p, id: Date.now() }]);
