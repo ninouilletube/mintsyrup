@@ -312,9 +312,30 @@
   .stock-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
   .stock-title { font-family: 'DM Serif Display', serif; font-size: 22px; }
   .stock-summary { display: flex; gap: 12px; flex-wrap: wrap; }
-  .stock-metric { background: var(--white); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 16px; text-align: center; }
+  .stock-metric { background: var(--white); border: 0.5px solid var(--border); border-radius: var(--radius-sm); padding: 10px 16px; text-align: center; position: relative; }
   .stock-metric-val { font-size: 18px; font-weight: 500; color: var(--ink); }
   .stock-metric-lbl { font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+
+  /* Tooltip custom */
+  .stock-metric[data-tooltip] { cursor: help; }
+  .stock-metric[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--ink);
+    color: var(--white);
+    font-size: 12px;
+    white-space: nowrap;
+    padding: 5px 11px;
+    border-radius: 6px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 50;
+  }
+  .stock-metric[data-tooltip]:hover::after { opacity: 1; }
   .stock-metric-scheduled { background: var(--syrup-light); border-color: var(--syrup); }
   .stock-metric-scheduled .stock-metric-val { color: #8B4E20; }
   .stock-metric-online { background: #E6F7F1; border-color: var(--mint); }
@@ -1767,8 +1788,8 @@ function renderStock() {
     <div class="stock-metric"><div class="stock-metric-val">${avgAchat.toFixed(2)}€</div><div class="stock-metric-lbl">achat moyen</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalCA}€</div><div class="stock-metric-lbl">CA potentiel</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalMargin}€</div><div class="stock-metric-lbl">marge nette</div></div>
-    <div class="stock-metric stock-metric-scheduled" style="cursor:help" title="${nbScheduled > 0 ? `Prix de vente moyen : ${avgScheduled}€` : 'Aucun article programmé'}"><div class="stock-metric-val">${nbScheduled}</div><div class="stock-metric-lbl">programmé</div></div>
-    <div class="stock-metric stock-metric-online" style="cursor:help" title="${nbOnline > 0 ? `Prix de vente moyen : ${avgOnline}€` : 'Aucun article en ligne'}"><div class="stock-metric-val">${nbOnline}</div><div class="stock-metric-lbl">en ligne</div></div>
+    <div class="stock-metric stock-metric-scheduled" data-tooltip="${nbScheduled > 0 ? `Prix moyen : ${avgScheduled}€` : 'Aucun article programmé'}"><div class="stock-metric-val">${nbScheduled}</div><div class="stock-metric-lbl">programmé</div></div>
+    <div class="stock-metric stock-metric-online" data-tooltip="${nbOnline > 0 ? `Prix moyen : ${avgOnline}€` : 'Aucun article en ligne'}"><div class="stock-metric-val">${nbOnline}</div><div class="stock-metric-lbl">en ligne</div></div>
   `;
 
   const cards = filtered.length === 0
