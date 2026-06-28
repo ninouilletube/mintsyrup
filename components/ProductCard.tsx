@@ -12,13 +12,9 @@ export default function ProductCard({ product }: { product: Product }) {
   const { lang } = useLang();
   const recentlySold = !!product.sold && !!product.soldAt && Date.now() - product.soldAt < SOLD_DELAY;
 
-  const Inner = recentlySold
-    ? ({ children }: { children: React.ReactNode }) => <div className={styles.cardLink}>{children}</div>
-    : ({ children }: { children: React.ReactNode }) => <Link href={`/product/${product.id}`} className={styles.cardLink} prefetch={true}>{children}</Link>;
-
   return (
     <article className={`${styles.card} ${recentlySold ? styles.cardSold : ''}`}>
-      <Inner>
+      <div className={styles.cardLink}>
         <div className={styles.imageWrapper}>
           {product.image ? (
             <Image src={product.image} alt={product.title[lang]} fill className={styles.image} sizes="(max-width: 768px) 100vw, 33vw" />
@@ -48,7 +44,7 @@ export default function ProductCard({ product }: { product: Product }) {
           {product.brand && <p className={styles.brand}>{product.brand}</p>}
           <p className={styles.desc}>{product.description[lang]}</p>
         </div>
-      </Inner>
+      </div>
       {!recentlySold && (
         <div className={styles.btnWrap}>
           <Link href={`/product/${product.id}`} className={styles.btn} prefetch={true}>
