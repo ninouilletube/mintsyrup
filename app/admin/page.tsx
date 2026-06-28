@@ -401,12 +401,15 @@ export default function AdminPage() {
     setForm((f) => ({ ...f, seasons: f.seasons.includes(id) ? f.seasons.filter((s) => s !== id) : [...f.seasons, id] }));
 
   const toggleCategory = (id: Category) =>
-    setForm((f) => ({
-      ...f,
-      categories: f.categories[0] === id ? [] : [id],
-      subcategory: '',
-      size: f.categories[0] !== id ? '' : f.size,
-    }));
+    setForm((f) => {
+      const isShoeSwitch = (f.categories[0] === 'chaussures') !== (id === 'chaussures');
+      return {
+        ...f,
+        categories: f.categories[0] === id ? [] : [id],
+        subcategory: '',
+        size: isShoeSwitch ? '' : f.size,
+      };
+    });
 
   const handleAddSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
