@@ -1754,8 +1754,12 @@ function renderStock() {
   const totalAchat    = active.reduce((s, a) => s + (a.achat || 0), 0);
   const withAchat     = active.filter(a => a.achat != null);
   const avgAchat      = withAchat.length > 0 ? withAchat.reduce((s, a) => s + a.achat, 0) / withAchat.length : 0;
-  const nbScheduled   = active.filter(a => a.status === 'scheduled').length;
-  const nbOnline      = active.filter(a => a.status === 'online').length;
+  const nbScheduled       = active.filter(a => a.status === 'scheduled').length;
+  const nbOnline          = active.filter(a => a.status === 'online').length;
+  const onlineArticles    = active.filter(a => a.status === 'online');
+  const scheduledArticles = active.filter(a => a.status === 'scheduled');
+  const avgOnline    = onlineArticles.length    > 0 ? Math.round(onlineArticles.reduce((s, a) => s + a.price, 0)    / onlineArticles.length)    : 0;
+  const avgScheduled = scheduledArticles.length > 0 ? Math.round(scheduledArticles.reduce((s, a) => s + a.price, 0) / scheduledArticles.length) : 0;
 
   summary.innerHTML = `
     <div class="stock-metric"><div class="stock-metric-val">${active.length}</div><div class="stock-metric-lbl">pièces</div></div>
@@ -1763,8 +1767,8 @@ function renderStock() {
     <div class="stock-metric"><div class="stock-metric-val">${avgAchat.toFixed(2)}€</div><div class="stock-metric-lbl">achat moyen</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalCA}€</div><div class="stock-metric-lbl">CA potentiel</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalMargin}€</div><div class="stock-metric-lbl">marge nette</div></div>
-    <div class="stock-metric stock-metric-scheduled"><div class="stock-metric-val">${nbScheduled}</div><div class="stock-metric-lbl">programmé</div></div>
-    <div class="stock-metric stock-metric-online"><div class="stock-metric-val">${nbOnline}</div><div class="stock-metric-lbl">en ligne</div></div>
+    <div class="stock-metric stock-metric-scheduled" style="cursor:help" title="${nbScheduled > 0 ? `Prix de vente moyen : ${avgScheduled}€` : 'Aucun article programmé'}"><div class="stock-metric-val">${nbScheduled}</div><div class="stock-metric-lbl">programmé</div></div>
+    <div class="stock-metric stock-metric-online" style="cursor:help" title="${nbOnline > 0 ? `Prix de vente moyen : ${avgOnline}€` : 'Aucun article en ligne'}"><div class="stock-metric-val">${nbOnline}</div><div class="stock-metric-lbl">en ligne</div></div>
   `;
 
   const cards = filtered.length === 0
