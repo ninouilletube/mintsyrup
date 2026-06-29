@@ -408,6 +408,25 @@
   .stock-card-status.sc-status-none { background: var(--cream); color: var(--ink-soft); border-color: var(--border); }
   .stock-card-status.sc-status-scheduled { background: var(--syrup-light); color: #8B4E20; border-color: var(--syrup); }
   .stock-card-status.sc-status-online { background: #E6F7F1; color: var(--mint-dark); border-color: var(--mint); }
+
+  /* Popover statut */
+  .status-popup {
+    position: absolute; z-index: 1000;
+    background: var(--white); border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 4px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.13);
+    display: flex; flex-direction: column; gap: 2px; min-width: 148px;
+  }
+  .status-popup-opt {
+    width: 100%; padding: 7px 10px; border-radius: 4px;
+    font-size: 11px; font-weight: 500; cursor: pointer; border: none;
+    text-align: left; font-family: 'DM Sans', sans-serif; transition: opacity 0.1s;
+  }
+  .status-popup-opt.sc-status-none { background: var(--cream); color: var(--ink-soft); }
+  .status-popup-opt.sc-status-scheduled { background: var(--syrup-light); color: #8B4E20; }
+  .status-popup-opt.sc-status-online { background: #E6F7F1; color: var(--mint-dark); }
+  .status-popup-opt:hover { opacity: 0.72; }
+  .status-popup-opt.status-current { outline: 1.5px solid currentColor; outline-offset: -1px; }
   @media (max-width: 640px) {
     .filter-toolbar { flex-direction: column; }
     .filter-group + .filter-group { border-left: none; border-top: 0.5px solid var(--border); }
@@ -1809,7 +1828,7 @@ function renderStock() {
           <div class="stock-card-margin">${a.margin}€ net</div>
         </div>
         ${a.achat != null ? `<div class="stock-card-achat">Acheté ${parseFloat(a.achat).toFixed(2)}€</div>` : ''}
-        <button class="stock-card-status ${!a.status ? 'sc-status-none' : a.status === 'scheduled' ? 'sc-status-scheduled' : 'sc-status-online'}" onclick="event.stopPropagation();saveArticleStatus(${a.id})" title="Changer le statut">${!a.status ? '○ Non programmé' : a.status === 'scheduled' ? '◐ Programmé' : '● En ligne'}</button>
+        <button class="stock-card-status ${!a.status ? 'sc-status-none' : a.status === 'scheduled' ? 'sc-status-scheduled' : 'sc-status-online'}" onclick="toggleStatusPopup(event,${a.id})" title="Changer le statut">${!a.status ? '○ Non programmé' : a.status === 'scheduled' ? '◐ Programmé' : '● En ligne'} ▾</button>
       </div>
       <button class="stock-card-sold-btn" onclick="event.stopPropagation();openSoldModal(${a.id}, '${a.nom.replace(/'/g,"\\'")}', ${a.price})">Vendu ✓</button>
     </div>
@@ -1823,11 +1842,54 @@ function setStockSeasonFilter(f) { stockSeasonFilter = f; renderStock(); }
 function setStockSort(s) { stockSort = s; renderStock(); }
 function setStockStatusFilter(f) { stockStatusFilter = f; renderStock(); }
 
-async function saveArticleStatus(id) {
+let _statusPopupId = null;
+
+function toggleStatusPopup(event, id) {
+  event.stopPropagation();
+  if (_statusPopupId === id) { closeStatusPopup(); return; }
+  closeStatusPopup();
+  _statusPopupId = id;
+
+  const btn = event.currentTarget;
+  const rect = btn.getBoundingClientRect();
+  const article = stock.find(a => a.id === id);
+  const cur = article?.status ?? null;
+
+  const opts = [
+    { status: null,        label: '○ Non programmé', cls: 'sc-status-none'      },
+    { status: 'scheduled', label: '◐ Programmé',     cls: 'sc-status-scheduled' },
+    { status: 'online',    label: '● En ligne',      cls: 'sc-status-online'    },
+  ];
+
+  const popup = document.createElement('div');
+  popup.id = 'status-popup';
+  popup.className = 'status-popup';
+  popup.innerHTML = opts.map(o =>
+    `<button class="status-popup-opt ${o.cls}${o.status === cur ? ' status-current' : ''}" onclick="event.stopPropagation();setArticleStatus(${id},'${o.status ?? ''}')">${o.label}</button>`
+  ).join('');
+  document.body.appendChild(popup);
+
+  const pw = popup.offsetWidth;
+  let left = rect.left + window.scrollX;
+  let top  = rect.bottom + window.scrollY + 4;
+  if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
+  popup.style.left = left + 'px';
+  popup.style.top  = top  + 'px';
+
+  setTimeout(() => document.addEventListener('click', closeStatusPopup, { once: true }), 0);
+}
+
+function closeStatusPopup() {
+  const p = document.getElementById('status-popup');
+  if (p) p.remove();
+  _statusPopupId = null;
+}
+
+async function setArticleStatus(id, statusStr) {
+  closeStatusPopup();
   const idx = stock.findIndex(a => a.id === id);
   if (idx === -1) return;
-  const cur = stock[idx].status;
-  const next = !cur ? 'scheduled' : cur === 'scheduled' ? 'online' : null;
+  const next = statusStr || null;
   stock[idx].status = next;
   renderStock();
   await sb.from('mintsyrup_stock').update({ status: next }).eq('id', id);
