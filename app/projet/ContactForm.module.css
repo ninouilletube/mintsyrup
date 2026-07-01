@@ -7,6 +7,34 @@
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
+  margin-top: 2rem;
+}
+
+.confirm {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.9rem;
+  color: var(--dark);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.btnSecondary {
+  align-self: flex-start;
+  background: none;
+  border: 2px solid var(--dark);
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--dark);
+  transition: all 0.15s;
+}
+.btnSecondary:hover {
+  background: var(--cream);
 }
 
 .title {

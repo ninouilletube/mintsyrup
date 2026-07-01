@@ -6,12 +6,31 @@ import styles from './ContactForm.module.css';
 export default function ContactForm() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [sent, setSent] = useState(false);
 
   const handleSend = () => {
     const subject = encodeURIComponent('Message depuis Mint Syrup');
     const body = encodeURIComponent(`De : ${email}\n\n${message}`);
-    window.location.href = `mailto:chatchep@gmail.com?subject=${subject}&body=${body}`;
+    window.open(
+      `https://mail.google.com/mail/?view=cm&to=chatchep@gmail.com&su=${subject}&body=${body}`,
+      '_blank'
+    );
+    setSent(true);
   };
+
+  if (sent) {
+    return (
+      <section className={styles.wrap}>
+        <h2 className={styles.title}>Me contacter</h2>
+        <p className={styles.confirm}>
+          Gmail s&apos;est ouvert avec votre message pré-rempli — il ne reste plus qu&apos;à cliquer <strong>Envoyer</strong> dans Gmail !
+        </p>
+        <button className={styles.btnSecondary} onClick={() => setSent(false)}>
+          Envoyer un autre message
+        </button>
+      </section>
+    );
+  }
 
   return (
     <section className={styles.wrap}>

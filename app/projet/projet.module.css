@@ -227,7 +227,7 @@
   margin-bottom: 0;
 }
 
-/* ── Logo vinyle (défini ICI, avant @media, pour que les règles mobiles puissent l'écraser) ── */
+/* ── Logo vinyle ── */
 @keyframes vinyl {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
@@ -243,21 +243,84 @@
   animation: vinyl 6s linear infinite;
 }
 
-/* ── Défauts desktop : éléments mobile masqués ── */
-.mobileLogoRow   { display: none; }
+/* ── Accordion bloc 3 — visible sur desktop ET mobile ── */
+.accordionWrap {
+  border: 2.5px solid var(--dark);
+  border-radius: 12px;
+  box-shadow: 5px 5px 0 var(--dark);
+  background: var(--cream);
+}
+
+.accordionHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.85rem 1.1rem;
+}
+
+/* bouton toggle (titre + flèche) */
+.accordionToggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+}
+
+.accordionToggle .blockTitle { margin-bottom: 0; flex: 1; }
+
+.accordionArrow { font-size: 0.65rem; color: #F04080; flex-shrink: 0; }
+
+.accordionBody {
+  padding: 0 1.1rem 1.1rem;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  color: var(--dark);
+  display: flex;
+  flex-direction: column;
+}
+
+.accordionBody p { margin-bottom: 0.75rem; }
+.accordionBody p:last-child { margin-bottom: 0; }
+
+/* (i) dans le header — toujours visible, tooltip vers le bas */
+.accordionHeader .infoWrap {
+  position: relative;
+  top: auto;
+  right: auto;
+  flex-shrink: 0;
+}
+
+.accordionHeader .infoTooltip {
+  left: auto;
+  right: 0;
+  top: 100%;
+  padding-left: 0;
+  padding-top: 0.35rem;
+  width: 240px;
+}
+
+/* ── Défauts desktop : éléments mobiles masqués ── */
+.mobileLogoRow    { display: none; }
 .mobileBlock1Inner { display: none; }
-.accordionWrap   { display: none; }
 .mobilePageHeader { display: none; }
-.favorisLinkWrap { display: none; }
+.favorisLinkWrap  { display: none; }
+/* bloc 3 statique remplacé par l'accordion partout */
+.desktopBlock2    { display: none; }
 
 @media (max-width: 768px) {
   /* ── Masquages ── */
   .mobileHidden  { display: none; }
   .desktopOnly   { display: none; }
-  .desktopBlock2 { display: none; }
   .mobileBlock1  { display: none; }
 
-  /* ── Lien coups de cœur (au-dessus de l'accordéon) ── */
+  /* ── Lien coups de cœur ── */
   .favorisLinkWrap {
     display: flex;
     justify-content: flex-end;
@@ -303,7 +366,7 @@
     grid-template-columns: 1fr 88px;
     grid-template-rows: auto auto;
     column-gap: 0.75rem;
-    row-gap: 2rem;           /* espace entre Groupe A et Groupe B */
+    row-gap: 2rem;
     align-items: flex-start;
   }
 
@@ -313,7 +376,7 @@
   /* Groupe A – texte 1 : col 1, ligne 1 */
   .mobileBlock0 { grid-column: 1; grid-row: 1; margin-top: 0; }
 
-  /* Photo : col 2, ligne 1, alignée en haut */
+  /* Photo : col 2, ligne 1 */
   .photoWrap {
     grid-column: 2;
     grid-row: 1;
@@ -331,11 +394,10 @@
     grid-column: 1 / -1;
     grid-row: 2;
     display: flex;
-    align-items: center;     /* logo centré sur le centre Y du texte 2 */
+    align-items: center;
     gap: 0.75rem;
   }
 
-  /* Logo x2 par rapport à avant */
   .mobileLogoRow .projetLogo {
     width: 6rem;
     height: 6rem;
@@ -364,77 +426,16 @@
   .blockNakedNarrow { margin-top: 0; animation-delay: 0.12s; }
   .blockNaked .blockTitle { font-size: 1.08rem; margin-bottom: 0.4rem; }
 
-  /* projetLogo hors mobileLogoRow (desktopOnly, donc masqué de toute façon) */
   .projetLogo { width: 3rem; height: 3rem; margin-top: 0.75rem; }
 
-  /* ── Accordéon bloc 3 ── */
-  .accordionWrap {
-    display: block;
-    border: 2.5px solid var(--dark);
-    border-radius: 12px;
-    box-shadow: 4px 4px 0 var(--dark);
-    background: var(--cream);
-    animation: mFadeUp 0.5s 0.22s ease both;
-  }
-
-  .accordionHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    width: 100%;
-    padding: 0.85rem 1.1rem;
-    background: none;
-    border: none;
-    cursor: pointer;
-    text-align: left;
-  }
-
-  .accordionHeader .blockTitle { margin-bottom: 0; font-size: 1rem; flex: 1; }
-
-  .accordionArrow { font-size: 0.65rem; color: #F04080; flex-shrink: 0; }
-
-  .accordionBody {
-    padding: 0 1.1rem 1rem;
-    font-family: var(--font-dm-sans), sans-serif;
-    font-size: 0.82rem;
-    line-height: 1.65;
-    color: var(--dark);
-    display: flex;
-    flex-direction: column;
-  }
-
-  .accordionBody p { margin-bottom: 0.75rem; }
-  .accordionBody p:last-child { margin-bottom: 0; }
-
-  /* (i) en bas à droite du bloc */
-  .accordionBody .infoWrap {
-    position: relative;
-    top: auto;
-    right: auto;
-    align-self: flex-end;
-    margin-top: 0.85rem;
-  }
-
-  .accordionBody .infoTooltip {
-    left: auto;
-    right: 0;
-    top: 100%;
-    padding-left: 0;
-    padding-top: 0.35rem;
-    width: 220px;
-  }
-
-  .infoTooltip {
-    left: auto;
-    right: 0;
-    top: 100%;
-    padding-left: 0;
-    padding-top: 0.35rem;
-    width: 220px;
-  }
-
+  /* ── Accordion : overrides mobiles ── */
+  .accordionWrap { box-shadow: 4px 4px 0 var(--dark); animation: mFadeUp 0.5s 0.22s ease both; }
+  .accordionBody { font-size: 0.82rem; }
+  .accordionToggle .blockTitle { font-size: 1rem; }
   .blockTitle { font-size: 1rem; margin-bottom: 0.55rem; }
+
+  /* tooltip (i) depuis le header : plus étroit sur mobile */
+  .accordionHeader .infoTooltip { width: 220px; }
 
   @keyframes mFadeUp {
     from { opacity: 0; transform: translateY(10px); }
