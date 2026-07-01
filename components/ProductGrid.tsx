@@ -142,13 +142,17 @@ export default function ProductGrid() {
 
   const visible = products.filter((p) => (!p.hidden && !p.sold) || isRecentlySold(p));
 
+  const isAll = activeCategory === 'all' && !activeSelection;
+
   const byCategory = activeSelection
     ? [...visible.filter((p) => p.selections?.includes(activeSelection))].sort((a, b) => b.id - a.id)
     : isDrops
       ? [...visible].sort((a, b) => b.id - a.id)
       : activeCategory === 'ete'
         ? [...visible.filter((p) => p.seasons?.includes(SEASON_TO_ID[getCurrentSeason()]))].sort((a, b) => b.id - a.id)
-        : [...visible.filter((p) => activeCategory ? p.categories.includes(activeCategory) : false)].sort((a, b) => b.id - a.id);
+        : isAll
+          ? [...visible].sort((a, b) => a.id - b.id) // plus ancien en premier
+          : [...visible.filter((p) => activeCategory ? p.categories.includes(activeCategory as never) : false)].sort((a, b) => b.id - a.id);
 
   const SIZE_ORDER = ['TU','XXXS / 30 / 2','XXS / 32 / 4','XS / 34 / 6','S / 36 / 8','M / 38 / 10','L / 40 / 12','XL / 42 / 14','2XL / 44 / 16','3XL / 46 / 18','4XL / 48 / 20'];
 
@@ -158,7 +162,7 @@ export default function ProductGrid() {
     if (filterColor && !p.tags?.includes(filterColor)) return false;
     return true;
   });
-  const availableTypeIds = ([...new Set(forTypes.map((p) => p.subcategory).filter(Boolean))] as string[])
+  const availableTypeIds = isAll ? [] : ([...new Set(forTypes.map((p) => p.subcategory).filter(Boolean))] as string[])
     .sort((a, b) => {
       const subA = subcategories.find((s) => s.id === a);
       const subB = subcategories.find((s) => s.id === b);
@@ -213,7 +217,7 @@ export default function ProductGrid() {
   const activeCat = CATEGORIES.find(c => c.id === activeCategory);
   const activeSelObj = activeSelection ? (selections.find(s => s.id === activeSelection) ?? null) : null;
   const selectionName = activeSelObj?.name ?? null;
-  const catLabel = selectionName ?? (activeCat ? (lang === 'fr' ? activeCat.fr : activeCat.en) : '');
+  const catLabel = selectionName ?? (activeCategory === 'all' ? 'Tout voir' : activeCat ? (lang === 'fr' ? activeCat.fr : activeCat.en) : '');
   const activeFilterCount = [filterType, ...filterSizes, filterColor].filter(Boolean).length;
   const hasSelPostit = !!activeSelObj?.postitImage;
 

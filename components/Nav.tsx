@@ -61,7 +61,7 @@ export default function Nav() {
     else window.location.assign('/');
   };
 
-  const handleCategory = (catId: Category) => {
+  const handleCategory = (catId: Category | 'all') => {
     setMenuOpen(false);
     setActiveSelection(null);
     if (isHome) {
@@ -89,7 +89,7 @@ export default function Nav() {
 
   const isDropsActive  = isHome && activeCategory === 'drops' && !activeSelection;
   const isSummerActive = isHome && activeCategory === 'ete'   && !activeSelection;
-  const isCatActive    = isHome && CATEGORY_CATS.includes(activeCategory as Category) && !activeSelection;
+  const isCatActive    = isHome && (CATEGORY_CATS.includes(activeCategory as Category) || activeCategory === 'all') && !activeSelection;
   const isSelActive    = activeSelection !== null;
 
   return (
@@ -131,6 +131,12 @@ export default function Nav() {
             <span className={styles.dropCaret}>▾</span>
           </button>
           <div className={styles.drop}>
+            <button
+              className={`${styles.dropItem} ${isHome && activeCategory === 'all' && !activeSelection ? styles.dropItemActive : ''}`}
+              onClick={() => handleCategory('all')}
+            >
+              Tout voir
+            </button>
             {CATEGORY_CATS.map((catId) => {
               const cat = CATEGORIES.find((c) => c.id === catId)!;
               return (
@@ -210,6 +216,12 @@ export default function Nav() {
           </button>
           {mobileOpenSection === 'categories' && (
             <div className={styles.mobileMenuSub}>
+              <button
+                className={`${styles.mobileMenuSubItem} ${isHome && activeCategory === 'all' && !activeSelection ? styles.mobileMenuSubItemActive : ''}`}
+                onClick={() => handleCategory('all')}
+              >
+                Tout voir
+              </button>
               {CATEGORY_CATS.map((catId) => {
                 const cat = CATEGORIES.find((c) => c.id === catId)!;
                 return (
