@@ -1,8 +1,8 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef } from 'react';
 import type { Product } from '@/data/products';
-import { getData, setData } from '@/lib/supabase';
+import { getData, setData, supabase } from '@/lib/supabase';
 
 const LS_KEY = 'ms_products';
 
@@ -10,9 +10,7 @@ type SavedData = { products: Product[]; savedAt: number };
 
 function toSavedData(val: unknown): SavedData | null {
   if (!val) return null;
-  // Old format: plain array
   if (Array.isArray(val)) return { products: val as Product[], savedAt: 0 };
-  // New format: { products, savedAt }
   const d = val as Partial<SavedData>;
   if (Array.isArray(d?.products)) return { products: d.products!, savedAt: d.savedAt ?? 0 };
   return null;
@@ -35,9 +33,9 @@ const ProductsContext = createContext<ProductsContextType>({
 export function ProductsProvider({ children }: { children: React.ReactNode }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const savedAtRef = useRef<number>(0);
 
   useEffect(() => {
-    // Lire localStorage d'abord (synchrone, toujours disponible)
     let localData: SavedData | null = null;
     try {
       const raw = localStorage.getItem(LS_KEY);
@@ -46,28 +44,49 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
 
     getData('products').then((val) => {
       const supaData = toSavedData(val);
-
-      // Préférer la version la plus récente entre Supabase et localStorage
       const supabaseIsNewer = supaData && supaData.products.length > 0 &&
         (!localData || supaData.savedAt >= localData.savedAt);
 
       if (supabaseIsNewer && supaData) {
         setProducts(supaData.products);
+        savedAtRef.current = supaData.savedAt;
         try { localStorage.setItem(LS_KEY, JSON.stringify(supaData)); } catch {}
       } else if (localData && localData.products.length > 0) {
         setProducts(localData.products);
-        // Re-sync Supabase si localStorage est plus récent
+        savedAtRef.current = localData.savedAt;
         setData('products', localData).catch(() => {});
       }
       setLoaded(true);
     }).catch(() => {
-      // Supabase inaccessible : utiliser localStorage
       if (localData && localData.products.length > 0) {
         setProducts(localData.products);
+        savedAtRef.current = localData.savedAt;
         setData('products', localData).catch(() => {});
       }
       setLoaded(true);
     });
+  }, []);
+
+  // Realtime : mise à jour instantanée quand un autre onglet/appareil modifie les produits
+  useEffect(() => {
+    const channel = supabase
+      .channel('products-realtime')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'mint_data', filter: 'key=eq.products' },
+        (payload) => {
+          const incoming = toSavedData((payload.new as { value: unknown }).value);
+          if (!incoming) return;
+          // Ignorer si c'est une mise à jour qu'on vient nous-même d'écrire
+          if (incoming.savedAt <= savedAtRef.current) return;
+          savedAtRef.current = incoming.savedAt;
+          setProducts(incoming.products);
+          try { localStorage.setItem(LS_KEY, JSON.stringify(incoming)); } catch {}
+        }
+      )
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   // Migration one-shot : rose-poudre → rose
@@ -83,11 +102,10 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
   }, [loaded]);
 
   const save = async (prods: Product[]) => {
-    setProducts(prods);
     const payload: SavedData = { products: prods, savedAt: Date.now() };
-    // localStorage en premier — toujours fiable et synchrone
+    savedAtRef.current = payload.savedAt;
+    setProducts(prods);
     try { localStorage.setItem(LS_KEY, JSON.stringify(payload)); } catch {}
-    // Supabase en parallèle — best effort
     setData('products', payload).catch(() => {});
   };
 

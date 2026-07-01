@@ -130,7 +130,7 @@ export default function ProductGrid() {
 
   const isDrops = activeCategory === 'drops' && !activeSelection;
 
-  const SOLD_DELAY = 24 * 60 * 60 * 1000;
+  const SOLD_DELAY = 7 * 24 * 60 * 60 * 1000;
   const isRecentlySold = (p: (typeof products)[0]) =>
     !!p.sold && !!p.soldAt && Date.now() - p.soldAt < SOLD_DELAY;
 

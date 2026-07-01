@@ -6,7 +6,7 @@ import { useLang } from '@/context/LangContext';
 import type { Product } from '@/data/products';
 import styles from './ProductCard.module.css';
 
-const SOLD_DELAY = 24 * 60 * 60 * 1000;
+const SOLD_DELAY = 7 * 24 * 60 * 60 * 1000;
 
 export default function ProductCard({ product }: { product: Product }) {
   const { lang } = useLang();
