@@ -37,6 +37,19 @@
   background: var(--cream);
 }
 
+.errorMsg {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.8rem;
+  color: #c0392b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.errorMsg a {
+  color: #c0392b;
+  text-decoration: underline;
+}
+
 .title {
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 1.15rem;

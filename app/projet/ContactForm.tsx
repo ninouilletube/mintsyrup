@@ -3,29 +3,42 @@
 import { useState } from 'react';
 import styles from './ContactForm.module.css';
 
+type Status = 'idle' | 'sending' | 'sent' | 'error';
+
 export default function ContactForm() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<Status>('idle');
 
-  const handleSend = () => {
-    const subject = encodeURIComponent('Message depuis Mint Syrup');
-    const body = encodeURIComponent(`De : ${email}\n\n${message}`);
-    window.open(
-      `https://mail.google.com/mail/?view=cm&to=chatchep@gmail.com&su=${subject}&body=${body}`,
-      '_blank'
-    );
-    setSent(true);
+  const handleSend = async () => {
+    if (!email.trim() || !message.trim()) return;
+    setStatus('sending');
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), message: message.trim() }),
+      });
+      if (res.ok) {
+        setStatus('sent');
+        setEmail('');
+        setMessage('');
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    }
   };
 
-  if (sent) {
+  if (status === 'sent') {
     return (
       <section className={styles.wrap}>
         <h2 className={styles.title}>Me contacter</h2>
         <p className={styles.confirm}>
-          Gmail s&apos;est ouvert avec votre message pré-rempli — il ne reste plus qu&apos;à cliquer <strong>Envoyer</strong> dans Gmail !
+          Message envoyé ! Je vous répondrai dès que possible.
         </p>
-        <button className={styles.btnSecondary} onClick={() => setSent(false)}>
+        <button className={styles.btnSecondary} onClick={() => setStatus('idle')}>
           Envoyer un autre message
         </button>
       </section>
@@ -41,6 +54,7 @@ export default function ContactForm() {
         placeholder="Votre adresse e-mail"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
+        disabled={status === 'sending'}
       />
       <textarea
         className={styles.textarea}
@@ -48,15 +62,22 @@ export default function ContactForm() {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         rows={5}
+        disabled={status === 'sending'}
       />
+      {status === 'error' && (
+        <p className={styles.errorMsg}>
+          Une erreur s&apos;est produite, réessayez ou écrivez directement à{' '}
+          <a href="mailto:chatchep@gmail.com">chatchep@gmail.com</a>.
+        </p>
+      )}
       <div className={styles.footer}>
         <a href="mailto:chatchep@gmail.com" className={styles.emailLink}>chatchep@gmail.com</a>
         <button
           className={styles.btn}
           onClick={handleSend}
-          disabled={!email.trim() || !message.trim()}
+          disabled={!email.trim() || !message.trim() || status === 'sending'}
         >
-          Envoyer →
+          {status === 'sending' ? 'Envoi…' : 'Envoyer →'}
         </button>
       </div>
     </section>
