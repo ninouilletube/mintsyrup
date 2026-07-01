@@ -218,6 +218,21 @@
   /* Titre un peu plus petit pour la compacité */
   .title { font-size: 0.88rem; margin-bottom: 0.2rem; }
   .brand { margin-bottom: 0.15rem; }
+
+  /* Bloquer le menu contextuel natif sur appui long (iOS + Android) */
+  .cardLink {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  /* pointer-events: none sur les images → le navigateur ne propose plus
+     "télécharger / partager" au long appui ; le scroll et le :active
+     parent continuent de fonctionner normalement */
+  .image,
+  .imageHover {
+    -webkit-touch-callout: none;
+    pointer-events: none;
+  }
 }
 
 /* Sur appareils tactiles : désactiver le "hover collant" mais garder

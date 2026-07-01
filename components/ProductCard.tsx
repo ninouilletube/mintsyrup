@@ -14,17 +14,23 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <article className={`${styles.card} ${recentlySold ? styles.cardSold : ''}`}>
-      <div className={styles.cardLink}>
+      <div
+        className={styles.cardLink}
+        onContextMenu={(e) => {
+          // Mobile uniquement — bloquer le menu "télécharger / partager" sur appui long
+          if (window.matchMedia('(hover: none)').matches) e.preventDefault();
+        }}
+      >
         <div className={styles.imageWrapper}>
           {product.image ? (
-            <Image src={product.image} alt={product.title[lang]} fill className={styles.image} sizes="(max-width: 768px) 100vw, 33vw" />
+            <Image src={product.image} alt={product.title[lang]} fill className={styles.image} sizes="(max-width: 768px) 100vw, 33vw" draggable={false} />
           ) : (
             <div className={styles.placeholder} style={{ background: `linear-gradient(145deg, ${product.placeholder[0]}, ${product.placeholder[1]})` }}>
               <span className={styles.placeholderText}>{lang === 'fr' ? 'Photo à venir' : 'Photo coming soon'}</span>
             </div>
           )}
           {product.images?.[1] && (
-            <img src={product.images[1]} alt="" className={styles.imageHover} />
+            <img src={product.images[1]} alt="" className={styles.imageHover} draggable={false} />
           )}
           <span className={styles.priceTag}>
             {product.price} €
