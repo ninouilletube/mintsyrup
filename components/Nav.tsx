@@ -273,6 +273,14 @@ export default function Nav() {
           )}
 
           <Link
+            href="/favoris"
+            className={`${styles.mobileMenuItem} ${styles.menuHeart} ${pathname === '/favoris' ? styles.active : ''}`}
+            onClick={() => { setActiveCategory(null); setActiveSelection(null); setMenuOpen(false); }}
+          >
+            ♥ Coups de cœur
+          </Link>
+
+          <Link
             href="/projet"
             className={`${styles.mobileMenuItem} ${styles.mobileMenuProjet} ${pathname === '/projet' ? styles.active : ''}`}
             onClick={() => setMenuOpen(false)}

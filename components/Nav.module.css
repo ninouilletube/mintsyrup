@@ -474,7 +474,12 @@
     opacity: 0.85;
   }
 
-  .menuHeart { display: none; }
+  .menuHeart {
+    display: flex !important;
+    color: var(--coral);
+    font-weight: 600;
+    border-bottom: 1px solid rgba(28,28,8,0.08) !important;
+  }
   .mobileFavorisItem { gap: 0; }
   .mobileMenuSeason { font-size: 1.45rem !important; min-height: 44px !important; }
 }
