@@ -8,6 +8,8 @@
   flex-direction: column;
   gap: 0.85rem;
   margin-top: 2rem;
+  max-width: 460px;
+  align-self: flex-end;
 }
 
 .confirm {
@@ -190,6 +192,8 @@
     border-radius: 12px;
     box-shadow: 4px 4px 0 var(--dark);
     animation: mFadeUp 0.5s 0.28s ease both;
+    max-width: 100%;
+    align-self: stretch;
   }
 
   .title {
