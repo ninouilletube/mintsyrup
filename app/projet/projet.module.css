@@ -258,12 +258,11 @@
   padding: 0.85rem 1.1rem;
 }
 
-/* bouton toggle (titre + flèche) */
+/* bouton toggle (flèche + titre) */
 .accordionToggle {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.6rem;
   flex: 1;
   background: none;
   border: none;
@@ -272,7 +271,7 @@
   padding: 0;
 }
 
-.accordionToggle .blockTitle { margin-bottom: 0; flex: 1; }
+.accordionToggle .blockTitle { margin-bottom: 0; }
 
 .accordionArrow { font-size: 0.65rem; color: #F04080; flex-shrink: 0; }
 

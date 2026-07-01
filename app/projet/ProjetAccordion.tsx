@@ -47,10 +47,10 @@ export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
           onClick={() => setOpen(!open)}
           aria-expanded={open}
         >
-          {title && <h2 className={styles.blockTitle}>{title}</h2>}
           <span className={styles.accordionArrow} aria-hidden="true">
-            {open ? '▲' : '▼'}
+            {open ? '▼' : '▶'}
           </span>
+          {title && <h2 className={styles.blockTitle}>{title}</h2>}
         </button>
 
         {tooltip3 && (
