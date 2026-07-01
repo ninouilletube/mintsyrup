@@ -4,11 +4,19 @@ import { useState } from 'react';
 import styles from './ContactForm.module.css';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
+type CopyStatus = 'idle' | 'copied';
 
 export default function ContactForm() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [status, setStatus] = useState<Status>('idle');
+  const [copyStatus, setCopyStatus] = useState<CopyStatus>('idle');
+
+  const handleCopyEmail = async () => {
+    await navigator.clipboard.writeText('chatchep@gmail.com');
+    setCopyStatus('copied');
+    setTimeout(() => setCopyStatus('idle'), 2000);
+  };
 
   const handleSend = async () => {
     if (!email.trim() || !message.trim()) return;
@@ -71,7 +79,15 @@ export default function ContactForm() {
         </p>
       )}
       <div className={styles.footer}>
-        <a href="mailto:chatchep@gmail.com" className={styles.emailLink}>chatchep@gmail.com</a>
+        <span className={styles.emailLine}>
+          Ou m&apos;écrire un mail :{' '}
+          <button className={styles.emailCopy} onClick={handleCopyEmail}>
+            chatchep@gmail.com
+            <span className={`${styles.copiedBadge} ${copyStatus === 'copied' ? styles.copiedBadgeVisible : ''}`}>
+              Copié !
+            </span>
+          </button>
+        </span>
         <button
           className={styles.btn}
           onClick={handleSend}
