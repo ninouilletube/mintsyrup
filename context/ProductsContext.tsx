@@ -70,6 +70,18 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
+  // Migration one-shot : rose-poudre → rose
+  useEffect(() => {
+    if (!loaded) return;
+    if (!products.some(p => p.tags?.includes('rose-poudre'))) return;
+    const migrated = products.map(p => {
+      if (!p.tags?.includes('rose-poudre')) return p;
+      return { ...p, tags: [...new Set(p.tags.filter(t => t !== 'rose-poudre').concat(['rose']))] };
+    });
+    save(migrated);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded]);
+
   const save = async (prods: Product[]) => {
     setProducts(prods);
     const payload: SavedData = { products: prods, savedAt: Date.now() };

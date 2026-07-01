@@ -117,6 +117,22 @@ export function SubcategoriesProvider({ children }: { children: React.ReactNode 
     setData('color_order', order).catch(() => {});
   };
 
+  // Migration one-shot : supprimer rose-poudre de l'ordre et des libellés
+  useEffect(() => {
+    if (!loaded) return;
+    if (colorOrder.includes('rose-poudre')) {
+      setColorOrder(colorOrder.filter(c => c !== 'rose-poudre'));
+    }
+    if ('rose-poudre' in colorLabels) {
+      const { 'rose-poudre': _removed, ...rest } = colorLabels;
+      const next = rest as Record<string, string>;
+      setColorLabelsState(next);
+      try { localStorage.setItem(LS_COLOR_LABELS_KEY, JSON.stringify(next)); } catch {}
+      setData('color_labels', next).catch(() => {});
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded]);
+
   const setColorLabel = (id: string, label: string) => {
     const next = { ...colorLabels, [id]: label };
     setColorLabelsState(next);

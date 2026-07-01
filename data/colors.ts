@@ -14,7 +14,6 @@ export const COLORS: Color[] = [
   { id: 'nude',         label: 'Nude',        bg: '#C9956A' },
   { id: 'gris',         label: 'Gris',        bg: '#A0A0A0' },
   // Chauds
-  { id: 'rose-poudre',  label: 'Rose poudré', bg: '#F2C4CE' },
   { id: 'rose',         label: 'Rose',        bg: '#E05878' },
   { id: 'rouge',        label: 'Rouge',       bg: '#C02830' },
   { id: 'bordeaux',     label: 'Bordeaux',    bg: '#6B1020' },
