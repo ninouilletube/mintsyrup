@@ -16,14 +16,11 @@ import styles from './ProductGrid.module.css';
 
 export default function ProductGrid() {
   const { lang } = useLang();
-  const { activeCategory, activeSelection } = useShop();
+  const { activeCategory, activeSelection, filterSizes, setFilterSizes, filterColor, setFilterColor, filterType, setFilterType } = useShop();
   const { products } = useProducts();
   const { subcategories, colorOrder, colorLabels } = useSubcategories();
   const { selections } = useSelections();
 
-  const [filterType, setFilterType] = useState<string | null>(null);
-  const [filterSizes, setFilterSizes] = useState<string[]>([]);
-  const [filterColor, setFilterColor] = useState<string | null>(null);
   const [specialPostits, setSpecialPostits] = useState<{ summer?: string; coeur?: string }>({});
   const [dropsIndex, setDropsIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -85,11 +82,8 @@ export default function ProductGrid() {
     });
   }, [selections]);
 
-  // Reset filters and scroll on category/selection change
+  // Reset scroll and close filter panel on category change
   useEffect(() => {
-    setFilterType(null);
-    setFilterSizes([]);
-    setFilterColor(null);
     setMobileFilterOpen(false);
     if (activeCategory === 'drops') {
       carouselWindowRef.current?.scrollTo({ left: 0 });

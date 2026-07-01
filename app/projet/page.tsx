@@ -7,6 +7,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import { getData } from '@/lib/supabase';
 import styles from './projet.module.css';
 import ProjetAccordion from './ProjetAccordion';
+import ContactForm from './ContactForm';
 
 export const revalidate = 60;
 
@@ -122,6 +123,8 @@ export default async function ProjetPage() {
               </>
             )}
           </div>
+
+          <ContactForm />
 
         </div>
       </main>
