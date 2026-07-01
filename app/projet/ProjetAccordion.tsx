@@ -15,9 +15,10 @@ export default function ProjetAccordion({ title, text, tooltip3 }: Props) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const tooltipInnerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll pour révéler le bas du bloc au déploiement
+  // Scroll pour révéler le bas du bloc au déploiement (mobile uniquement)
   useEffect(() => {
     if (!open) return;
+    if (!window.matchMedia('(max-width: 768px)').matches) return;
     const timer = setTimeout(() => {
       if (!wrapRef.current) return;
       const rect = wrapRef.current.getBoundingClientRect();
