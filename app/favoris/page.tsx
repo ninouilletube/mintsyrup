@@ -12,7 +12,11 @@ import styles from './favoris.module.css';
 export const revalidate = 60;
 
 export default async function FavorisPage() {
-  const allProducts = (await getData('products') as Product[] | null) ?? [];
+  const raw = await getData('products');
+  // Compatible avec l'ancien format (tableau) et le nouveau ({ products, savedAt })
+  const allProducts: Product[] = Array.isArray(raw)
+    ? (raw as Product[])
+    : ((raw as { products?: Product[] } | null)?.products ?? []);
   const specialPostits = (await getData('config_special_postits') as { summer?: string; coeur?: string } | null) ?? {};
   const products = allProducts
     .filter((p) => p.favorite && !p.hidden && !p.sold)
