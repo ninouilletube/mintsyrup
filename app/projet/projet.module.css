@@ -259,7 +259,16 @@
   animation: vinyl 6s linear infinite;
 }
 
-/* ── Accordion bloc 3 — visible sur desktop ET mobile ── */
+/* ── Rangée prix + contact ── */
+.bottomRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.bottomRow > :first-child { flex: 1; min-width: 0; }
+
+/* ── Bloc prix (statique) ── */
 .accordionWrap {
   border: 2.5px solid var(--dark);
   border-radius: 12px;
@@ -274,22 +283,8 @@
   padding: 0.85rem 1.1rem;
 }
 
-/* bouton toggle (flèche + titre) */
-.accordionToggle {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  flex: 1;
-  background: none;
-  border: none;
-  cursor: pointer;
-  text-align: left;
-  padding: 0;
-}
-
-.accordionToggle .blockTitle { margin-bottom: 0; }
-
-.accordionArrow { font-size: 0.65rem; color: #F04080; flex-shrink: 0; }
+.accordionTitleRow { flex: 1; }
+.accordionTitleRow .blockTitle { margin-bottom: 0; }
 
 .accordionBody {
   padding: 0 1.1rem 1.1rem;
@@ -443,10 +438,14 @@
 
   .projetLogo { width: 3rem; height: 3rem; margin-top: 0.75rem; }
 
-  /* ── Accordion : overrides mobiles ── */
+  /* ── Rangée prix + contact : colonne sur mobile ── */
+  .bottomRow { flex-direction: column; }
+  .bottomRow > :first-child { flex: none; width: 100%; }
+
+  /* ── Bloc prix overrides mobiles ── */
   .accordionWrap { box-shadow: 4px 4px 0 var(--dark); animation: mFadeUp 0.5s 0.22s ease both; }
   .accordionBody { font-size: 0.82rem; }
-  .accordionToggle .blockTitle { font-size: 1rem; }
+  .accordionTitleRow .blockTitle { font-size: 1rem; }
   .blockTitle { font-size: 1rem; margin-bottom: 0.55rem; }
 
   /* tooltip (i) depuis le header : plus étroit sur mobile */

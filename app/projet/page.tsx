@@ -90,41 +90,20 @@ export default async function ProjetPage() {
               </div>
             </div>
 
-            {blocks[2] && (
-              <>
-                {/* Desktop : carte pleine */}
-                <div className={`${styles.content} ${styles.blockFull} ${styles.desktopBlock2}`}>
-                  {tooltip3 && (
-                    <div className={styles.infoWrap}>
-                      <span className={styles.infoIcon}>i</span>
-                      <div className={styles.infoTooltip}>
-                        <div className={styles.infoTooltipInner}>
-                          <span>{tooltip3}</span>
-                          <a
-                            href="https://www.vinted.fr/member/3125590380"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={styles.infoLink}
-                          >Voir mon profil Vinted ↗</a>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  {blocks[2].title && <h2 className={styles.blockTitle}>{blocks[2].title}</h2>}
-                  {blocks[2].text && blocks[2].text.split('\n').filter(Boolean).map((p, j) => (
-                    <p key={j}>{p}</p>
-                  ))}
-                </div>
-                {/* Mobile : lien coups de cœur + accordéon */}
-                <div className={styles.favorisLinkWrap}>
-                  <Link href="/favoris" className={styles.favorisLink}>Voir mes coups de cœur →</Link>
-                </div>
-                <ProjetAccordion title={blocks[2].title} text={blocks[2].text} tooltip3={tooltip3} />
-              </>
-            )}
           </div>
 
-          <ContactForm />
+          {blocks[2] && (
+            <div className={styles.favorisLinkWrap}>
+              <Link href="/favoris" className={styles.favorisLink}>Voir mes coups de cœur →</Link>
+            </div>
+          )}
+
+          <div className={styles.bottomRow}>
+            {blocks[2] && (
+              <ProjetAccordion title={blocks[2].title} text={blocks[2].text} tooltip3={tooltip3} />
+            )}
+            <ContactForm />
+          </div>
 
         </div>
       </main>

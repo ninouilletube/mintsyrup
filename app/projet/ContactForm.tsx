@@ -13,7 +13,7 @@ export default function ContactForm() {
   const [copyStatus, setCopyStatus] = useState<CopyStatus>('idle');
 
   const handleCopyEmail = async () => {
-    await navigator.clipboard.writeText('chatchep@gmail.com');
+    await navigator.clipboard.writeText('contact.mintsyrup@gmail.com');
     setCopyStatus('copied');
     setTimeout(() => setCopyStatus('idle'), 2000);
   };
@@ -75,14 +75,14 @@ export default function ContactForm() {
       {status === 'error' && (
         <p className={styles.errorMsg}>
           Une erreur s&apos;est produite, réessayez ou écrivez directement à{' '}
-          <a href="mailto:chatchep@gmail.com">chatchep@gmail.com</a>.
+          <a href="mailto:contact.mintsyrup@gmail.com">contact.mintsyrup@gmail.com</a>.
         </p>
       )}
       <div className={styles.footer}>
         <span className={styles.emailLine}>
           Ou m&apos;écrire un mail :{' '}
           <button className={styles.emailCopy} onClick={handleCopyEmail}>
-            chatchep@gmail.com
+            contact.mintsyrup@gmail.com
             <span className={`${styles.copiedBadge} ${copyStatus === 'copied' ? styles.copiedBadgeVisible : ''}`}>
               Copié !
             </span>
