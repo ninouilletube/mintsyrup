@@ -11,8 +11,8 @@ export async function POST(req: Request) {
   }
 
   const { error } = await resend.emails.send({
-    from: 'Mint Syrup <onboarding@resend.dev>',
-    to: 'ninacousew@gmail.com',
+    from: 'Mint Syrup <contact@mintsyrup.fr>',
+    to: 'contact.mintsyrup@gmail.com',
     replyTo: email,
     subject: 'Message depuis Mint Syrup',
     text: `De : ${email}\n\n${message}`,
