@@ -1068,10 +1068,12 @@ export default function AdminPage() {
         });
 
         // Stats par sous-catégorie : quantité et marge
+        const subLabel = (id: string) => subcategories.find(s => s.id === id)?.label ?? id;
         type CatStat = { count: number; margin: number; marginPct: number };
         const byCat: Record<string, CatStat> = {};
         soldProducts.forEach(p => {
-          const key = p.subcategory || p.categories[0] || 'autre';
+          const rawKey = p.subcategory || p.categories[0] || 'autre';
+          const key = subLabel(rawKey);
           const sp = p.soldPrice ?? p.price;
           const pp = p.purchasePrice ?? 0;
           if (!byCat[key]) byCat[key] = { count: 0, margin: 0, marginPct: 0 };
