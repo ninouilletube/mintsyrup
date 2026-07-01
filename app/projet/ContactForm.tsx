@@ -41,7 +41,7 @@ export default function ContactForm() {
 
   if (status === 'sent') {
     return (
-      <section className={styles.wrap}>
+      <section id="contact" className={styles.wrap}>
         <h2 className={styles.title}>Me contacter</h2>
         <p className={styles.confirm}>
           Message envoyé ! Je vous répondrai dès que possible.
@@ -54,7 +54,7 @@ export default function ContactForm() {
   }
 
   return (
-    <section className={styles.wrap}>
+    <section id="contact" className={styles.wrap}>
       <h2 className={styles.title}>Me contacter</h2>
       <input
         type="email"

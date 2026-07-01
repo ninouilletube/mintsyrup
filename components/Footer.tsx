@@ -25,7 +25,10 @@ export default function Footer() {
           </a>
         </div>
       </div>
-      <p className={styles.copy}>© 2026 Mint Syrup <a href="/admin" target="_blank" rel="noopener noreferrer" className={styles.secret}>·</a></p>
+      <div className={styles.footerRight}>
+        <Link href="/projet#contact" className={styles.contactLink}>Contact</Link>
+        <p className={styles.copy}>© 2026 Mint Syrup <a href="/admin" target="_blank" rel="noopener noreferrer" className={styles.secret}>·</a></p>
+      </div>
     </footer>
   );
 }
