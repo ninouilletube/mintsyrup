@@ -1765,10 +1765,12 @@ function toolbar(tier, tierSet, season, seasonSet, sort, sortSet) {
 
 function applySort(arr, sortKey) {
   return [...arr].sort((a, b) => {
-    if (sortKey === 'date-asc')  return new Date(a.created_at) - new Date(b.created_at);
+    const dateA = a => new Date(a.sold_at ?? a.created_at);
+    const dateB = b => new Date(b.sold_at ?? b.created_at);
+    if (sortKey === 'date-asc')  return dateA(a) - dateB(b);
     if (sortKey === 'price-asc') return a.price - b.price;
     if (sortKey === 'price-desc')return b.price - a.price;
-    return new Date(b.created_at) - new Date(a.created_at); // date-desc default
+    return dateB(b) - dateA(a); // date-desc default
   });
 }
 
