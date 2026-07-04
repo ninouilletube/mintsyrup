@@ -1805,12 +1805,11 @@ function renderStock() {
   const avgAll       = active.length            > 0 ? Math.round(active.reduce((s, a) => s + a.price, 0)            / active.length)            : 0;
 
   summary.innerHTML = `
-    <div class="stock-metric"><div class="stock-metric-val">${active.length}</div><div class="stock-metric-lbl">pièces</div></div>
+    <div class="stock-metric" data-tooltip="${avgAll > 0 ? `Prix moyen : ${avgAll}€` : ''}"><div class="stock-metric-val">${active.length}</div><div class="stock-metric-lbl">pièces</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalAchat.toFixed(0)}€</div><div class="stock-metric-lbl">investi</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${avgAchat.toFixed(2)}€</div><div class="stock-metric-lbl">achat moyen</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalCA}€</div><div class="stock-metric-lbl">CA potentiel</div></div>
     <div class="stock-metric"><div class="stock-metric-val">${totalMargin}€</div><div class="stock-metric-lbl">marge nette</div></div>
-    <div class="stock-metric" data-tooltip="Prix de vente moyen de tout le stock"><div class="stock-metric-val">${avgAll}€</div><div class="stock-metric-lbl">prix moyen</div></div>
     <div class="stock-metric stock-metric-scheduled" data-tooltip="${nbScheduled > 0 ? `Prix moyen : ${avgScheduled}€` : 'Aucun article programmé'}"><div class="stock-metric-val">${nbScheduled}</div><div class="stock-metric-lbl">programmé</div></div>
     <div class="stock-metric stock-metric-online" data-tooltip="${nbOnline > 0 ? `Prix moyen : ${avgOnline}€` : 'Aucun article en ligne'}"><div class="stock-metric-val">${nbOnline}</div><div class="stock-metric-lbl">en ligne</div></div>
   `;
