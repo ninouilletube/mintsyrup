@@ -152,7 +152,7 @@ export default function AdminPage() {
   const [selected, setSelected] = useState<Set<number>>(new Set());
 
   // Modal vendu
-  const [soldModal, setSoldModal] = useState<{ product: Product } | null>(null);
+  const [soldModal, setSoldModal] = useState<{ product: Product; isEdit?: boolean } | null>(null);
   const [soldPriceInput, setSoldPriceInput] = useState('');
 
   // Edit-article form
@@ -315,11 +315,17 @@ export default function AdminPage() {
     if (!soldModal) return;
     const p = soldModal.product;
     const sp = soldPriceInput ? parseFloat(soldPriceInput) : p.price;
-    updateProduct({ ...p, sold: true, soldAt: Date.now(), soldPrice: sp, hidden: true });
-    setDetailProduct(null);
+    if (soldModal.isEdit) {
+      const updated = { ...p, soldPrice: sp };
+      updateProduct(updated);
+      setDetailProduct(updated);
+    } else {
+      updateProduct({ ...p, sold: true, soldAt: Date.now(), soldPrice: sp, hidden: true });
+      setDetailProduct(null);
+      setView(detailOrigin);
+    }
     setSoldModal(null);
     setSoldPriceInput('');
-    setView(detailOrigin);
   };
 
   const toggleHideSelected = () => {
@@ -1006,7 +1012,16 @@ export default function AdminPage() {
                       Vendu ✓
                     </button>
                   )}
-                  {p.sold && <span className={styles.soldBadge}>Vendu {p.soldPrice ? `— ${p.soldPrice} €` : ''}</span>}
+                  {p.sold && (
+                    <span className={styles.soldBadge} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>
+                      Vendu {p.soldPrice ? `— ${p.soldPrice} €` : ''}
+                      <button
+                        title="Corriger le prix"
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0 2px', opacity: 0.6, fontSize: '0.85rem', lineHeight: 1 }}
+                        onClick={() => { setSoldModal({ product: p, isEdit: true }); setSoldPriceInput(String(p.soldPrice ?? p.price)); }}
+                      >✎</button>
+                    </span>
+                  )}
                   <div className={styles.detailActionsRow}>
                     <button
                       className={styles.btnSecondary}
@@ -1458,7 +1473,7 @@ export default function AdminPage() {
       {soldModal && (
         <div className={styles.modalOverlay} onClick={() => setSoldModal(null)}>
           <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
-            <h3 className={styles.modalTitle}>Confirmer la vente</h3>
+            <h3 className={styles.modalTitle}>{soldModal.isEdit ? 'Corriger le prix de vente' : 'Confirmer la vente'}</h3>
             <p className={styles.modalSub}>{soldModal.product.title.fr}</p>
             <label className={styles.modalLabel}>Prix de vente réel (€)</label>
             <input
@@ -1472,7 +1487,7 @@ export default function AdminPage() {
             />
             <div className={styles.modalActions}>
               <button className={styles.btnSecondary} onClick={() => setSoldModal(null)}>Annuler</button>
-              <button className={styles.btnSold} onClick={confirmSold}>Confirmer ✓</button>
+              <button className={styles.btnSold} onClick={confirmSold}>{soldModal.isEdit ? 'Enregistrer' : 'Confirmer ✓'}</button>
             </div>
           </div>
         </div>
