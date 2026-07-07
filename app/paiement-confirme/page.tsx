@@ -1,15 +1,35 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabase';
 import styles from './confirme.module.css';
 
 export default function PaiementConfirmePage() {
-  const { clearCart } = useCart();
-  useEffect(() => { clearCart(); }, [clearCart]);
+  const { items, clearCart } = useCart();
+  const { user } = useAuth();
+  const saved = useRef(false);
+
+  useEffect(() => {
+    if (saved.current) return;
+    saved.current = true;
+    const save = async () => {
+      if (user && items.length > 0) {
+        for (const item of items) {
+          await supabase.from('user_collection').upsert(
+            { user_id: user.id, product_id: item.productId, source: 'purchase' },
+            { onConflict: 'user_id,product_id' }
+          );
+        }
+      }
+      clearCart();
+    };
+    save();
+  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

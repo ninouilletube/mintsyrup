@@ -1,0 +1,31 @@
+.btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dark, #1C1C1C);
+  transition: color 0.15s, transform 0.12s;
+  padding: 0;
+}
+
+.btn:hover {
+  color: #C0185A;
+  transform: scale(1.15);
+}
+
+.active {
+  color: #C0185A;
+}
+
+.active svg {
+  filter: drop-shadow(0 0 2px rgba(192,24,90,0.3));
+}

@@ -21,11 +21,15 @@
 .cardSold { cursor: default; }
 .cardSold:hover { transform: none; box-shadow: 5px 5px 0 var(--dark); }
 
+.imageOuter {
+  position: relative;
+  border-bottom: 2.5px solid var(--dark);
+}
+
 .imageWrapper {
   position: relative;
   aspect-ratio: 4 / 4;
   overflow: hidden;
-  border-bottom: 2.5px solid var(--dark);
 }
 
 .image { object-fit: cover; transition: transform 0.5s ease, opacity 0.4s ease; }

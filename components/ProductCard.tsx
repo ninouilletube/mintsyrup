@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useLang } from '@/context/LangContext';
 import type { Product } from '@/data/products';
 import styles from './ProductCard.module.css';
+import WishlistButton from './WishlistButton';
 
 const SOLD_DELAY = 7 * 24 * 60 * 60 * 1000;
 
@@ -21,26 +22,29 @@ export default function ProductCard({ product }: { product: Product }) {
           if (window.matchMedia('(hover: none)').matches) e.preventDefault();
         }}
       >
-        <div className={styles.imageWrapper}>
-          {product.image ? (
-            <Image src={product.image} alt={product.title[lang]} fill className={styles.image} sizes="(max-width: 768px) 100vw, 33vw" draggable={false} />
-          ) : (
-            <div className={styles.placeholder} style={{ background: `linear-gradient(145deg, ${product.placeholder[0]}, ${product.placeholder[1]})` }}>
-              <span className={styles.placeholderText}>{lang === 'fr' ? 'Photo à venir' : 'Photo coming soon'}</span>
-            </div>
-          )}
-          {product.images?.[1] && (
-            <img src={product.images[1]} alt="" className={styles.imageHover} draggable={false} />
-          )}
-          <span className={styles.priceTag}>
-            {product.price} €
-          </span>
-          {recentlySold && (
-            <div className={styles.soldWatermark}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/postit-vendu.png" alt="Vendu" className={styles.soldWatermarkImg} />
-            </div>
-          )}
+        <div className={styles.imageOuter}>
+          <div className={styles.imageWrapper}>
+            {product.image ? (
+              <Image src={product.image} alt={product.title[lang]} fill className={styles.image} sizes="(max-width: 768px) 100vw, 33vw" draggable={false} />
+            ) : (
+              <div className={styles.placeholder} style={{ background: `linear-gradient(145deg, ${product.placeholder[0]}, ${product.placeholder[1]})` }}>
+                <span className={styles.placeholderText}>{lang === 'fr' ? 'Photo à venir' : 'Photo coming soon'}</span>
+              </div>
+            )}
+            {product.images?.[1] && (
+              <img src={product.images[1]} alt="" className={styles.imageHover} draggable={false} />
+            )}
+            <span className={styles.priceTag}>
+              {product.price} €
+            </span>
+            {recentlySold && (
+              <div className={styles.soldWatermark}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/postit-vendu.png" alt="Vendu" className={styles.soldWatermarkImg} />
+              </div>
+            )}
+          </div>
+          <WishlistButton productId={product.id} />
         </div>
         <div className={styles.body}>
           <div className={styles.titleRow}>

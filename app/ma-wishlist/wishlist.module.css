@@ -1,0 +1,224 @@
+.page {
+  min-height: 100vh;
+  background: #c9e8f0;
+  position: relative;
+  overflow: hidden;
+  padding-top: 64px;
+}
+
+/* Wave animation */
+.waves {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wave {
+  width: 100%;
+  height: 100%;
+}
+
+.parallax > use {
+  animation: move-forever 25s cubic-bezier(.55,.5,.45,.5) infinite;
+}
+
+.w1 { fill: rgba(255,255,255,0.7); animation-delay: -2s; animation-duration: 7s; }
+.w2 { fill: rgba(255,255,255,0.5); animation-delay: -3s; animation-duration: 10s; }
+.w3 { fill: rgba(255,255,255,0.3); animation-delay: -4s; animation-duration: 13s; }
+.w4 { fill: rgba(255,255,255,0.9); animation-delay: -5s; animation-duration: 20s; }
+
+@keyframes move-forever {
+  0% { transform: translate3d(-90px,0,0); }
+  100% { transform: translate3d(85px,0,0); }
+}
+
+/* Second wave layer from top */
+.page::before {
+  content: '';
+  position: fixed;
+  top: 64px;
+  left: 0;
+  width: 200%;
+  height: 60px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 60'%3E%3Cpath d='M0,30 C150,60 350,0 600,30 C850,60 1050,0 1200,30 L1200,60 L0,60 Z' fill='rgba(255,255,255,0.15)'/%3E%3C/svg%3E") repeat-x;
+  background-size: 600px 60px;
+  animation: wave-top 8s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes wave-top {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-600px); }
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 2rem 200px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--dark);
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  background: var(--dark);
+  color: #fff;
+  border: 2px solid var(--dark);
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.btnPrimary:hover:not(:disabled) { opacity: 0.8; }
+.btnPrimary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btnGhost {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  background: transparent;
+  color: var(--dark);
+  border: 2px solid var(--dark);
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.btnGhost:hover { background: var(--dark); color: #fff; }
+
+.cardWrap {
+  position: relative;
+}
+
+.cardWrapSelecting {
+  cursor: pointer;
+}
+
+.cardWrapSelecting > :last-child {
+  pointer-events: none;
+}
+
+.cardWrapSelected > :last-child {
+  outline: 3px solid var(--dark);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.checkOverlay {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 20;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--dark);
+  background: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--dark);
+  transition: background 0.12s;
+}
+
+.checkOn {
+  background: var(--dark);
+  color: #fff;
+}
+
+.inCartBadge {
+  position: absolute;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  background: var(--dark);
+  color: #fff;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.empty {
+  font-family: var(--font-dm-sans), sans-serif;
+  color: rgba(28,28,28,0.5);
+  font-size: 0.95rem;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.emptyHeart {
+  font-size: 3.5rem;
+  color: rgba(28,28,28,0.2);
+  line-height: 1;
+}
+
+.emptyText {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin: 0;
+}
+
+.emptySub {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.88rem;
+  color: rgba(28,28,28,0.5);
+  margin: 0;
+}
