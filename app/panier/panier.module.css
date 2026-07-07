@@ -203,6 +203,21 @@
 .shippingLabel { flex: 1; }
 .shippingPrice { font-weight: 700; color: var(--dark); }
 
+.relayWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.relayInput {
+  font-size: 0.82rem;
+}
+.relayHint {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.72rem;
+  color: rgba(28,28,28,0.5);
+  line-height: 1.4;
+}
+
 .customsNote {
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.78rem;

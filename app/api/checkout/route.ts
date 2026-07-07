@@ -8,10 +8,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 type CartItemPayload = { id: number; title: string; price: number; image: string | null };
 
 export async function POST(req: Request) {
-  const { items, shipping, country } = await req.json() as {
+  const { items, shipping, country, carrier, relayPoint } = await req.json() as {
     items: CartItemPayload[];
     shipping: { label: string; price: number };
     country: string;
+    carrier: string;
+    relayPoint: string | null;
   };
 
   if (!items?.length) return NextResponse.json({ error: 'Panier vide' }, { status: 400 });
@@ -61,6 +63,8 @@ export async function POST(req: Request) {
     metadata: {
       product_ids: items.map(i => i.id).join(','),
       country,
+      carrier: carrier ?? 'ups',
+      relay_point: relayPoint ?? '',
     },
     shipping_address_collection: {
       allowed_countries: ['PT', 'FR', 'BE', 'LU', 'DE', 'ES', 'IT', 'NL', 'AT', 'CH', 'SE', 'DK', 'FI', 'PL', 'IE', 'GR', 'CZ', 'HU', 'RO', 'HR', 'SI', 'EE', 'LV', 'LT', 'CY', 'MT', 'BG', 'GB', 'US', 'CA', 'AU', 'JP', 'BR'],

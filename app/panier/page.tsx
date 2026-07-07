@@ -9,55 +9,27 @@ import { useCart, RESERVE_DURATION } from '@/context/CartContext';
 import { useProducts } from '@/context/ProductsContext';
 import styles from './panier.module.css';
 
-// ── Tarifs de livraison (depuis Lisbonne) ──────────────────────────────────
-const SHIPPING_ZONES: { label: string; countries: string[]; options: { label: string; price: number }[] }[] = [
-  {
-    label: 'Portugal',
-    countries: ['PT'],
-    options: [
-      { label: 'CTT Expresso — domicile (2–3 j)', price: 4 },
-      { label: 'CTT — point retrait (2–3 j)', price: 3 },
-    ],
-  },
-  {
-    label: 'France',
-    countries: ['FR'],
-    options: [
-      { label: 'Colissimo — domicile (3–5 j)', price: 7 },
-      { label: 'Colissimo — point relais (3–5 j)', price: 6 },
-      { label: 'Mondial Relay — point relais (4–6 j)', price: 5 },
-    ],
-  },
-  {
-    label: 'Belgique / Luxembourg',
-    countries: ['BE', 'LU'],
-    options: [
-      { label: 'Colissimo — domicile (3–5 j)', price: 9 },
-      { label: 'Mondial Relay — point relais (4–6 j)', price: 7 },
-    ],
-  },
-  {
-    label: 'UE (autres pays)',
-    countries: ['DE', 'ES', 'IT', 'NL', 'AT', 'PL', 'SE', 'FI', 'DK', 'IE', 'CZ', 'SK', 'HU', 'RO', 'BG', 'HR', 'SI', 'EE', 'LV', 'LT', 'CY', 'MT', 'GR'],
-    options: [
-      { label: 'Colissimo International — domicile (5–8 j)', price: 13 },
-    ],
-  },
-  {
-    label: 'Suisse',
-    countries: ['CH'],
-    options: [
-      { label: 'Colissimo International — domicile (5–8 j) + douane', price: 17 },
-    ],
-  },
-  {
-    label: 'Reste du monde',
-    countries: [],
-    options: [
-      { label: 'DPD / La Poste International (7–14 j)', price: 23 },
-    ],
-  },
-];
+// Mondial Relay disponible depuis Lisbonne vers ces pays
+const MONDIAL_RELAY_COUNTRIES = ['PT', 'FR', 'BE', 'LU', 'ES'];
+
+type ShippingOption = {
+  id: string;
+  label: string;
+  price: number;
+  isRelay: boolean;
+  carrier: 'ups' | 'mondial-relay';
+};
+
+function getOptions(countryCode: string): ShippingOption[] {
+  const options: ShippingOption[] = [
+    { id: 'ups-relay',  label: 'UPS — Point Relais',  price: 13, isRelay: true,  carrier: 'ups' },
+    { id: 'ups-home',   label: 'UPS — Domicile',       price: 15, isRelay: false, carrier: 'ups' },
+  ];
+  if (MONDIAL_RELAY_COUNTRIES.includes(countryCode)) {
+    options.push({ id: 'mr-relay', label: 'Mondial Relay — Point Relais', price: 13, isRelay: true, carrier: 'mondial-relay' });
+  }
+  return options;
+}
 
 const COUNTRY_OPTIONS = [
   { code: 'PT', label: 'Portugal' },
@@ -83,10 +55,6 @@ const COUNTRY_OPTIONS = [
   { code: 'OTHER', label: 'Autre pays' },
 ];
 
-function getZone(countryCode: string) {
-  return SHIPPING_ZONES.find(z => z.countries.includes(countryCode)) ?? SHIPPING_ZONES[SHIPPING_ZONES.length - 1];
-}
-
 function formatTimer(ms: number) {
   if (ms <= 0) return '00:00';
   const totalSec = Math.ceil(ms / 1000);
@@ -100,7 +68,8 @@ export default function PanierPage() {
   const { products } = useProducts();
   const [timeLeft, setTimeLeft] = useState(0);
   const [country, setCountry] = useState('FR');
-  const [shippingIdx, setShippingIdx] = useState(0);
+  const [selectedOptionId, setSelectedOptionId] = useState('ups-relay');
+  const [relayPoint, setRelayPoint] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -109,13 +78,18 @@ export default function PanierPage() {
     .filter((x): x is { item: typeof items[0]; product: NonNullable<typeof products[0]> } => !!x.product);
 
   const subtotal = cartProducts.reduce((s, { product }) => s + product.price, 0);
-  const zone = getZone(country);
-  const shippingOption = zone.options[Math.min(shippingIdx, zone.options.length - 1)];
-  const shippingCost = shippingOption.price;
-  const total = subtotal + shippingCost;
 
-  // Reset shipping idx when zone changes
-  useEffect(() => { setShippingIdx(0); }, [country]);
+  const options = getOptions(country);
+  const selectedOption = options.find(o => o.id === selectedOptionId) ?? options[0];
+  const total = subtotal + selectedOption.price;
+
+  // Quand le pays change, réinitialise l'option si elle n'est plus disponible
+  useEffect(() => {
+    if (!options.find(o => o.id === selectedOptionId)) {
+      setSelectedOptionId(options[0].id);
+    }
+    setRelayPoint('');
+  }, [country]);
 
   // Countdown timer
   useEffect(() => {
@@ -126,8 +100,10 @@ export default function PanierPage() {
     return () => clearInterval(id);
   }, [expiresAt]);
 
+  const canCheckout = !selectedOption.isRelay || relayPoint.trim().length > 0;
+
   const handleCheckout = async () => {
-    if (cartProducts.length === 0) return;
+    if (cartProducts.length === 0 || !canCheckout) return;
     setLoading(true);
     setError(null);
     try {
@@ -141,8 +117,10 @@ export default function PanierPage() {
             price: product.price,
             image: product.image,
           })),
-          shipping: { label: shippingOption.label, price: shippingCost },
+          shipping: { label: selectedOption.label, price: selectedOption.price },
           country,
+          carrier: selectedOption.carrier,
+          relayPoint: selectedOption.isRelay ? relayPoint.trim() : null,
         }),
       });
       const data = await res.json();
@@ -220,17 +198,31 @@ export default function PanierPage() {
 
             <label className={styles.label}>Mode de livraison</label>
             <div className={styles.shippingOptions}>
-              {zone.options.map((opt, i) => (
-                <label key={i} className={`${styles.shippingOption} ${shippingIdx === i ? styles.shippingOptionSelected : ''}`}>
-                  <input type="radio" name="shipping" checked={shippingIdx === i} onChange={() => setShippingIdx(i)} />
+              {options.map((opt) => (
+                <label key={opt.id} className={`${styles.shippingOption} ${selectedOptionId === opt.id ? styles.shippingOptionSelected : ''}`}>
+                  <input type="radio" name="shipping" checked={selectedOptionId === opt.id} onChange={() => setSelectedOptionId(opt.id)} />
                   <span className={styles.shippingLabel}>{opt.label}</span>
                   <span className={styles.shippingPrice}>{opt.price} €</span>
                 </label>
               ))}
             </div>
 
+            {selectedOption.isRelay && (
+              <div className={styles.relayWrap}>
+                <label className={styles.label}>Point relais souhaité</label>
+                <input
+                  className={`${styles.select} ${styles.relayInput}`}
+                  type="text"
+                  placeholder="Ex : Tabac du Centre — 12 rue de la Paix, Paris"
+                  value={relayPoint}
+                  onChange={e => setRelayPoint(e.target.value)}
+                />
+                <p className={styles.relayHint}>Indique le nom et l&apos;adresse du point relais. Trouve-le sur ups.com ou mondialrelay.fr.</p>
+              </div>
+            )}
+
             {country === 'CH' && (
-              <p className={styles.customsNote}>🇨🇭 La Suisse est hors UE — des frais de douane peuvent s&apos;ajouter à la livraison.</p>
+              <p className={styles.customsNote}>🇨🇭 La Suisse est hors UE — des frais de douane peuvent s&apos;ajouter à la livraison, à la charge du destinataire.</p>
             )}
 
             <div className={styles.totals}>
@@ -240,7 +232,7 @@ export default function PanierPage() {
               </div>
               <div className={styles.totalRow}>
                 <span>Livraison</span>
-                <span>{shippingCost} €</span>
+                <span>{selectedOption.price} €</span>
               </div>
               <div className={`${styles.totalRow} ${styles.totalRowBold}`}>
                 <span>Total</span>
@@ -250,9 +242,17 @@ export default function PanierPage() {
 
             {error && <p className={styles.errorMsg}>{error}</p>}
 
-            <button className={styles.checkoutBtn} onClick={handleCheckout} disabled={loading}>
+            <button
+              className={styles.checkoutBtn}
+              onClick={handleCheckout}
+              disabled={loading || !canCheckout}
+            >
               {loading ? 'Redirection…' : `Payer ${total} € →`}
             </button>
+
+            {selectedOption.isRelay && !relayPoint.trim() && (
+              <p className={styles.relayHint} style={{ textAlign: 'center', color: '#C83A20' }}>Indique d&apos;abord ton point relais</p>
+            )}
 
             <p className={styles.secureNote}>Paiement sécurisé par Stripe</p>
           </div>
