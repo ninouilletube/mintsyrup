@@ -6,6 +6,9 @@ import { ProductsProvider } from '@/context/ProductsContext';
 import { SubcategoriesProvider } from '@/context/SubcategoriesContext';
 import { SelectionsProvider } from '@/context/SelectionsContext';
 import { TagsProvider } from '@/context/TagsContext';
+import { AuthProvider } from '@/context/AuthContext';
+import { CartProvider } from '@/context/CartContext';
+import { WishlistProvider } from '@/context/WishlistContext';
 import VisitTracker from '@/components/VisitTracker';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import SpotifyPlayer from '@/components/SpotifyPlayer';
@@ -27,14 +30,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={`${dmSans.variable} ${playfair.variable}`}>
         <LangProvider>
-          <ShopProvider>
-            <ProductsProvider><SubcategoriesProvider><SelectionsProvider><TagsProvider>
-              <LoadingOverlay />
-              <SpotifyPlayer />
-              <VisitTracker />
-              {children}
-            </TagsProvider></SelectionsProvider></SubcategoriesProvider></ProductsProvider>
-          </ShopProvider>
+          <AuthProvider>
+            <ShopProvider>
+              <ProductsProvider><SubcategoriesProvider><SelectionsProvider><TagsProvider>
+                <CartProvider>
+                  <WishlistProvider>
+                    <LoadingOverlay />
+                    <SpotifyPlayer />
+                    <VisitTracker />
+                    {children}
+                  </WishlistProvider>
+                </CartProvider>
+              </TagsProvider></SelectionsProvider></SubcategoriesProvider></ProductsProvider>
+            </ShopProvider>
+          </AuthProvider>
         </LangProvider>
       </body>
     </html>

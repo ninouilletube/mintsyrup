@@ -9,6 +9,9 @@ import styles from './Nav.module.css';
 import { getCurrentSeason, type SeasonKey } from '@/lib/season';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import CartIcon from './CartIcon';
+import AuthModal from './AuthModal';
+import { useAuth } from '@/context/AuthContext';
 
 const SEASON_LABEL: Record<SeasonKey, string> = {
   summer: 'SUMMER',
@@ -29,11 +32,13 @@ const CATEGORY_CATS: Category[] = ['manteaux', 'hauts', 'bas', 'robes', 'chaussu
 export default function Nav() {
   const { activeCategory, setActiveCategory, activeSelection, setActiveSelection } = useShop();
   const { selections } = useSelections();
+  const { user, profile } = useAuth();
   const season = getCurrentSeason();
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const [mobileOpenSection, setMobileOpenSection] = useState<'categories' | 'selections' | null>(null);
   const navRef = useRef<HTMLElement>(null);
 
@@ -193,6 +198,27 @@ export default function Nav() {
       >
         Le projet
       </Link>
+
+      {/* Icônes droite : panier + compte */}
+      <div className={styles.navIcons}>
+        <CartIcon />
+        {user ? (
+          <Link href="/profil" className={styles.accountBtn} title="Mon profil">
+            {profile?.avatar_url
+              ? <img src={profile.avatar_url} alt="" className={styles.accountAvatar} />
+              : <span className={styles.accountInitial}>{profile?.username?.[0]?.toUpperCase() ?? '?'}</span>
+            }
+          </Link>
+        ) : (
+          <button className={styles.accountBtn} onClick={() => setAuthOpen(true)} title="Se connecter">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+          </button>
+        )}
+      </div>
+
+      {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
 
       {/* ── Mobile : menu déroulant ── */}
       {menuOpen && (

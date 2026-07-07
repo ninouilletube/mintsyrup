@@ -7,9 +7,13 @@ import Image from 'next/image';
 import type { Product } from '@/data/products';
 import { useProducts } from '@/context/ProductsContext';
 import { useLang } from '@/context/LangContext';
+import { useCart } from '@/context/CartContext';
+import { useWishlist } from '@/context/WishlistContext';
+import { useAuth } from '@/context/AuthContext';
 import { trackArticleView, trackVintedClick } from '@/lib/supabase';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
+import AuthModal from '@/components/AuthModal';
 import styles from './Product.module.css';
 
 function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'en' }) {
@@ -86,9 +90,14 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const router = useRouter();
   const { products } = useProducts();
   const { lang } = useLang();
+  const { addItem, isInCart } = useCart();
+  const { isInWishlist, toggle: toggleWishlist } = useWishlist();
+  const { user } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [lightbox, setLightbox] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [cartAdded, setCartAdded] = useState(false);
   const [lbArrowsVisible, setLbArrowsVisible] = useState(false);
   const lbArrowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tracked = useRef(false);
@@ -233,16 +242,48 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             <div className={styles.descGroup}>
               {product.description[lang] && <p className={styles.desc}>{product.description[lang]}</p>}
             </div>
-            <a
-              href={product.vintedUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.btn}
-              onClick={() => trackVintedClick(product.id)}
-            >
-              <span className={styles.btnPrice}>{product.price} €</span>
-              {lang === 'fr' ? 'Acheter sur Vinted' : 'Buy on Vinted'}
-            </a>
+            <p className={styles.price}>{product.price} €</p>
+
+            {/* Boutons d'action */}
+            {!product.sold && (
+              <div className={styles.btnGroup}>
+                <button
+                  className={`${styles.btnCart} ${isInCart(product.id) ? styles.btnCartDone : ''}`}
+                  disabled={isInCart(product.id)}
+                  onClick={() => {
+                    addItem(product);
+                    setCartAdded(true);
+                    setTimeout(() => setCartAdded(false), 2000);
+                  }}
+                >
+                  {isInCart(product.id) || cartAdded ? '✓ Dans le panier' : '+ Ajouter au panier'}
+                </button>
+
+                <a
+                  href={product.vintedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.btnVinted}
+                  onClick={() => trackVintedClick(product.id)}
+                >
+                  Voir sur Vinted
+                </a>
+
+                <button
+                  className={`${styles.btnWishlist} ${isInWishlist(product.id) ? styles.btnWishlistActive : ''}`}
+                  onClick={() => {
+                    if (!user) { setAuthModalOpen(true); return; }
+                    toggleWishlist(product.id);
+                  }}
+                  title={isInWishlist(product.id) ? 'Retirer de ma liste' : 'Ajouter à ma liste'}
+                >
+                  {isInWishlist(product.id) ? '♥' : '♡'}
+                </button>
+              </div>
+            )}
+            {product.sold && <p className={styles.soldMsg}>Cet article a été vendu.</p>}
+
+            {authModalOpen && <AuthModal onClose={() => setAuthModalOpen(false)} />}
           </div>
         </div>
       </div>

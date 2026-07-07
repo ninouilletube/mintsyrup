@@ -1,0 +1,99 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.box {
+  background: #fff;
+  border: 2.5px solid var(--dark);
+  border-radius: 16px;
+  box-shadow: 6px 6px 0 var(--dark);
+  padding: 2rem 1.75rem;
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.9rem;
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: rgba(28,28,28,0.4);
+  line-height: 1;
+}
+.close:hover { color: var(--dark); }
+
+.title {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+.sub {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.88rem;
+  color: rgba(28,28,28,0.65);
+  line-height: 1.5;
+}
+
+.input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1.5px solid rgba(28,28,28,0.2);
+  border-radius: 8px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.9rem;
+  color: var(--dark);
+  background: #fafafa;
+  transition: border-color 0.12s;
+}
+.input:focus { outline: none; border-color: var(--coral, #E05530); }
+
+.error {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.8rem;
+  color: #C83A20;
+}
+
+.btn {
+  padding: 0.75rem;
+  background: var(--dark);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn:hover:not(:disabled) { opacity: 0.82; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.switchMode {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.8rem;
+  color: rgba(28,28,28,0.5);
+  text-decoration: underline;
+  padding: 0;
+  text-align: center;
+  transition: color 0.12s;
+}
+.switchMode:hover { color: var(--dark); }

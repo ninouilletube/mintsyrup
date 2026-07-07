@@ -25,6 +25,8 @@ export type Product = {
   soldAt?: number;
   soldPrice?: number;
   selections?: string[];
+  reservedAt?: number;
+  reservedSession?: string;
 };
 
 export type Season = 'printemps' | 'ete' | 'automne' | 'hiver';
