@@ -7,21 +7,47 @@ import Footer from '@/components/Footer';
 import { useAuth } from '@/context/AuthContext';
 import styles from './profil.module.css';
 
+const FIELDS = [
+  { key: 'esthetique',      label: 'Mon esthétique' },
+  { key: 'couleur_preferee', label: 'Ma couleur préférée de tous les temps' },
+  { key: 'couleur_moment',  label: 'Ma couleur du moment' },
+  { key: 'obsession',       label: 'Mon obsession du moment' },
+  { key: 'inspiration',     label: "Ma source d'inspiration n°1" },
+  { key: 'decennies',       label: 'Mes décennies préférées' },
+  { key: 'ville',           label: 'Ma ville' },
+  { key: 'friperies',       label: 'Mes friperies préférées' },
+] as const;
+
+type FieldKey = typeof FIELDS[number]['key'];
+
+const EyeOpen = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+);
+
+const EyeOff = () => (
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+    <line x1="1" y1="1" x2="23" y2="23"/>
+  </svg>
+);
+
 export default function ProfilPage() {
   const { user, profile, signOut, updateProfile, uploadAvatar, loading } = useAuth();
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const [editing, setEditing]             = useState(false);
-  const [newUsername, setNewUsername]     = useState('');
-  const [newEsthetique, setNewEsthetique] = useState('');
-  const [newCouleur, setNewCouleur]       = useState('');
-  const [newInspiration, setNewInspiration] = useState('');
-  const [newVille, setNewVille]           = useState('');
-  const [newFriperies, setNewFriperies]   = useState('');
+  const [editing, setEditing]         = useState(false);
+  const [newUsername, setNewUsername] = useState('');
+  const [newBio, setNewBio]           = useState('');
+  const [fieldValues, setFieldValues] = useState<Partial<Record<FieldKey, string>>>({});
+  const [visibility, setVisibility]   = useState<Partial<Record<FieldKey, boolean>>>({});
   const [avatarLoading, setAvatarLoading] = useState(false);
-  const [saving, setSaving]               = useState(false);
-  const [msg, setMsg]                     = useState<string | null>(null);
+  const [saving, setSaving]           = useState(false);
+  const [msg, setMsg]                 = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && (!user || !profile)) router.replace('/');
@@ -29,13 +55,17 @@ export default function ProfilPage() {
 
   if (loading || !user || !profile) return null;
 
+  const isVisible = (key: FieldKey) => (visibility[key] ?? profile.profile_visibility?.[key]) !== false;
+  const toggleVisibility = (key: FieldKey) =>
+    setVisibility(v => ({ ...v, [key]: !isVisible(key) }));
+
   const startEdit = () => {
     setNewUsername(profile.username ?? '');
-    setNewEsthetique(profile.esthetique ?? '');
-    setNewCouleur(profile.couleur_preferee ?? '');
-    setNewInspiration(profile.inspiration ?? '');
-    setNewVille(profile.ville ?? '');
-    setNewFriperies(profile.friperies ?? '');
+    setNewBio(profile.bio ?? '');
+    const vals: Partial<Record<FieldKey, string>> = {};
+    for (const { key } of FIELDS) vals[key] = (profile as Record<string, unknown>)[key] as string ?? '';
+    setFieldValues(vals);
+    setVisibility({ ...(profile.profile_visibility ?? {}) } as Partial<Record<FieldKey, boolean>>);
     setEditing(true);
     setMsg(null);
   };
@@ -44,14 +74,15 @@ export default function ProfilPage() {
 
   const handleSave = async () => {
     setSaving(true);
-    const { error } = await updateProfile({
+    const updates: Record<string, unknown> = {
       username: newUsername.trim() || profile.username,
-      esthetique: newEsthetique.trim() || null,
-      couleur_preferee: newCouleur.trim() || null,
-      inspiration: newInspiration.trim() || null,
-      ville: newVille.trim() || null,
-      friperies: newFriperies.trim() || null,
-    });
+      bio: newBio.trim() || null,
+      profile_visibility: visibility,
+    };
+    for (const { key } of FIELDS) {
+      updates[key] = (fieldValues[key] ?? '').trim() || null;
+    }
+    const { error } = await updateProfile(updates as Parameters<typeof updateProfile>[0]);
     setSaving(false);
     if (error) { setMsg(error); return; }
     setMsg('Profil mis à jour !');
@@ -74,7 +105,7 @@ export default function ProfilPage() {
       <div className={styles.page}>
         <div className={styles.layout}>
 
-          {/* ── Post-it à gauche du bloc ── */}
+          {/* ── Post-it ── */}
           <div className={styles.postitWrap}>
             <div className={styles.postit}>
               <img src="/postit-profil.png" alt="mon profil" className={styles.postitImg} />
@@ -100,33 +131,49 @@ export default function ProfilPage() {
             </div>
 
             <div className={styles.extraFields}>
-              {([
-                { label: 'Mon esthétique', key: 'esthetique', val: profile.esthetique, set: setNewEsthetique, state: newEsthetique },
-                { label: 'Ma couleur préférée', key: 'couleur', val: profile.couleur_preferee, set: setNewCouleur, state: newCouleur },
-                { label: "Ma source d'inspiration n°1", key: 'inspiration', val: profile.inspiration, set: setNewInspiration, state: newInspiration },
-                { label: 'Ma ville', key: 'ville', val: profile.ville, set: setNewVille, state: newVille },
-                { label: 'Mes friperies préférées', key: 'friperies', val: profile.friperies, set: setNewFriperies, state: newFriperies },
-              ] as const).map(({ label, key, val, set, state }) => (
-                <div key={key} className={styles.extraField}>
-                  <span className={styles.extraLabel}>{label}</span>
-                  {editing
-                    ? <input className={styles.extraInput} value={state} onChange={e => set(e.target.value)} placeholder="…" />
-                    : <span className={styles.extraValue}>{val || <span className={styles.extraEmpty}>—</span>}</span>
-                  }
-                </div>
-              ))}
+              {FIELDS.map(({ key, label }) => {
+                const profileVal = (profile as Record<string, unknown>)[key] as string | null | undefined;
+                const vis = isVisible(key);
+                return (
+                  <div key={key} className={styles.extraField}>
+                    <span className={styles.extraLabel}>{label}</span>
+                    {editing ? (
+                      <div className={styles.extraInputRow}>
+                        <input
+                          className={styles.extraInput}
+                          value={fieldValues[key] ?? ''}
+                          onChange={e => setFieldValues(v => ({ ...v, [key]: e.target.value }))}
+                        />
+                        <button
+                          type="button"
+                          className={`${styles.eyeBtn} ${!vis ? styles.eyeBtnOff : ''}`}
+                          onClick={() => toggleVisibility(key)}
+                          title={vis ? 'Visible · cliquer pour masquer' : 'Masqué · cliquer pour rendre visible'}
+                        >
+                          {vis ? <EyeOpen /> : <EyeOff />}
+                        </button>
+                      </div>
+                    ) : (
+                      <span className={`${styles.extraValue} ${!vis ? styles.extraHidden : ''}`}>
+                        {!vis ? <EyeOff /> : null}
+                        {profileVal || <span className={styles.extraEmpty}>—</span>}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
 
             {msg && <p className={styles.msg}>{msg}</p>}
 
-            {editing ? (
+            {editing && (
               <div className={styles.editActions}>
                 <button className={styles.btn} onClick={handleSave} disabled={saving}>
                   {saving ? 'Sauvegarde…' : 'Enregistrer'}
                 </button>
                 <button className={styles.cancelBtn} onClick={cancelEdit}>Annuler</button>
               </div>
-            ) : null}
+            )}
 
             <hr className={styles.divider} />
 
@@ -150,7 +197,7 @@ export default function ProfilPage() {
             </div>
           </div>
 
-          {/* ── Colonne droite : photo avec scotch ── */}
+          {/* ── Photo ── */}
           <div className={styles.photoCol}>
             <div
               className={styles.photoWrap}
@@ -172,6 +219,25 @@ export default function ProfilPage() {
           </div>
 
         </div>
+
+        {/* ── Bloc bio séparé ── */}
+        <div className={styles.bioBlock}>
+          <span className={styles.bioLabel}>Ma bio</span>
+          {editing ? (
+            <textarea
+              className={styles.bioTextarea}
+              value={newBio}
+              onChange={e => setNewBio(e.target.value)}
+              rows={4}
+              placeholder="Raconte-toi…"
+            />
+          ) : (
+            <p className={styles.bioText}>
+              {profile.bio || <span className={styles.extraEmpty}>—</span>}
+            </p>
+          )}
+        </div>
+
       </div>
       <Footer />
     </>

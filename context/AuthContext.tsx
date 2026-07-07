@@ -8,11 +8,16 @@ export type Profile = {
   id: string;
   username: string;
   avatar_url: string | null;
+  bio?: string | null;
   esthetique?: string | null;
   couleur_preferee?: string | null;
+  couleur_moment?: string | null;
+  obsession?: string | null;
   inspiration?: string | null;
+  decennies?: string | null;
   ville?: string | null;
   friperies?: string | null;
+  profile_visibility?: Record<string, boolean> | null;
 };
 
 type AuthContextType = {
@@ -77,7 +82,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     if (error) return { error: error.message };
     if (data.user) setProfile({ id: data.user.id, username, avatar_url: null });
-    // session présente = confirmation email désactivée, connecté directement
     return { error: null, confirmed: !!data.session };
   };
 
