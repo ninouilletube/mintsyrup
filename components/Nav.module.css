@@ -12,6 +12,12 @@
   border-bottom: 2.5px solid var(--dark);
 }
 
+.logoGroup {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .logoWrap {
   position: relative;
   flex-shrink: 0;
@@ -42,6 +48,9 @@
   align-items: center;
   gap: 0.4rem;
   flex-wrap: wrap;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .heartLink {
@@ -72,7 +81,9 @@
 .projetDesktopLink {
   text-decoration: none !important;
   font-style: normal;
-  border: 2px solid #C0185A !important;
+  font-size: 0.75rem !important;
+  padding: 0.2rem 0.65rem !important;
+  border: 1.5px solid #C0185A !important;
   border-radius: 50px !important;
   color: #C0185A !important;
   background: transparent !important;
@@ -91,13 +102,91 @@
   font-weight: 700;
 }
 
+/* ── Section droite (icônes) ── */
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  grid-column: 3;
+}
+
 /* ── Icônes droite (panier + compte) ── */
 .navIcons {
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  margin-left: 0.5rem;
 }
+
+.accountWrap {
+  position: relative;
+}
+
+.accountDrop {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--cream);
+  border: 2.5px solid var(--dark);
+  border-radius: 10px;
+  box-shadow: 4px 4px 0 var(--dark);
+  padding: 0.35rem 0.3rem;
+  min-width: 170px;
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition: opacity 0.14s ease, transform 0.14s ease;
+}
+
+.accountDrop::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+}
+
+.accountWrap:hover .accountDrop {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.accountDropUsername {
+  display: block;
+  padding: 0.4rem 0.85rem 0.5rem;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--dark);
+  border-bottom: 1.5px solid rgba(28,28,28,0.08);
+  margin-bottom: 0.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.accountDropItem {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.42rem 0.85rem;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--mid);
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  transition: background 0.12s, color 0.12s;
+}
+.accountDropItem:hover { color: var(--dark); background: rgba(224,85,48,0.11); }
 
 .accountBtn {
   display: inline-flex;
@@ -340,10 +429,11 @@
 }
 
 @media (max-width: 900px) {
-  .nav { grid-template-columns: auto 1fr; grid-template-rows: auto auto; padding: 0.75rem 1.25rem; }
-  .links { grid-column: 1 / -1; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
+  .nav { grid-template-columns: auto 1fr auto; grid-template-rows: auto auto; padding: 0.75rem 1.25rem; }
+  .links { position: static; transform: none; grid-column: 1 / -1; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; scrollbar-width: none; }
   .links::-webkit-scrollbar { display: none; }
   .projetDesktopLink { display: none; }
+  .logoGroup { gap: 0.5rem; }
   .logoText { font-size: 1.9rem; }
 }
 
@@ -361,7 +451,7 @@
   }
 
   /* Desktop éléments cachés sur mobile */
-  .links { display: none !important; }
+  .links { display: none !important; position: static; transform: none; }
   .lang  { display: none !important; }
 
   /* Logo absolument centré sur l'écran */

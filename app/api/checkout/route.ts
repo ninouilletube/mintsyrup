@@ -9,18 +9,20 @@ type CartItemPayload = { id: number; title: string; price: number; image: string
 type DeliveryAddress = { fullName: string; address: string; city: string; postalCode: string; country: string };
 
 export async function POST(req: Request) {
-  const { items, shipping, country, carrier, relayPoint, deliveryAddress } = await req.json() as {
+  const { items, shipping, country, carrier, relayPoint, deliveryNote, deliveryAddress, promoCode, promoDiscount } = await req.json() as {
     items: CartItemPayload[];
     shipping: { label: string; price: number };
     country: string;
     carrier: string;
     relayPoint: string | null;
+    deliveryNote: string | null;
     deliveryAddress: DeliveryAddress;
+    promoCode: string | null;
+    promoDiscount: number;
   };
 
   if (!items?.length) return NextResponse.json({ error: 'Panier vide' }, { status: 400 });
 
-  // Vérifier que les articles sont toujours disponibles
   const saved = await getData('products');
   const products: Product[] = Array.isArray(saved)
     ? saved
@@ -56,22 +58,36 @@ export async function POST(req: Request) {
     },
   ];
 
+  // Coupon Stripe si code promo appliqué
+  let discounts: Stripe.Checkout.SessionCreateParams['discounts'];
+  if (promoCode && promoDiscount > 0) {
+    const coupon = await stripe.coupons.create({
+      amount_off: Math.round(promoDiscount * 100),
+      currency: 'eur',
+      duration: 'once',
+      name: `Code promo ${promoCode}`,
+    });
+    discounts = [{ coupon: coupon.id }];
+  }
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     line_items: lineItems,
     mode: 'payment',
     success_url: `${origin}/paiement-confirme?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${origin}/panier`,
-    // Adresse collectée dans notre panier — pas besoin de la recollecte Stripe
+    ...(discounts ? { discounts } : {}),
     metadata: {
       product_ids: items.map(i => i.id).join(','),
       country,
       carrier: carrier ?? 'ups',
       relay_point: relayPoint ?? '',
+      delivery_note: deliveryNote ?? '',
       delivery_name: deliveryAddress?.fullName ?? '',
       delivery_address: deliveryAddress?.address ?? '',
       delivery_city: deliveryAddress?.city ?? '',
       delivery_postal: deliveryAddress?.postalCode ?? '',
+      promo_code: promoCode ?? '',
     },
     locale: 'fr',
   });

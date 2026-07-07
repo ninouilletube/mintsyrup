@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '**.vinted.fr' },
       { protocol: 'https', hostname: '**.vinted.pt' },
       { protocol: 'https', hostname: '**.vinted.com' },
+      { protocol: 'https', hostname: 'xnsdzrpzvkqazmkjnnet.supabase.co' },
     ],
   },
 };

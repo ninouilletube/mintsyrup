@@ -8,6 +8,11 @@ export type Profile = {
   id: string;
   username: string;
   avatar_url: string | null;
+  esthetique?: string | null;
+  couleur_preferee?: string | null;
+  inspiration?: string | null;
+  ville?: string | null;
+  friperies?: string | null;
 };
 
 type AuthContextType = {
@@ -15,10 +20,10 @@ type AuthContextType = {
   session: Session | null;
   profile: Profile | null;
   loading: boolean;
-  signUp: (email: string, password: string, username: string) => Promise<{ error: string | null }>;
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signUp: (email: string, password: string, username: string) => Promise<{ error: string | null; confirmed?: boolean }>;
+  signIn: (username: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
-  updateProfile: (data: Partial<Pick<Profile, 'username' | 'avatar_url'>>) => Promise<{ error: string | null }>;
+  updateProfile: (data: Partial<Omit<Profile, 'id'>>) => Promise<{ error: string | null }>;
   uploadAvatar: (file: File) => Promise<{ url: string | null; error: string | null }>;
 };
 
@@ -37,8 +42,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string, attempt = 0) => {
     const { data } = await supabase.from('profiles').select('*').eq('id', userId).single();
+    if (!data && attempt < 3) {
+      await new Promise(r => setTimeout(r, 600));
+      return fetchProfile(userId, attempt + 1);
+    }
     setProfile(data ?? null);
   };
 
@@ -61,18 +70,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signUp = async (email: string, password: string, username: string) => {
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { username } },
+    });
     if (error) return { error: error.message };
-    if (data.user) {
-      const { error: profileError } = await supabase.from('profiles').insert({ id: data.user.id, username });
-      if (profileError) return { error: profileError.message };
-      setProfile({ id: data.user.id, username, avatar_url: null });
-    }
-    return { error: null };
+    if (data.user) setProfile({ id: data.user.id, username, avatar_url: null });
+    // session présente = confirmation email désactivée, connecté directement
+    return { error: null, confirmed: !!data.session };
   };
 
-  const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const signIn = async (username: string, password: string) => {
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .select('email')
+      .eq('username', username.trim())
+      .single();
+    if (profileError || !profileData?.email) return { error: 'Nom d\'utilisateur introuvable' };
+    const { error } = await supabase.auth.signInWithPassword({ email: profileData.email, password });
     return { error: error?.message ?? null };
   };
 
@@ -81,7 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setProfile(null);
   };
 
-  const updateProfile = async (data: Partial<Pick<Profile, 'username' | 'avatar_url'>>) => {
+  const updateProfile = async (data: Partial<Omit<Profile, 'id'>>) => {
     if (!user) return { error: 'Non connecté' };
     const { error } = await supabase.from('profiles').update(data).eq('id', user.id);
     if (!error) setProfile(prev => prev ? { ...prev, ...data } : null);

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { getData, setData } from '@/lib/supabase';
+import { getData, setData, supabase } from '@/lib/supabase';
 import type { Product } from '@/data/products';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -104,6 +104,15 @@ export async function POST(req: Request) {
       );
 
       await setData('products', { products: updated, savedAt: soldAt });
+
+      // Marquer le code promo comme utilisé
+      const promoCode = session.metadata?.promo_code;
+      if (promoCode) {
+        await supabase
+          .from('promo_codes')
+          .update({ used: true, used_at: new Date().toISOString() })
+          .eq('code', promoCode);
+      }
 
       // Création du colis Sendcloud (ne bloque pas si Sendcloud échoue)
       await createSendcloudParcel(session, soldProducts).catch((err) =>

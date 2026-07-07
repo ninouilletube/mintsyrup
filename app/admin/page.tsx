@@ -8,12 +8,12 @@ import { CATEGORIES } from '@/data/categories';
 import { COLORS, getColor } from '@/data/colors';
 import type { Category, Season, Product } from '@/data/products';
 import { getCurrentSeason } from '@/lib/season';
-import { getData, setData, uploadPostitImage, uploadSpecialPostit } from '@/lib/supabase';
+import { getData, setData, uploadPostitImage, uploadSpecialPostit, supabase } from '@/lib/supabase';
 import { useSelections } from '@/context/SelectionsContext';
 import styles from './Admin.module.css';
 import MobileAdmin from './MobileAdmin';
 
-type View = 'dashboard' | 'articles' | 'add-article' | 'edit-article' | 'article-detail' | 'bio' | 'finances' | 'catalog';
+type View = 'dashboard' | 'articles' | 'add-article' | 'edit-article' | 'article-detail' | 'bio' | 'finances' | 'catalog' | 'promo-codes';
 
 const SIZES = [
   'TU',
@@ -515,6 +515,7 @@ export default function AdminPage() {
             {view === 'bio'            && 'Le projet'}
             {view === 'finances'       && '€€€'}
             {view === 'catalog'        && 'Catalogue'}
+            {view === 'promo-codes'    && 'Codes promo'}
           </h1>
         </div>
         {view === 'dashboard' && <a href="/" className={styles.backLink}>← Site</a>}
@@ -569,6 +570,9 @@ export default function AdminPage() {
                 </button>
                 <button className={styles.btnSecondary} onClick={() => setView('catalog')}>
                   Catalogue
+                </button>
+                <button className={styles.btnSecondary} onClick={() => setView('promo-codes')}>
+                  Codes promo
                 </button>
                 <a href="/calculateur.html" target="_blank" rel="noopener noreferrer" className={styles.btnCalculateur}>
                   Calculateur
@@ -1863,6 +1867,90 @@ export default function AdminPage() {
           </div>
         </div>
       )}
+      {/* ── CODES PROMO ─────────────────────────────────────────────────────── */}
+      {view === 'promo-codes' && <PromoCodesView />}
+
+    </div>
+  );
+}
+
+function PromoCodesView() {
+  const [codes, setCodes] = useState<{ id: number; code: string; discount: number; used: boolean; created_at: string }[]>([]);
+  const [newCode, setNewCode]         = useState('');
+  const [newDiscount, setNewDiscount] = useState('');
+  const [saving, setSaving]           = useState(false);
+  const [saved, setSaved]             = useState(false);
+  const [loadErr, setLoadErr]         = useState('');
+  useEffect(() => { load(); }, []);
+
+  async function load() {
+    const { data, error } = await supabase.from('promo_codes').select('*').order('created_at', { ascending: false });
+    if (error) { setLoadErr(error.message); return; }
+    setCodes(data ?? []);
+  }
+
+  async function addCode() {
+    const code = newCode.trim().toUpperCase();
+    const discount = parseFloat(newDiscount);
+    if (!code || isNaN(discount) || discount <= 0) return;
+    setSaving(true);
+    const { error } = await supabase.from('promo_codes').insert({ code, discount });
+    setSaving(false);
+    if (error) { alert(error.message); return; }
+    setNewCode(''); setNewDiscount('');
+    setSaved(true); setTimeout(() => setSaved(false), 1500);
+    load();
+  }
+
+  async function deleteCode(id: number) {
+    if (!confirm('Supprimer ce code ?')) return;
+    await supabase.from('promo_codes').delete().eq('id', id);
+    load();
+  }
+
+  return (
+    <div style={{ padding: '1.5rem', maxWidth: 520 }}>
+      {loadErr && <p style={{ color: 'red', fontSize: '0.82rem' }}>{loadErr}</p>}
+
+      {/* Créer un code */}
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+        <input
+          style={{ flex: 2, padding: '0.5rem 0.75rem', border: '1.5px solid #ccc', borderRadius: 8, fontFamily: 'inherit', fontSize: '0.88rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}
+          type="text"
+          placeholder="CODE"
+          value={newCode}
+          onChange={e => setNewCode(e.target.value.toUpperCase())}
+        />
+        <input
+          style={{ flex: 1, padding: '0.5rem 0.75rem', border: '1.5px solid #ccc', borderRadius: 8, fontFamily: 'inherit', fontSize: '0.88rem' }}
+          type="number"
+          placeholder="Montant €"
+          min="0"
+          step="0.5"
+          value={newDiscount}
+          onChange={e => setNewDiscount(e.target.value)}
+        />
+        <button
+          style={{ padding: '0.5rem 1rem', background: '#1C1C1C', color: '#fff', border: 'none', borderRadius: 8, fontFamily: 'inherit', fontSize: '0.88rem', fontWeight: 600, cursor: 'pointer' }}
+          onClick={addCode}
+          disabled={saving}
+        >
+          {saving ? '…' : saved ? '✓' : 'Créer'}
+        </button>
+      </div>
+
+      {/* Liste */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        {codes.length === 0 && <p style={{ fontSize: '0.82rem', color: '#888' }}>Aucun code promo.</p>}
+        {codes.map(c => (
+          <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 0.85rem', border: `1.5px solid ${c.used ? '#ddd' : '#1C1C1C'}`, borderRadius: 8, opacity: c.used ? 0.5 : 1 }}>
+            <span style={{ fontWeight: 700, flex: 1, letterSpacing: '0.05em', textDecoration: c.used ? 'line-through' : 'none' }}>{c.code}</span>
+            <span style={{ fontSize: '0.82rem', color: '#555' }}>− {c.discount} €</span>
+            <span style={{ fontSize: '0.72rem', color: c.used ? '#C83A20' : '#2a9d5c', fontWeight: 600 }}>{c.used ? 'Utilisé' : 'Actif'}</span>
+            <button onClick={() => deleteCode(c.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', fontSize: '1rem', lineHeight: 1 }}>×</button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

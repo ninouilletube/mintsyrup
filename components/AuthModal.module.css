@@ -63,6 +63,29 @@
 }
 .input:focus { outline: none; border-color: var(--coral, #E05530); }
 
+.passwordWrap {
+  position: relative;
+  width: 100%;
+}
+.passwordWrap .input {
+  padding-right: 2.5rem;
+}
+.eyeBtn {
+  position: absolute;
+  right: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(28,28,28,0.4);
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: color 0.12s;
+}
+.eyeBtn:hover { color: var(--dark); }
+
 .error {
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.8rem;

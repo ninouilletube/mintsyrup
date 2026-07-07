@@ -111,11 +111,19 @@ export default function Nav() {
         <span className={styles.burgerBar} />
       </button>
 
-      {/* ── Logo ── */}
-      <div className={styles.logoWrap}>
-        <div className={styles.logo} onClick={handleLogo}>
-          <span className={styles.logoText}>Mint Syrup</span>
+      {/* ── Logo + Le projet ── */}
+      <div className={styles.logoGroup}>
+        <div className={styles.logoWrap}>
+          <div className={styles.logo} onClick={handleLogo}>
+            <span className={styles.logoText}>Mint Syrup</span>
+          </div>
         </div>
+        <Link
+          href="/projet"
+          className={`${styles.link} ${styles.projetDesktopLink} ${pathname === '/projet' ? styles.active : ''}`}
+        >
+          Le projet
+        </Link>
       </div>
 
       {/* ── Desktop : nav restructurée ── */}
@@ -191,31 +199,36 @@ export default function Nav() {
         </div>
       </div>
 
-      {/* Le projet — tout à droite */}
-      <Link
-        href="/projet"
-        className={`${styles.link} ${styles.projetDesktopLink} ${pathname === '/projet' ? styles.active : ''}`}
-      >
-        Le projet
-      </Link>
-
-      {/* Icônes droite : panier + compte */}
-      <div className={styles.navIcons}>
-        <CartIcon />
-        {user ? (
-          <Link href="/profil" className={styles.accountBtn} title="Mon profil">
-            {profile?.avatar_url
-              ? <img src={profile.avatar_url} alt="" className={styles.accountAvatar} />
-              : <span className={styles.accountInitial}>{profile?.username?.[0]?.toUpperCase() ?? '?'}</span>
-            }
-          </Link>
-        ) : (
-          <button className={styles.accountBtn} onClick={() => setAuthOpen(true)} title="Se connecter">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
-              <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-            </svg>
-          </button>
-        )}
+      {/* Icônes — tout à droite */}
+      <div className={styles.rightSection}>
+        <div className={styles.navIcons}>
+          {user ? (
+            <div className={styles.accountWrap}>
+              <button className={styles.accountBtn} title="Mon compte">
+                {profile?.avatar_url
+                  ? <img src={profile.avatar_url} alt="" className={styles.accountAvatar} />
+                  : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                    </svg>
+                }
+              </button>
+              <div className={styles.accountDrop}>
+                <span className={styles.accountDropUsername}>{profile?.username}</span>
+                <Link href="/profil" className={styles.accountDropItem}>Mon profil</Link>
+                <Link href="/favoris" className={styles.accountDropItem}>Ma wishlist</Link>
+                <Link href="/paiement-confirme" className={styles.accountDropItem}>Mes commandes</Link>
+                <button className={styles.accountDropItem} onClick={() => signOut()}>Déconnexion</button>
+              </div>
+            </div>
+          ) : (
+            <button className={styles.accountBtn} onClick={() => setAuthOpen(true)} title="Se connecter">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+            </button>
+          )}
+          <CartIcon />
+        </div>
       </div>
 
       {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
