@@ -115,6 +115,9 @@
   white-space: nowrap;
   flex-shrink: 0;
 }
+.extraLabel::after {
+  content: ' :';
+}
 
 .extraValue {
   font-family: var(--font-dm-sans), sans-serif;
