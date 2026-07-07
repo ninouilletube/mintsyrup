@@ -218,6 +218,26 @@
   line-height: 1.4;
 }
 
+.vintedNote {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.78rem;
+  color: rgba(28,28,28,0.55);
+  line-height: 1.4;
+  padding: 0.5rem 0.75rem;
+  background: rgba(28,28,28,0.04);
+  border-radius: 8px;
+}
+.vintedLink {
+  color: var(--coral);
+  text-decoration: underline;
+}
+
+.addressRow {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: 0.5rem;
+}
+
 .customsNote {
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.78rem;
