@@ -19,7 +19,7 @@
   flex-direction: column;
   gap: 1.8rem;
   flex-shrink: 0;
-  width: 300px;
+  width: 520px;
 }
 
 /* ── Colonne droite : photo + bloc infos ── */
@@ -645,9 +645,12 @@
   margin-top: 2rem;
   text-decoration: none;
   opacity: 0.82;
-  transition: opacity 0.15s;
+  transition: opacity 0.2s, transform 0.2s;
 }
-.wishlistArrow:hover { opacity: 1; }
+.wishlistArrow:hover {
+  opacity: 1;
+  transform: scale(1.12);
+}
 
 .wishlistArrowImg {
   width: 72px;
