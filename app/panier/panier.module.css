@@ -521,8 +521,9 @@
 }
 
 .emptyBag {
-  font-size: 2.8rem;
-  line-height: 1;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
 }
 
 .emptyTitle {

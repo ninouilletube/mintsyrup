@@ -182,7 +182,8 @@ export default function PanierPage() {
         <Nav />
         <div className={styles.empty}>
           <div className={styles.emptyCard}>
-            <span className={styles.emptyBag}>🛍</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/icon-panier.png" alt="" className={styles.emptyBag} />
             <p className={styles.emptyTitle}>Ton panier est vide</p>
             <p className={styles.emptyText}>Tu n&apos;as pas encore ajouté d&apos;articles.</p>
             <Link href="/" className={styles.emptyBtnMain}>Parcourir la boutique</Link>
