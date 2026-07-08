@@ -204,12 +204,12 @@ export default function Nav() {
         <div className={styles.navIcons}>
           {user ? (
             <div className={styles.accountWrap}>
-              <button className={styles.accountBtn} title="Mon compte">
+              <Link href="/profil" className={styles.accountBtn} title="Mon profil">
                 {profile?.avatar_url
                   ? <img src={profile.avatar_url} alt="" className={styles.accountAvatar} />
                   : <img src="/icon-profil.png" alt="" style={{ width: 24, height: 24, objectFit: 'contain', mixBlendMode: 'multiply' }} />
                 }
-              </button>
+              </Link>
               <div className={styles.accountDrop}>
                 <span className={styles.accountDropUsername}>{profile?.username}</span>
                 <Link href="/profil" className={styles.accountDropItem}>Mon profil</Link>
