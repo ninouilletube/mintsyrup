@@ -3,12 +3,11 @@ import Stripe from 'stripe';
 import { getData } from '@/lib/supabase';
 import type { Product } from '@/data/products';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-
 type CartItemPayload = { id: number; title: string; price: number; image: string | null };
 type DeliveryAddress = { fullName: string; address: string; city: string; postalCode: string; country: string };
 
 export async function POST(req: Request) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
   const { items, shipping, country, carrier, relayPoint, deliveryNote, deliveryAddress, promoCode, promoDiscount } = await req.json() as {
     items: CartItemPayload[];
     shipping: { label: string; price: number };
