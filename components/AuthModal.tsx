@@ -29,7 +29,7 @@ export default function AuthModal({ onClose }: Props) {
       : await signUp(email.trim(), password, username.trim());
     setLoading(false);
     if (result.error) { setError(result.error); return; }
-    if (mode === 'signup' && !result.confirmed) { setDone(true); return; }
+    if (mode === 'signup' && !(result as { error: string | null; confirmed?: boolean }).confirmed) { setDone(true); return; }
     onClose();
   };
 
