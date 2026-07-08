@@ -1023,6 +1023,110 @@
   padding: 0;
 }
 
+/* ── Outfits ── */
+.outfitsSection {
+  margin-top: 3rem;
+  padding-top: 2.5rem;
+  border-top: 1.5px solid rgba(28,28,28,0.1);
+}
+
+.outfitsHeader {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.outfitsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  align-items: flex-start;
+}
+
+.outfitPolaroid {
+  position: relative;
+  background: #fff;
+  padding: 8px 8px 36px;
+  box-shadow: 3px 4px 12px rgba(0,0,0,0.18), 0 1px 3px rgba(0,0,0,0.08);
+  width: 180px;
+  flex-shrink: 0;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* Scotch */
+.outfitPolaroid::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1deg);
+  width: 54px;
+  height: 20px;
+  background: rgba(255,255,255,0.52);
+  backdrop-filter: blur(2px);
+  border-radius: 2px;
+  z-index: 2;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.outfitPolaroid:hover {
+  box-shadow: 5px 7px 18px rgba(0,0,0,0.22), 0 2px 4px rgba(0,0,0,0.1);
+  z-index: 5;
+}
+
+/* Rotations légèrement différentes */
+.polaroidRot0 { transform: rotate(-2.5deg); }
+.polaroidRot1 { transform: rotate(1.8deg); }
+.polaroidRot2 { transform: rotate(-1.2deg); }
+.polaroidRot3 { transform: rotate(2.2deg); }
+.outfitPolaroid:hover { transform: rotate(0deg) scale(1.03); }
+
+.outfitImg {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+.outfitImgPlaceholder {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: rgba(28,28,28,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: rgba(28,28,28,0.25);
+}
+
+.outfitPolaroidLoading {
+  opacity: 0.5;
+}
+
+.outfitRemoveBtn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: rgba(28,28,28,0.65);
+  border: none;
+  color: #fff;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+  z-index: 3;
+}
+.outfitPolaroid:hover .outfitRemoveBtn { opacity: 1; }
+.outfitRemoveBtn:hover { background: #C83A20; }
+
 /* ── Mobile ── */
 @media (max-width: 768px) {
   .page { padding: calc(60px + 1.5rem) 1rem 3rem; }

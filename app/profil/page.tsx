@@ -54,6 +54,7 @@ export default function ProfilPage() {
   const { products: allProducts } = useProducts();
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
+  const outfitRef = useRef<HTMLInputElement>(null);
 
   const [editing, setEditing]           = useState(false);
   const [newUsername, setNewUsername]   = useState('');
@@ -76,6 +77,11 @@ export default function ProfilPage() {
   const [archiveSelected, setArchiveSelected] = useState<Set<number>>(new Set());
   const [savingCollection, setSavingCollection] = useState(false);
   const [confirmRemoveId, setConfirmRemoveId] = useState<number | null>(null);
+
+  // Outfits
+  const [outfits, setOutfits]               = useState<Array<{id: string; image_url: string}>>([]);
+  const [outfitUploading, setOutfitUploading] = useState(false);
+  const [confirmOutfitRemove, setConfirmOutfitRemove] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && (!user || !profile)) router.replace('/');
@@ -103,6 +109,10 @@ export default function ProfilPage() {
     // Own collection
     supabase.from('user_collection').select('product_id').eq('user_id', user.id)
       .then(({ data }) => setCollection((data ?? []).map(r => r.product_id as number)));
+    // Outfits
+    supabase.from('user_outfits').select('id, image_url').eq('user_id', user.id).order('created_at')
+      .then(({ data }) => setOutfits(data ?? []));
+
     // All claimed product_ids (to exclude from selection)
     supabase.from('user_collection').select('product_id, user_id')
       .then(({ data }) => {
@@ -180,6 +190,29 @@ export default function ProfilPage() {
     const { error } = await uploadAvatar(file);
     setAvatarLoading(false);
     if (error) setMsg(error);
+  };
+
+  const handleOutfitUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setOutfitUploading(true);
+    const ext = file.name.split('.').pop();
+    const path = `outfits/${user.id}/${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from('mint-assets').upload(path, file);
+    if (error) { setOutfitUploading(false); return; }
+    const { data: urlData } = supabase.storage.from('mint-assets').getPublicUrl(path);
+    const { data: row } = await supabase.from('user_outfits').insert({ user_id: user.id, image_url: urlData.publicUrl }).select('id, image_url').single();
+    if (row) setOutfits(prev => [...prev, row]);
+    setOutfitUploading(false);
+    if (outfitRef.current) outfitRef.current.value = '';
+  };
+
+  const handleOutfitRemove = async (id: string, imageUrl: string) => {
+    const path = imageUrl.split('/mint-assets/')[1];
+    await supabase.storage.from('mint-assets').remove([path]);
+    await supabase.from('user_outfits').delete().eq('id', id);
+    setOutfits(prev => prev.filter(o => o.id !== id));
+    setConfirmOutfitRemove(null);
   };
 
   const handleRemoveFromCollection = async (productId: number) => {
@@ -567,6 +600,51 @@ export default function ProfilPage() {
                 + Ajouter une pièce
               </button>
             </>
+          )}
+        </div>
+
+        {/* ── Mes outfits ── */}
+        <div className={styles.outfitsSection}>
+          <div className={styles.outfitsHeader}>
+            <h2 className={styles.collectionTitle}>Mes outfits</h2>
+            <button className={styles.addToCollectionBtn} onClick={() => outfitRef.current?.click()} disabled={outfitUploading}>
+              {outfitUploading ? 'Upload…' : '+ Ajouter une tenue'}
+            </button>
+          </div>
+          <input ref={outfitRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={handleOutfitUpload} />
+
+          {outfits.length === 0 && !outfitUploading ? (
+            <p className={styles.collectionEmpty}>
+              Ici, tu peux partager tes tenues préférées avec tes pièces Mint Syrup 🌿
+            </p>
+          ) : (
+            <div className={styles.outfitsGrid}>
+              {outfits.map((o, i) => (
+                <div key={o.id} className={`${styles.outfitPolaroid} ${styles[`polaroidRot${i % 4}`]}`}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={o.image_url} alt="outfit" className={styles.outfitImg} />
+                  <button
+                    className={styles.outfitRemoveBtn}
+                    onClick={() => setConfirmOutfitRemove(o.id)}
+                    title="Supprimer cette photo"
+                  >×</button>
+                  {confirmOutfitRemove === o.id && (
+                    <div className={styles.confirmDialog}>
+                      <p className={styles.confirmText}>Supprimer cette photo ?</p>
+                      <div className={styles.confirmActions}>
+                        <button className={styles.confirmYes} onClick={() => handleOutfitRemove(o.id, o.image_url)}>Oui</button>
+                        <button className={styles.confirmNo} onClick={() => setConfirmOutfitRemove(null)}>Annuler</button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+              {outfitUploading && (
+                <div className={`${styles.outfitPolaroid} ${styles.outfitPolaroidLoading}`}>
+                  <div className={styles.outfitImgPlaceholder}>…</div>
+                </div>
+              )}
+            </div>
           )}
         </div>
 
