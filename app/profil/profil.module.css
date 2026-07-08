@@ -437,15 +437,17 @@
 
 .bioTextarea {
   width: 100%;
-  padding: 0.45rem 0.65rem;
+  flex: 1;
+  padding: 0.55rem 0.65rem;
   border: 1.5px solid rgba(28,28,28,0.18);
   border-radius: 6px;
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.78rem;
   color: var(--dark);
   background: #fafafa;
-  resize: vertical;
-  line-height: 1.5;
+  resize: none;
+  line-height: 1.55;
+  box-sizing: border-box;
 }
 .bioTextarea:focus { outline: none; border-color: var(--coral, #E05530); }
 
