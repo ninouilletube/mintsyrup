@@ -32,7 +32,7 @@ const CATEGORY_CATS: Category[] = ['manteaux', 'hauts', 'bas', 'robes', 'chaussu
 export default function Nav() {
   const { activeCategory, setActiveCategory, activeSelection, setActiveSelection } = useShop();
   const { selections } = useSelections();
-  const { user, profile } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const season = getCurrentSeason();
   const pathname = usePathname();
   const router = useRouter();
