@@ -207,8 +207,8 @@ export default function Nav() {
               <button className={styles.accountBtn} title="Mon compte">
                 {profile?.avatar_url
                   ? <img src={profile.avatar_url} alt="" className={styles.accountAvatar} />
-                  : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
-                      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+                  : <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+                      <circle cx="12" cy="8" r="4.5"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
                     </svg>
                 }
               </button>
@@ -222,8 +222,8 @@ export default function Nav() {
             </div>
           ) : (
             <button className={styles.accountBtn} onClick={() => setAuthOpen(true)} title="Se connecter">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
-                <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+                <circle cx="12" cy="8" r="4.5"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/>
               </svg>
             </button>
           )}

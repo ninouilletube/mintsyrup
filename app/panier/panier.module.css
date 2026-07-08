@@ -1,7 +1,7 @@
 .page {
   min-height: 100vh;
   padding: 60px 3rem 4rem;
-  background: #FDE8EC;
+  background: url('/mer.webp') center center / cover no-repeat fixed;
 }
 
 .titleRow {
@@ -44,6 +44,28 @@
 }
 
 /* ── Timer ── */
+.authBannerOk {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.82rem;
+  background: rgba(230, 255, 240, 0.9);
+  border: 1.5px solid #1a9e6e;
+  border-radius: 8px;
+  color: #0d6b49;
+  padding: 0.55rem 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.authBannerWarn {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.82rem;
+  background: rgba(255, 248, 220, 0.95);
+  border: 1.5px solid #C07B10;
+  border-radius: 8px;
+  color: #7a4e00;
+  padding: 0.55rem 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
 .timer {
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.8rem;

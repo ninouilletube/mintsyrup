@@ -7,6 +7,7 @@ import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
 import { useProducts } from '@/context/ProductsContext';
+import { useAuth } from '@/context/AuthContext';
 import styles from './panier.module.css';
 
 const MONDIAL_RELAY_COUNTRIES = ['PT', 'FR', 'BE', 'LU', 'ES', 'DE', 'NL', 'IT'];
@@ -53,6 +54,7 @@ function formatTimer(ms: number) {
 export default function PanierPage() {
   const { items, removeItem, clearCart, expiresAt } = useCart();
   const { products } = useProducts();
+  const { user, profile } = useAuth();
   const [timeLeft, setTimeLeft] = useState(0);
 
   // Livraison
@@ -198,6 +200,15 @@ export default function PanierPage() {
         <div className={styles.layout}>
           {/* ── Articles ── */}
           <div className={styles.items}>
+            {user ? (
+              <div className={styles.authBannerOk}>
+                Connecté.e en tant que <strong>{profile?.username ?? user.email}</strong>
+              </div>
+            ) : (
+              <div className={styles.authBannerWarn}>
+                Attention, vous n&apos;êtes pas connecté.e. Vos achats ne seront pas ajoutés automatiquement à votre profil.
+              </div>
+            )}
             {expiresAt && (
               <div className={`${styles.timer} ${urgent ? styles.timerUrgent : ''}`}>
                 {timeLeft > 0

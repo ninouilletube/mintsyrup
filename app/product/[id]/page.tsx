@@ -248,15 +248,25 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             {!product.sold && (
               <div className={styles.btnGroup}>
                 <button
-                  className={`${styles.btnCart} ${isInCart(product.id) ? styles.btnCartDone : ''}`}
+                  className={`${styles.btnCart} ${isInCart(product.id) || cartAdded ? styles.btnCartDone : ''}`}
                   disabled={isInCart(product.id)}
                   onClick={() => {
                     addItem(product);
                     setCartAdded(true);
                     setTimeout(() => setCartAdded(false), 2000);
                   }}
+                  title={isInCart(product.id) ? 'Dans le panier' : 'Ajouter au panier'}
                 >
-                  {isInCart(product.id) || cartAdded ? '✓ Dans le panier' : '+ Ajouter au panier'}
+                  {isInCart(product.id) || cartAdded ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                      <polyline points="20 6 9 17 4 12"/>
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                      <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
+                  )}
                 </button>
 
                 <a
