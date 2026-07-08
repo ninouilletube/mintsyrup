@@ -288,7 +288,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   title={isInWishlist(product.id) ? 'Retirer de ma liste' : 'Ajouter à ma liste'}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/icon-wishlist.png" alt="" style={{ width: 20, height: 20, objectFit: 'contain', mixBlendMode: 'multiply', filter: isInWishlist(product.id) ? 'brightness(0) saturate(100%) invert(14%) sepia(95%) saturate(1500%) hue-rotate(310deg)' : 'none' }} />
+                  <img src={isInWishlist(product.id) ? '/icon-wishlist-active.png' : '/icon-wishlist.png'} alt="" style={{ width: 20, height: 20, objectFit: 'contain', mixBlendMode: 'multiply' }} />
                 </button>
               </div>
             )}

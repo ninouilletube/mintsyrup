@@ -30,7 +30,7 @@ export default function WishlistButton({ productId, className }: Props) {
         aria-label={active ? 'Retirer de ma wishlist' : 'Ajouter à ma wishlist'}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/icon-wishlist.png" alt="" className={`${styles.icon} ${active ? styles.iconActive : ''}`} />
+        <img src={active ? '/icon-wishlist-active.png' : '/icon-wishlist.png'} alt="" className={styles.icon} />
       </button>
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
     </>

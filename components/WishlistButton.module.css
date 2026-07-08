@@ -24,9 +24,4 @@
   height: 22px;
   object-fit: contain;
   mix-blend-mode: multiply;
-  transition: filter 0.15s;
-}
-
-.iconActive {
-  filter: brightness(0) saturate(100%) invert(14%) sepia(95%) saturate(1500%) hue-rotate(310deg);
 }
