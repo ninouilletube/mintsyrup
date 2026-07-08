@@ -148,7 +148,7 @@ export default function ProductGrid() {
           ? [...visible].sort((a, b) => a.id - b.id) // plus ancien en premier
           : [...visible.filter((p) => activeCategory ? p.categories.includes(activeCategory as never) : false)].sort((a, b) => b.id - a.id);
 
-  const SIZE_ORDER = ['TU','XXXS / 30 / 2','XXS / 32 / 4','XS / 34 / 6','S / 36 / 8','M / 38 / 10','L / 40 / 12','XL / 42 / 14','2XL / 44 / 16','3XL / 46 / 18','4XL / 48 / 20'];
+  const SIZE_ORDER = ['TU','XXXS / 30 / 2','XXS / 32 / 4','XS / 34 / 6','S / 36 / 8','M / 38 / 10','L / 40 / 12','XL / 42 / 14','2XL / 44 / 16','3XL / 46 / 18','4XL / 48 / 20','5XL / 50 / 18'];
 
   // Faceted filtering: each group is computed from products filtered by the OTHER active filters
   const forTypes = byCategory.filter((p) => {
