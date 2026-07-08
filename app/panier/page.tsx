@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import { useCart } from '@/context/CartContext';
 import { useProducts } from '@/context/ProductsContext';
 import { useAuth } from '@/context/AuthContext';
+import { useWishlist } from '@/context/WishlistContext';
 import styles from './panier.module.css';
 
 const MONDIAL_RELAY_COUNTRIES = ['PT', 'FR', 'BE', 'LU', 'ES', 'DE', 'NL', 'IT'];
@@ -55,6 +56,7 @@ export default function PanierPage() {
   const { items, removeItem, clearCart, expiresAt } = useCart();
   const { products } = useProducts();
   const { user, profile } = useAuth();
+  const { wishlist } = useWishlist();
   const [timeLeft, setTimeLeft] = useState(0);
 
   // Livraison
@@ -172,13 +174,32 @@ export default function PanierPage() {
     }
   };
 
+  const wishlistCount = wishlist.length;
+
   if (cartProducts.length === 0) {
     return (
       <>
         <Nav />
         <div className={styles.empty}>
-          <p className={styles.emptyText}>Ton panier est vide.</p>
-          <Link href="/" className={styles.emptyLink}>← Retour à la boutique</Link>
+          <div className={styles.emptyCard}>
+            <span className={styles.emptyBag}>🛍</span>
+            <p className={styles.emptyTitle}>Ton panier est vide</p>
+            <p className={styles.emptyText}>Tu n&apos;as pas encore ajouté d&apos;articles.</p>
+            <Link href="/" className={styles.emptyBtnMain}>Parcourir la boutique</Link>
+            {user && wishlistCount > 0 && (
+              <div className={styles.emptyWishlistHint}>
+                <span className={styles.emptyWishlistIcon}>♡</span>
+                <div>
+                  <p className={styles.emptyWishlistText}>
+                    Tu as <strong>{wishlistCount} article{wishlistCount > 1 ? 's' : ''}</strong> dans ta wishlist
+                  </p>
+                  <Link href="/ma-wishlist" className={styles.emptyWishlistLink}>
+                    Voir ma wishlist →
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
         <Footer />
       </>

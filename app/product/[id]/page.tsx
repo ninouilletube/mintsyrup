@@ -287,7 +287,8 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   }}
                   title={isInWishlist(product.id) ? 'Retirer de ma liste' : 'Ajouter à ma liste'}
                 >
-                  {isInWishlist(product.id) ? '♥' : '♡'}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/icon-wishlist.png" alt="" style={{ width: 20, height: 20, objectFit: 'contain', mixBlendMode: 'multiply', filter: isInWishlist(product.id) ? 'brightness(0) saturate(100%) invert(14%) sepia(95%) saturate(1500%) hue-rotate(310deg)' : 'none' }} />
                 </button>
               </div>
             )}
@@ -322,32 +323,31 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           <button className={styles.lightboxClose} onClick={() => setLightbox(false)}>×</button>
         </div>
       )}
+        {(() => {
+          const others = products.filter((p) => !p.hidden && p.id !== product.id);
+          const seen = new Set<number>();
+          const pick = (arr: typeof others) => arr.filter((p) => !seen.has(p.id) && seen.add(p.id) as unknown as boolean);
+
+          const sameColorSameCategory = pick(others.filter((p) =>
+            p.tags?.some((t) => product.tags?.includes(t)) &&
+            p.categories.some((c) => product.categories.includes(c))
+          ));
+          const sameSubcategory = pick(others.filter((p) =>
+            product.subcategory && p.subcategory === product.subcategory
+          ));
+          const sameCategory = pick(others.filter((p) =>
+            p.categories.some((c) => product.categories.includes(c))
+          ));
+          const sameColor = pick(others.filter((p) =>
+            p.tags?.some((t) => product.tags?.includes(t))
+          ));
+          const oldest = pick([...others].sort((a, b) => a.id - b.id));
+
+          const related = [...sameColorSameCategory, ...sameSubcategory, ...sameCategory, ...sameColor, ...oldest].slice(0, 20);
+          if (!related.length) return null;
+          return <RelatedSection related={related} lang={lang} />;
+        })()}
       </div>
-
-      {(() => {
-        const others = products.filter((p) => !p.hidden && p.id !== product.id);
-        const seen = new Set<number>();
-        const pick = (arr: typeof others) => arr.filter((p) => !seen.has(p.id) && seen.add(p.id) as unknown as boolean);
-
-        const sameColorSameCategory = pick(others.filter((p) =>
-          p.tags?.some((t) => product.tags?.includes(t)) &&
-          p.categories.some((c) => product.categories.includes(c))
-        ));
-        const sameSubcategory = pick(others.filter((p) =>
-          product.subcategory && p.subcategory === product.subcategory
-        ));
-        const sameCategory = pick(others.filter((p) =>
-          p.categories.some((c) => product.categories.includes(c))
-        ));
-        const sameColor = pick(others.filter((p) =>
-          p.tags?.some((t) => product.tags?.includes(t))
-        ));
-        const oldest = pick([...others].sort((a, b) => a.id - b.id));
-
-        const related = [...sameColorSameCategory, ...sameSubcategory, ...sameCategory, ...sameColor, ...oldest].slice(0, 20);
-        if (!related.length) return null;
-        return <RelatedSection related={related} lang={lang} />;
-      })()}
 
       <Footer />
     </>

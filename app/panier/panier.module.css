@@ -501,20 +501,95 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
   padding: 2rem;
+  background: url('/mer.webp') center center / cover no-repeat fixed;
 }
+
+.emptyCard {
+  background: #FFFEF3;
+  border: 2px solid var(--dark);
+  border-radius: 16px;
+  box-shadow: 5px 5px 0 var(--dark);
+  padding: 2.5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+}
+
+.emptyBag {
+  font-size: 2.8rem;
+  line-height: 1;
+}
+
+.emptyTitle {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--dark);
+  margin: 0;
+}
+
 .emptyText {
   font-family: var(--font-dm-sans), sans-serif;
-  font-size: 1.1rem;
-  color: rgba(28,28,28,0.6);
-}
-.emptyLink {
-  font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.9rem;
-  color: var(--dark);
-  text-decoration: underline;
+  color: rgba(28,28,28,0.55);
+  margin: 0 0 0.5rem;
 }
+
+.emptyBtnMain {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  background: var(--dark);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.4rem;
+  text-decoration: none;
+  transition: opacity 0.15s;
+  display: inline-block;
+}
+.emptyBtnMain:hover { opacity: 0.8; }
+
+.emptyWishlistHint {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  background: rgba(192,24,90,0.06);
+  border: 1.5px solid rgba(192,24,90,0.2);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  width: 100%;
+}
+
+.emptyWishlistIcon {
+  font-size: 1.5rem;
+  color: #C0185A;
+  flex-shrink: 0;
+}
+
+.emptyWishlistText {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.85rem;
+  color: var(--dark);
+  margin: 0 0 0.3rem;
+}
+
+.emptyWishlistLink {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #C0185A;
+  text-decoration: none;
+  transition: opacity 0.15s;
+}
+.emptyWishlistLink:hover { opacity: 0.75; }
 
 /* ── Mobile ── */
 @media (max-width: 768px) {
