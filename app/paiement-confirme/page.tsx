@@ -85,9 +85,10 @@ function CommandesContent() {
           <p className={styles.emptyText}>Chargement…</p>
         ) : orders.length === 0 ? (
           <div className={styles.emptyCard}>
-            <span className={styles.emptyIcon}>📦</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/icon-commandes.png" alt="" className={styles.emptyIcon} />
             <p className={styles.emptyTitle}>Aucune commande pour le moment</p>
-            <p className={styles.emptyText}>Tes achats apparaîtront ici après ton premier paiement.</p>
+            <p className={styles.emptyText}>Tes achats apparaîtront ici après ta première commande.</p>
             <Link href="/" className={styles.btn}>Parcourir la boutique</Link>
           </div>
         ) : (
