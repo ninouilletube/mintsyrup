@@ -13,12 +13,13 @@ import { useProducts } from '@/context/ProductsContext';
 import { supabase } from '@/lib/supabase';
 import styles from './profil.module.css';
 
-type FieldKey = 'pronoms' | 'esthetique' | 'couleur_preferee' | 'couleur_moment' | 'obsession' | 'recherche' | 'inspiration' | 'decennies' | 'ville' | 'interets';
+type FieldKey = 'pronoms' | 'age' | 'esthetique' | 'couleur_preferee' | 'couleur_moment' | 'obsession' | 'recherche' | 'inspiration' | 'decennies' | 'ville' | 'interets';
 
 type FieldDef = { key: FieldKey; label: string; colorKey?: string } | { separator: true };
 
 const FIELDS: FieldDef[] = [
   { key: 'pronoms',          label: 'Mes pronoms' },
+  { key: 'age',              label: 'Mon âge' },
   { separator: true },
   { key: 'esthetique',       label: 'Mon esthétique' },
   { key: 'decennies',        label: 'Mes décennies préférées' },

@@ -10,6 +10,7 @@ export type Profile = {
   avatar_url: string | null;
   bio?: string | null;
   pronoms?: string | null;
+  age?: string | null;
   esthetique?: string | null;
   couleur_preferee?: string | null;
   couleur_preferee_hex?: string | null;
