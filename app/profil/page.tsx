@@ -384,7 +384,10 @@ export default function ProfilPage() {
               ) : (
                 <>
                   <p className={styles.username}>{profile.username}</p>
-                  <p className={styles.email}>{user.email}</p>
+                  <span className={styles.emailWrap}>
+                    <p className={styles.email}>{user.email}</p>
+                    <span className={styles.emailTooltip}>Cette information n&apos;est visible que par vous</span>
+                  </span>
                 </>
               )}
             </div>
