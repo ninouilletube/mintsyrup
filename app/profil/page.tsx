@@ -618,7 +618,7 @@ export default function ProfilPage() {
 
           {outfits.length === 0 && !outfitUploading ? (
             <p className={styles.collectionEmpty}>
-              Ici, tu peux partager tes tenues préférées avec tes pièces Mint Syrup 🌿
+              Ici, tu peux partager tes tenues préférées avec tes pièces Mint Syrup
             </p>
           ) : (
             <div className={styles.outfitsGrid}>
