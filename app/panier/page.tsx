@@ -174,7 +174,7 @@ export default function PanierPage() {
     }
   };
 
-  const wishlistCount = wishlist.length;
+  const wishlistCount = products.filter(p => wishlist.includes(p.id) && !p.hidden && !p.sold).length;
 
   if (cartProducts.length === 0) {
     return (
