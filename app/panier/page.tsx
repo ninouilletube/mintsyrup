@@ -189,7 +189,8 @@ export default function PanierPage() {
             <Link href="/" className={styles.emptyBtnMain}>Parcourir la boutique</Link>
             {user && wishlistCount > 0 && (
               <div className={styles.emptyWishlistHint}>
-                <span className={styles.emptyWishlistIcon}>♡</span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/icon-wishlist.png" alt="" className={styles.emptyWishlistIcon} />
                 <div>
                   <p className={styles.emptyWishlistText}>
                     Tu as <strong>{wishlistCount} article{wishlistCount > 1 ? 's' : ''}</strong> dans ta wishlist

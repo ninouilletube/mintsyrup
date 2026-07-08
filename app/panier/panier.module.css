@@ -570,9 +570,11 @@
 }
 
 .emptyWishlistIcon {
-  font-size: 1.5rem;
-  color: #C0185A;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
   flex-shrink: 0;
+  mix-blend-mode: multiply;
 }
 
 .emptyWishlistText {
