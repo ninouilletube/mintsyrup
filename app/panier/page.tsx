@@ -41,7 +41,6 @@ const COUNTRY_OPTIONS = [
   { code: 'DE', label: 'Allemagne' },
   { code: 'NL', label: 'Pays-Bas' },
   { code: 'IT', label: 'Italie' },
-  { code: 'CH', label: 'Suisse' },
 ];
 
 function formatTimer(ms: number) {
@@ -307,11 +306,7 @@ export default function PanierPage() {
               ))}
             </div>
 
-            {country === 'CH' && (
-              <p className={styles.customsNote}>🇨🇭 La Suisse est hors UE — des frais de douane peuvent s&apos;ajouter, à la charge du destinataire.</p>
-            )}
-
-            <p className={styles.vintedNote}>
+<parameter name="new_string">            <p className={styles.vintedNote}>
               Trop cher ? Je vous recommande de passer par{' '}
               <a href="https://www.vinted.fr/member/288609653" target="_blank" rel="noopener noreferrer" className={styles.vintedLink}>Vinted</a>.
             </p>
