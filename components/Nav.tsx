@@ -11,7 +11,9 @@ import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import CartIcon from './CartIcon';
 import AuthModal from './AuthModal';
+import CartPreview from './CartPreview';
 import { useAuth } from '@/context/AuthContext';
+import { useCart } from '@/context/CartContext';
 
 const SEASON_LABEL: Record<SeasonKey, string> = {
   summer: 'SUMMER',
@@ -33,14 +35,27 @@ export default function Nav() {
   const { activeCategory, setActiveCategory, activeSelection, setActiveSelection } = useShop();
   const { selections } = useSelections();
   const { user, profile, signOut } = useAuth();
+  const { count, clearCart } = useCart();
   const season = getCurrentSeason();
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === '/';
   const [menuOpen, setMenuOpen] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [signOutWarning, setSignOutWarning] = useState(false);
   const [mobileOpenSection, setMobileOpenSection] = useState<'categories' | 'selections' | null>(null);
   const navRef = useRef<HTMLElement>(null);
+
+  const handleSignOut = () => {
+    if (count > 0) { setSignOutWarning(true); return; }
+    signOut();
+  };
+
+  const confirmSignOut = () => {
+    clearCart();
+    signOut();
+    setSignOutWarning(false);
+  };
 
   useEffect(() => {
     if (!menuOpen) { setMobileOpenSection(null); return; }
@@ -98,6 +113,7 @@ export default function Nav() {
   const isSelActive    = activeSelection !== null;
 
   return (
+    <>
     <nav className={styles.nav} ref={navRef}>
 
       {/* ── Mobile : burger ── */}
@@ -215,7 +231,7 @@ export default function Nav() {
                 <Link href="/profil" className={styles.accountDropItem}>Mon profil</Link>
                 <Link href="/ma-wishlist" className={styles.accountDropItem}>Ma wishlist</Link>
                 <Link href="/paiement-confirme" className={styles.accountDropItem}>Mes commandes</Link>
-                <button className={styles.accountDropItem} onClick={() => signOut()}>Déconnexion</button>
+                <button className={styles.accountDropItem} onClick={handleSignOut}>Déconnexion</button>
               </div>
             </div>
           ) : (
@@ -326,5 +342,21 @@ export default function Nav() {
         </div>
       )}
     </nav>
+
+      {signOutWarning && (
+        <div className={styles.signOutOverlay} onClick={() => setSignOutWarning(false)}>
+          <div className={styles.signOutCard} onClick={e => e.stopPropagation()}>
+            <p className={styles.signOutText}>
+              Attention : si vous vous déconnectez, les articles seront retirés de votre panier.
+            </p>
+            <div className={styles.signOutActions}>
+              <button className={styles.signOutCancel} onClick={() => setSignOutWarning(false)}>Annuler</button>
+              <button className={styles.signOutConfirm} onClick={confirmSignOut}>Se déconnecter</button>
+            </div>
+          </div>
+        </div>
+      )}
+      <CartPreview />
+    </>
   );
 }

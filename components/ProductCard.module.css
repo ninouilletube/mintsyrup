@@ -67,9 +67,9 @@
   border: 1.5px solid rgba(0,0,0,0.15);
 }
 
-.body { padding: 0.9rem 1rem 1.1rem; position: relative; flex: 1; }
+.body { padding: 0.9rem 1rem 1.1rem; position: relative; height: 6rem; overflow: hidden; flex-shrink: 0; }
 
-.brand { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.25rem; }
+.brand { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--orange); margin-bottom: 0.25rem; }
 .titleRow {
   display: flex;
   align-items: flex-start;
@@ -98,6 +98,10 @@
   margin-bottom: 0.4rem;
   line-height: 1.25;
   color: var(--dark);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .desc {

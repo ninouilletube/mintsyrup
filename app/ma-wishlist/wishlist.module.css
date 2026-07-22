@@ -16,6 +16,7 @@
 .header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1.5rem;
   flex-wrap: wrap;
   margin-bottom: 2rem;
@@ -35,38 +36,39 @@
   gap: 0.65rem;
   align-items: center;
   flex-wrap: wrap;
+  margin-left: auto;
 }
 
 .btnPrimary {
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.88rem;
   font-weight: 700;
-  background: var(--dark);
-  color: #fff;
-  border: 2px solid var(--dark);
-  border-radius: 999px;
-  padding: 0.5rem 1.1rem;
-  cursor: pointer;
-  transition: opacity 0.15s;
-  white-space: nowrap;
-}
-.btnPrimary:hover:not(:disabled) { opacity: 0.8; }
-.btnPrimary:disabled { opacity: 0.45; cursor: not-allowed; }
-
-.btnGhost {
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 0.88rem;
-  font-weight: 600;
-  background: transparent;
-  color: var(--dark);
-  border: 2px solid var(--dark);
+  background: #FDE8F2;
+  color: #C42C6E;
+  border: 2px solid #C42C6E;
   border-radius: 999px;
   padding: 0.5rem 1.1rem;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
   white-space: nowrap;
 }
-.btnGhost:hover { background: var(--dark); color: #fff; }
+.btnPrimary:hover:not(:disabled) { background: #C42C6E; color: #fff; }
+.btnPrimary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btnGhost {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  background: #FDE8F2;
+  color: #C42C6E;
+  border: 2px solid #C42C6E;
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.btnGhost:hover { background: #C42C6E; color: #fff; }
 
 .cardWrap {
   position: relative;

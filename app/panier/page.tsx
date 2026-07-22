@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
+import AuthModal from '@/components/AuthModal';
 import { useCart } from '@/context/CartContext';
 import { useProducts } from '@/context/ProductsContext';
 import { useAuth } from '@/context/AuthContext';
@@ -79,6 +80,8 @@ export default function PanierPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError]     = useState<string | null>(null);
+  const [showGuestWarning, setShowGuestWarning] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const cartProducts = items
     .map(item => ({ item, product: products.find(p => p.id === item.productId) }))
@@ -133,7 +136,14 @@ export default function PanierPage() {
   const relayFilled   = !selectedOption.isRelay || relayPoint.trim().length > 0;
   const canCheckout   = !!addressFilled && relayFilled;
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
+    if (cartProducts.length === 0 || !canCheckout) return;
+    if (!user) { setShowGuestWarning(true); return; }
+    proceedCheckout();
+  };
+
+  const proceedCheckout = async () => {
+    setShowGuestWarning(false);
     if (cartProducts.length === 0 || !canCheckout) return;
     setLoading(true);
     setError(null);
@@ -185,7 +195,7 @@ export default function PanierPage() {
             <img src="/icon-panier.png" alt="" className={styles.emptyBag} />
             <p className={styles.emptyTitle}>Ton panier est vide</p>
             <p className={styles.emptyText}>Tu n&apos;as pas encore ajouté d&apos;articles.</p>
-            <Link href="/" className={styles.emptyBtnMain}>Parcourir la boutique</Link>
+            <Link href="/?cat=drops" className={styles.emptyBtnMain}>Parcourir la boutique</Link>
             {user && wishlistCount > 0 && (
               <div className={styles.emptyWishlistHint}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -222,15 +232,6 @@ export default function PanierPage() {
         <div className={styles.layout}>
           {/* ── Articles ── */}
           <div className={styles.items}>
-            {user ? (
-              <div className={styles.authBannerOk}>
-                Connecté.e en tant que <strong>{profile?.username ?? user.email}</strong>
-              </div>
-            ) : (
-              <div className={styles.authBannerWarn}>
-                Attention, vous n&apos;êtes pas connecté.e. Vos achats ne seront pas ajoutés automatiquement à votre profil.
-              </div>
-            )}
             {expiresAt && (
               <div className={`${styles.timer} ${urgent ? styles.timerUrgent : ''}`}>
                 {timeLeft > 0
@@ -261,15 +262,12 @@ export default function PanierPage() {
                   {product.size && <p className={styles.itemSize}>{product.size}</p>}
                 </div>
                 {product.vintedUrl && (
-                  <a
-                    href={product.vintedUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
                     className={styles.vintedBtn}
-                    onClick={e => e.stopPropagation()}
+                    onClick={e => { e.preventDefault(); e.stopPropagation(); window.open(product.vintedUrl, '_blank', 'noopener,noreferrer'); }}
                   >
                     Voir sur Vinted
-                  </a>
+                  </button>
                 )}
                 <div className={styles.itemRight}>
                   <span className={styles.itemPrice}>{product.price} €</span>
@@ -283,6 +281,16 @@ export default function PanierPage() {
 
           {/* ── Résumé ── */}
           <div className={styles.summary}>
+
+            {user ? (
+              <div className={styles.authBannerOk}>
+                Connecté.e en tant que <strong>{profile?.username ?? user.email}</strong>
+              </div>
+            ) : (
+              <div className={styles.authBannerWarn}>
+                Vous n&apos;êtes pas connecté.e
+              </div>
+            )}
 
             {/* Livraison */}
             <h2 className={styles.summaryTitle}>Livraison</h2>
@@ -306,7 +314,7 @@ export default function PanierPage() {
               ))}
             </div>
 
-<parameter name="new_string">            <p className={styles.vintedNote}>
+            <p className={styles.vintedNote}>
               Trop cher ? Je vous recommande de passer par{' '}
               <a href="https://www.vinted.fr/member/288609653" target="_blank" rel="noopener noreferrer" className={styles.vintedLink}>Vinted</a>.
             </p>
@@ -419,6 +427,30 @@ export default function PanierPage() {
         </div>
       </div>
       <Footer />
+
+      {showGuestWarning && (
+        <div className={styles.guestOverlay} onClick={() => setShowGuestWarning(false)}>
+          <div className={styles.guestCard} onClick={e => e.stopPropagation()}>
+            <div className={styles.guestHeader}>
+              <span className={styles.guestTitle}>Vous n&apos;êtes pas connecté.e</span>
+            </div>
+            <p className={styles.guestText}>
+              Vos articles ne seront pas ajoutés à votre profil.
+            </p>
+            <p className={styles.guestQuestion}>Souhaitez-vous poursuivre ?</p>
+            <div className={styles.guestActions}>
+              <button className={styles.guestBtnSecondary} onClick={() => { setShowGuestWarning(false); setShowAuthModal(true); }}>
+                Connexion
+              </button>
+              <button className={styles.guestBtnPrimary} onClick={proceedCheckout}>
+                Continuer en invité.e →
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAuthModal && <AuthModal onClose={() => setShowAuthModal(false)} />}
     </>
   );
 }

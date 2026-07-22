@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useAuth } from './AuthContext';
 
@@ -22,19 +22,29 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
+  const loadedForRef = useRef<string | null>(null);
+
+  const userId = user?.id ?? null;
 
   useEffect(() => {
-    if (!user) { setWishlist([]); return; }
+    if (!userId) {
+      setWishlist([]);
+      loadedForRef.current = null;
+      return;
+    }
+    // Skip refetch if we already have data for this user (e.g. token refresh)
+    if (loadedForRef.current === userId) return;
+    loadedForRef.current = userId;
     setLoading(true);
     supabase
       .from('wishlists')
       .select('product_id')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .then(({ data }) => {
         setWishlist((data ?? []).map(r => r.product_id as number));
         setLoading(false);
       });
-  }, [user]);
+  }, [userId]);
 
   const isInWishlist = useCallback((productId: number) => wishlist.includes(productId), [wishlist]);
 

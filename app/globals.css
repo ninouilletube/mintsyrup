@@ -45,4 +45,10 @@ body {
   background: #ffffff;
 }
 
+@media (min-width: 769px) {
+  body {
+    background: transparent;
+  }
+}
+
 main { flex: 1; }

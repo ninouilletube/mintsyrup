@@ -14,6 +14,7 @@ import { trackArticleView, trackVintedClick } from '@/lib/supabase';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import AuthModal from '@/components/AuthModal';
+import { ORIGIN_KEY } from '@/components/NavigationTracker';
 import styles from './Product.module.css';
 
 function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'en' }) {
@@ -42,7 +43,7 @@ function RelatedSection({ related, lang }: { related: Product[]; lang: 'fr' | 'e
   };
   return (
     <div className={styles.related}>
-      <h2 className={styles.relatedTitle}>{lang === 'fr' ? 'Vous aimerez peut-être…' : 'You might also like…'}</h2>
+      <h2 className={styles.relatedTitle}>{lang === 'fr' ? 'Vous aimerez peut-être' : 'You might also like'}</h2>
       <div className={styles.relatedStrip}>
         {related.length > 3 && !atStart && (
           <button className={`${styles.relatedScrollBtn} ${styles.relatedScrollLeft}`} onClick={() => scroll('left')} aria-label="Précédent">‹</button>
@@ -168,7 +169,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
         <Nav />
         <div className={styles.notFound}>
           <p>Article introuvable.</p>
-          <button onClick={() => router.back()} className={styles.back}>← Retour</button>
+          <button onClick={() => { const o = sessionStorage.getItem(ORIGIN_KEY); if (o) router.push(o); else router.back(); }} className={styles.back}>← Retour</button>
         </div>
         <Footer />
       </>
@@ -181,7 +182,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
     <>
       <Nav />
       <div className={styles.page}>
-      <button onClick={() => router.back()} className={styles.back}>← Retour</button>
+      <button onClick={() => { const o = sessionStorage.getItem(ORIGIN_KEY); if (o) router.push(o); else router.back(); }} className={styles.back}>← Retour</button>
       <div className={styles.cardWrap}>
         {/* Mobile uniquement : titre + marque centrés au-dessus de la carte */}
         <div className={styles.mobileCardHeader}>
@@ -237,63 +238,74 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           {/* Mobile uniquement : taille sous les images, alignée à droite */}
           {product.size && <span className={styles.mobileSizeBelow}>{product.size}</span>}
           <div className={styles.info}>
-            <h1 className={styles.title}>{product.title[lang]}</h1>
-            {product.brand && <p className={styles.brand}>{product.brand}</p>}
+            <div className={styles.infoTop}>
+              <h1 className={styles.title}>{product.title[lang]}</h1>
+              {product.brand && <p className={styles.brand}>{product.brand}</p>}
+            </div>
             <div className={styles.descGroup}>
               {product.description[lang] && <p className={styles.desc}>{product.description[lang]}</p>}
             </div>
-            <p className={styles.price}>{product.price} €</p>
-
-            {/* Boutons d'action */}
-            {!product.sold && (
-              <div className={styles.btnGroup}>
-                <button
-                  className={`${styles.btnCart} ${isInCart(product.id) || cartAdded ? styles.btnCartDone : ''}`}
-                  disabled={isInCart(product.id)}
-                  onClick={() => {
-                    addItem(product);
-                    setCartAdded(true);
-                    setTimeout(() => setCartAdded(false), 2000);
-                  }}
-                  title={isInCart(product.id) ? 'Dans le panier' : 'Ajouter au panier'}
-                >
-                  {isInCart(product.id) || cartAdded ? (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
-                      <polyline points="20 6 9 17 4 12"/>
-                    </svg>
+            <div className={styles.infoFooter}>
+              {product.sold ? (
+                <>
+                  <p className={styles.price}>{product.price} €</p>
+                  <p className={styles.soldMsg}>Cet article a été vendu.</p>
+                </>
+              ) : (
+                <div className={styles.btnGroup}>
+                  {product.vintedUrl ? (
+                    <a
+                      href={product.vintedUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={styles.vintedPill}
+                      onClick={() => trackVintedClick(product.id)}
+                    >
+                      <span className={styles.vintedPillPrice}>{product.price} €</span>
+                      <span className={styles.vintedPillLabel}>Acheter sur Vinted</span>
+                    </a>
                   ) : (
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
-                      <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                    </svg>
+                    <p className={styles.price}>{product.price} €</p>
                   )}
-                </button>
 
-                <a
-                  href={product.vintedUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.btnVinted}
-                  onClick={() => trackVintedClick(product.id)}
-                >
-                  Voir sur Vinted
-                </a>
+                  <div className={styles.btnCartWrap} data-tip={isInCart(product.id) || cartAdded ? 'Dans le panier ✓' : 'Ajouter au panier'}>
+                    <button
+                      className={`${styles.btnCart} ${isInCart(product.id) || cartAdded ? styles.btnCartDone : ''}`}
+                      disabled={isInCart(product.id)}
+                      onClick={() => {
+                        addItem(product);
+                        setCartAdded(true);
+                        setTimeout(() => setCartAdded(false), 2000);
+                      }}
+                    >
+                      {isInCart(product.id) || cartAdded ? (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      ) : (
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                        </svg>
+                      )}
+                    </button>
+                  </div>
 
-                <button
-                  className={`${styles.btnWishlist} ${isInWishlist(product.id) ? styles.btnWishlistActive : ''}`}
-                  onClick={() => {
-                    if (!user) { setAuthModalOpen(true); return; }
-                    toggleWishlist(product.id);
-                  }}
-                  title={isInWishlist(product.id) ? 'Retirer de ma liste' : 'Ajouter à ma liste'}
-                >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={isInWishlist(product.id) ? '/icon-wishlist-active.png' : '/icon-wishlist.png'} alt="" style={{ width: 20, height: 20, objectFit: 'contain', mixBlendMode: 'multiply' }} />
-                </button>
-              </div>
-            )}
-            {product.sold && <p className={styles.soldMsg}>Cet article a été vendu.</p>}
-
+                  <div className={styles.btnCartWrap} data-tip={isInWishlist(product.id) ? 'Retirer de ma wishlist' : 'Ajouter à ma wishlist'}>
+                    <button
+                      className={`${styles.btnWishlist} ${isInWishlist(product.id) ? styles.btnWishlistActive : ''}`}
+                      onClick={() => {
+                        if (!user) { setAuthModalOpen(true); return; }
+                        toggleWishlist(product.id);
+                      }}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={isInWishlist(product.id) ? '/icon-wishlist-active.png' : '/icon-wishlist.png'} alt="" style={{ width: 20, height: 20, objectFit: 'contain', mixBlendMode: 'multiply' }} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
             {authModalOpen && <AuthModal onClose={() => setAuthModalOpen(false)} />}
           </div>
         </div>

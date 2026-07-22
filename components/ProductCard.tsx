@@ -6,12 +6,19 @@ import { useLang } from '@/context/LangContext';
 import type { Product } from '@/data/products';
 import styles from './ProductCard.module.css';
 import WishlistButton from './WishlistButton';
+import { ORIGIN_KEY } from './NavigationTracker';
 
 const SOLD_DELAY = 7 * 24 * 60 * 60 * 1000;
 
 export default function ProductCard({ product }: { product: Product }) {
   const { lang } = useLang();
   const recentlySold = !!product.sold && !!product.soldAt && Date.now() - product.soldAt < SOLD_DELAY;
+
+  const captureOrigin = () => {
+    if (!window.location.pathname.startsWith('/product/')) {
+      sessionStorage.setItem(ORIGIN_KEY, window.location.pathname + window.location.search);
+    }
+  };
 
   return (
     <article className={`${styles.card} ${recentlySold ? styles.cardSold : ''}`}>
@@ -44,7 +51,7 @@ export default function ProductCard({ product }: { product: Product }) {
               </div>
             )}
           </div>
-          <WishlistButton productId={product.id} />
+          {!product.sold && <WishlistButton productId={product.id} />}
         </div>
         <div className={styles.body}>
           <div className={styles.titleRow}>
@@ -52,12 +59,11 @@ export default function ProductCard({ product }: { product: Product }) {
             {product.size && <span className={styles.size}>{product.size}</span>}
           </div>
           {product.brand && <p className={styles.brand}>{product.brand}</p>}
-          <p className={styles.desc}>{product.description[lang]}</p>
         </div>
       </div>
       {!recentlySold && (
         <div className={styles.btnWrap}>
-          <Link href={`/product/${product.id}`} className={styles.btn} prefetch={true}>
+          <Link href={`/product/${product.id}`} className={styles.btn} prefetch={true} onClick={captureOrigin}>
             {lang === 'fr' ? 'Voir la pièce' : 'See item'}<span className={styles.btnArrow}> →</span>
           </Link>
         </div>

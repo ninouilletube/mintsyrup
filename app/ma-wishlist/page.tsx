@@ -1,12 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useCart } from '@/context/CartContext';
-import { supabase } from '@/lib/supabase';
-import type { Product } from '@/data/products';
+import { useProducts } from '@/context/ProductsContext';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -16,37 +15,33 @@ export default function MaWishlistPage() {
   const { user, loading: authLoading } = useAuth();
   const { wishlist, loading: wishlistLoading } = useWishlist();
   const { addItem, isInCart } = useCart();
+  const { products } = useProducts();
   const router = useRouter();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [productsLoading, setProductsLoading] = useState(true);
   const [selecting, setSelecting] = useState(false);
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [addedAll, setAddedAll] = useState(false);
+  const prevWishlistRef = useRef<number[]>([]);
 
   useEffect(() => {
     if (!authLoading && !user) router.replace('/');
   }, [authLoading, user, router]);
 
+  // Reset "ajouté" state when wishlist changes
   useEffect(() => {
-    const load = async () => {
-      const { data } = await supabase.from('mint_data').select('value').eq('key', 'products').single();
-      const raw = data?.value;
-      const all: Product[] = Array.isArray(raw) ? raw : ((raw as { products?: Product[] } | null)?.products ?? []);
-      setProducts(all);
-      setProductsLoading(false);
-    };
-    load();
-  }, []);
+    const prev = prevWishlistRef.current;
+    const changed = prev.length !== wishlist.length || wishlist.some(id => !prev.includes(id));
+    if (changed && addedAll) setAddedAll(false);
+    prevWishlistRef.current = wishlist;
+  }, [wishlist, addedAll]);
 
   if (authLoading || !user) return null;
 
   const wishlistProducts = products.filter(p => wishlist.includes(p.id) && !p.hidden && !p.sold);
-  const loading = wishlistLoading || productsLoading;
+  const loading = wishlistLoading;
 
   const handleAddAll = () => {
     wishlistProducts.forEach(p => addItem(p));
     setAddedAll(true);
-    setTimeout(() => setAddedAll(false), 2000);
   };
 
   const toggleSelect = (id: number) => {

@@ -72,14 +72,11 @@
 
 @media (max-width: 768px) {
   .hero {
-    /* svh = hauteur stable (barre d'adresse visible), évite le redimensionnement au scroll */
     height: 100svh;
-    /* Force le compositing GPU pour éviter les glitches iOS (ligne noire, zoom) */
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
   }
   .video {
-    /* Dépasse d'1px pour éliminer la ligne noire du bas */
     height: calc(100% + 1px);
     transform: translateZ(0);
     -webkit-transform: translateZ(0);
@@ -129,5 +126,25 @@
   @keyframes heroSpin {
     from { transform: rotate(0deg); }
     to   { transform: rotate(360deg); }
+  }
+}
+
+/* ── Desktop : vidéo et overlay fixes en fond de page ── */
+@media (min-width: 769px) {
+  .hero {
+    overflow: visible;
+  }
+  .video {
+    position: fixed;
+    z-index: -2;
+  }
+  .grain {
+    position: fixed;
+    z-index: -1;
+  }
+  .overlay {
+    position: fixed;
+    z-index: -1;
+    background: rgba(0, 0, 0, 0.22);
   }
 }

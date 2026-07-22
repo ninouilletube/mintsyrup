@@ -1,13 +1,23 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useShop } from '@/context/ShopContext';
+import { useAuth } from '@/context/AuthContext';
 import PageArrow from './PageArrow';
+import AuthModal from './AuthModal';
 import pageArrowStyles from './PageArrow.module.css';
 import styles from './VideoHero.module.css';
 
 export default function VideoHero() {
   const { activeCategory, activeSelection } = useShop();
+  const { user } = useAuth();
+  const router = useRouter();
+  const [authOpen, setAuthOpen] = useState(false);
+
+  const handleWishlist = () => {
+    if (!user) { setAuthOpen(true); } else { router.push('/ma-wishlist'); }
+  };
   // null uniquement : dans le hero → disparaissent au scroll sur mobile (transform crée le containing block)
   // drops géré par DropsArrow hors du hero → position:fixed au viewport même sur mobile
   // Drops actif → DropsArrow (hors hero) prend le relais sur desktop ; rien sur mobile
@@ -55,10 +65,11 @@ export default function VideoHero() {
           <PageArrow href="/projet" label="Le projet" direction="left" />
           {/* Desktop uniquement — mobile géré par DropsArrow hors du hero (pas de transform) */}
           <span className={pageArrowStyles.desktopOnly}>
-            <PageArrow href="/favoris" label="Mes favoris" direction="right" />
+            <PageArrow href="/ma-wishlist" label="Ma wishlist" direction="right" onClick={handleWishlist} />
           </span>
         </>
       )}
+      {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
     </section>
   );
 }
