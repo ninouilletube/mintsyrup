@@ -91,7 +91,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const router = useRouter();
   const { products } = useProducts();
   const { lang } = useLang();
-  const { addItem, isInCart } = useCart();
+  const { addItem, isInCart, sessionId } = useCart();
   const { isInWishlist, toggle: toggleWishlist } = useWishlist();
   const { user } = useAuth();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -99,6 +99,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
   const [lightbox, setLightbox] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [cartAdded, setCartAdded] = useState(false);
+  const [cartError, setCartError] = useState<string | null>(null);
   const [lbArrowsVisible, setLbArrowsVisible] = useState(false);
   const lbArrowTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const tracked = useRef(false);
@@ -268,28 +269,49 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     <p className={styles.price}>{product.price} €</p>
                   )}
 
-                  <div className={styles.btnCartWrap} data-tip={isInCart(product.id) || cartAdded ? 'Dans le panier ✓' : 'Ajouter au panier'}>
-                    <button
-                      className={`${styles.btnCart} ${isInCart(product.id) || cartAdded ? styles.btnCartDone : ''}`}
-                      disabled={isInCart(product.id)}
-                      onClick={() => {
-                        addItem(product);
-                        setCartAdded(true);
-                        setTimeout(() => setCartAdded(false), 2000);
-                      }}
-                    >
-                      {isInCart(product.id) || cartAdded ? (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
-                          <polyline points="20 6 9 17 4 12"/>
-                        </svg>
-                      ) : (
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
-                          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                        </svg>
-                      )}
-                    </button>
-                  </div>
+                  {(() => {
+                    const RESERVE_MS = 15 * 60 * 1000;
+                    const isReservedByOther = !!product.reservedAt && !!product.reservedSession &&
+                      product.reservedSession !== sessionId &&
+                      Date.now() - product.reservedAt < RESERVE_MS;
+                    return (
+                      <div className={styles.btnCartWrap}>
+                        {isReservedByOther ? (
+                          <p className={styles.reservedMsg}>⏳ Réservé — disponible dans {Math.ceil((RESERVE_MS - (Date.now() - (product.reservedAt ?? 0))) / 60000)} min</p>
+                        ) : (
+                          <>
+                            <button
+                              className={`${styles.btnCart} ${isInCart(product.id) || cartAdded ? styles.btnCartDone : ''}`}
+                              disabled={isInCart(product.id)}
+                              onClick={async () => {
+                                setCartError(null);
+                                const result = await addItem(product);
+                                if (result.ok) {
+                                  setCartAdded(true);
+                                  setTimeout(() => setCartAdded(false), 2000);
+                                } else {
+                                  setCartError(result.error ?? 'Impossible d\'ajouter au panier');
+                                  setTimeout(() => setCartError(null), 4000);
+                                }
+                              }}
+                            >
+                              {isInCart(product.id) || cartAdded ? (
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                                  <polyline points="20 6 9 17 4 12"/>
+                                </svg>
+                              ) : (
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                                  <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                                </svg>
+                              )}
+                            </button>
+                            {cartError && <p className={styles.cartErrorMsg}>{cartError}</p>}
+                          </>
+                        )}
+                      </div>
+                    );
+                  })()}
 
                   <div className={styles.btnCartWrap} data-tip={isInWishlist(product.id) ? 'Retirer de ma wishlist' : 'Ajouter à ma wishlist'}>
                     <button

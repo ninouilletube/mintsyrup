@@ -3,12 +3,15 @@ import Stripe from 'stripe';
 import { getData } from '@/lib/supabase';
 import type { Product } from '@/data/products';
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+
 type CartItemPayload = { id: number; title: string; price: number; image: string | null };
 type DeliveryAddress = { fullName: string; address: string; city: string; postalCode: string; country: string };
 
+const RESERVE_MS = 15 * 60 * 1000;
+
 export async function POST(req: Request) {
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-  const { items, shipping, country, carrier, relayPoint, deliveryNote, deliveryAddress, promoCode, promoDiscount } = await req.json() as {
+  const { items, shipping, country, carrier, relayPoint, deliveryNote, deliveryAddress, promoCode, promoDiscount, sessionId } = await req.json() as {
     items: CartItemPayload[];
     shipping: { label: string; price: number };
     country: string;
@@ -18,6 +21,7 @@ export async function POST(req: Request) {
     deliveryAddress: DeliveryAddress;
     promoCode: string | null;
     promoDiscount: number;
+    sessionId: string;
   };
 
   if (!items?.length) return NextResponse.json({ error: 'Panier vide' }, { status: 400 });
@@ -27,10 +31,14 @@ export async function POST(req: Request) {
     ? saved
     : (saved as { products?: Product[] })?.products ?? [];
 
+  const now = Date.now();
   for (const item of items) {
     const p = products.find(p => p.id === item.id);
     if (!p) return NextResponse.json({ error: `Article introuvable : ${item.title}` }, { status: 400 });
     if (p.sold) return NextResponse.json({ error: `"${item.title}" a déjà été vendu. Retire-le de ton panier.` }, { status: 409 });
+    if (p.reservedSession && p.reservedSession !== sessionId && p.reservedAt && now - p.reservedAt < RESERVE_MS) {
+      return NextResponse.json({ error: `"${item.title}" est réservé par quelqu'un d'autre.` }, { status: 409 });
+    }
   }
 
   const origin = req.headers.get('origin') ?? 'http://localhost:3000';
