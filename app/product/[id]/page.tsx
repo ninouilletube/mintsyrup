@@ -277,12 +277,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     <p className={styles.price}>{product.price} €</p>
                   )}
 
-                  <div className={styles.btnCartWrap} data-tip={isInCart(product.id) || cartAdded || isReservedByOther ? undefined : 'Ajouter au panier'}>
+                  <div className={styles.btnCartWrap} data-tip={isReservedByOther ? 'Déjà dans un panier' : isInCart(product.id) || cartAdded ? undefined : 'Ajouter au panier'}>
                     <button
-                      className={`${styles.btnCart} ${isInCart(product.id) || cartAdded ? styles.btnCartDone : ''} ${isReservedByOther ? styles.btnCartReserved : ''}`}
+                      className={`${styles.btnCart} ${isInCart(product.id) || cartAdded ? styles.btnCartDone : ''}`}
                       disabled={isInCart(product.id) || isReservedByOther}
                       onClick={async () => {
-                        if (isReservedByOther) return;
                         setCartError(null);
                         const result = await addItem(product);
                         if (result.ok) {
@@ -294,9 +293,7 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                         }
                       }}
                     >
-                      {isReservedByOther ? (
-                        <span className={styles.btnCartReservedLabel}>Déjà dans un panier</span>
-                      ) : isInCart(product.id) || cartAdded ? (
+                      {isInCart(product.id) || cartAdded ? (
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
                           <polyline points="20 6 9 17 4 12"/>
                         </svg>

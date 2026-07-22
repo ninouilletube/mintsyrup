@@ -476,22 +476,6 @@
 .btnCart:hover:not(:disabled) { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--dark); background: #FAF6F0; }
 .btnCart:disabled { opacity: 0.5; cursor: default; box-shadow: none; transform: none; }
 .btnCartDone { background: #e8f7f1; border-color: #1a9e6e; box-shadow: 3px 3px 0 #1a9e6e; color: #1a9e6e; }
-.btnCartReserved {
-  width: auto;
-  padding: 0 0.85rem;
-  font-size: 0.68rem;
-  letter-spacing: 0.04em;
-  background: rgba(28,28,28,0.05);
-  border-color: rgba(28,28,28,0.18);
-  color: rgba(28,28,28,0.4);
-  box-shadow: none;
-}
-.btnCartReservedLabel {
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 0.68rem;
-  font-weight: 600;
-  white-space: nowrap;
-}
 
 .btnWishlist {
   width: 44px;
