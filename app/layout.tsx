@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { DM_Sans, Playfair_Display } from 'next/font/google';
 import { LangProvider } from '@/context/LangContext';
 import { ShopProvider } from '@/context/ShopContext';
@@ -10,6 +11,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { CartProvider } from '@/context/CartContext';
 import { WishlistProvider } from '@/context/WishlistContext';
 import VisitTracker from '@/components/VisitTracker';
+import NavigationTracker from '@/components/NavigationTracker';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import SpotifyPlayer from '@/components/SpotifyPlayer';
 import './globals.css';
@@ -38,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <LoadingOverlay />
                     <SpotifyPlayer />
                     <VisitTracker />
+                    <Suspense fallback={null}><NavigationTracker /></Suspense>
                     {children}
                   </WishlistProvider>
                 </CartProvider>

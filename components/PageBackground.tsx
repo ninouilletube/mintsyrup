@@ -2,7 +2,7 @@
 
 export default function PageBackground({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ background: '#FAE2E8' }}>
+    <div style={{ background: 'transparent' }}>
       {children}
     </div>
   );

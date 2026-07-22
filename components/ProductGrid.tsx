@@ -25,6 +25,7 @@ export default function ProductGrid() {
   const [dropsIndex, setDropsIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [sortAll, setSortAll] = useState<'oldest' | 'newest' | 'cheapest' | 'priciest'>('oldest');
   const carouselWindowRef = useRef<HTMLDivElement>(null);
 
   const GAP = 16;
@@ -145,10 +146,15 @@ export default function ProductGrid() {
       : activeCategory === 'ete'
         ? [...visible.filter((p) => p.seasons?.includes(SEASON_TO_ID[getCurrentSeason()]))].sort((a, b) => b.id - a.id)
         : isAll
-          ? [...visible].sort((a, b) => a.id - b.id) // plus ancien en premier
+          ? [...visible].sort((a, b) => {
+              if (sortAll === 'newest')   return b.id - a.id;
+              if (sortAll === 'cheapest') return a.price - b.price;
+              if (sortAll === 'priciest') return b.price - a.price;
+              return a.id - b.id; // oldest
+            })
           : [...visible.filter((p) => activeCategory ? p.categories.includes(activeCategory as never) : false)].sort((a, b) => b.id - a.id);
 
-  const SIZE_ORDER = ['TU','XXXS / 30 / 2','XXS / 32 / 4','XS / 34 / 6','S / 36 / 8','M / 38 / 10','L / 40 / 12','XL / 42 / 14','2XL / 44 / 16','3XL / 46 / 18','4XL / 48 / 20','5XL / 50 / 18'];
+  const SIZE_ORDER = ['TU','XXXS / 30 / 2','XXS / 32 / 4','XS / 34 / 6','S / 36 / 8','M / 38 / 10','L / 40 / 12','XL / 42 / 14','2XL / 44 / 16','3XL / 46 / 18','4XL / 48 / 20','5XL / 50 / 22','6XL / 52 / 24','7XL / 54 / 26','8XL / 56 / 28'];
 
   // Faceted filtering: each group is computed from products filtered by the OTHER active filters
   const forTypes = byCategory.filter((p) => {
@@ -267,23 +273,41 @@ export default function ProductGrid() {
           </div>
         )}
 
-        {/* Desktop uniquement : barre filtres type + couleur */}
-        {hasFilters && (
+        {/* Desktop uniquement : barre filtres type + couleur (+ tri pour "tout voir") */}
+        {(hasFilters || isAll) && (
           <div className={styles.filterBar}>
             <div className={styles.filterLeft}>
-              {availableTypeIds.map((id, i) => {
-                const sub = subcategories.find((s) => s.id === id);
-                if (!sub) return null;
-                return (
-                  <span key={id} className={styles.filterRow}>
-                    {i > 0 && <span className={styles.filterSep}>—</span>}
+              {isAll ? (
+                <>
+                  <span className={styles.sortLabel}>Trier par :</span>
+                  {([
+                    { key: 'oldest',   label: '+ ancien' },
+                    { key: 'newest',   label: '+ récent' },
+                    { key: 'cheapest', label: 'prix croissant' },
+                    { key: 'priciest', label: 'prix décroissant' },
+                  ] as const).map(({ key, label }) => (
                     <button
-                      className={`${styles.filterItem} ${filterType === id ? styles.filterItemActive : ''}`}
-                      onClick={() => setFilterType(filterType === id ? null : id)}
-                    >{sub.label}</button>
-                  </span>
-                );
-              })}
+                      key={key}
+                      className={`${styles.sortBtn} ${sortAll === key ? styles.sortBtnActive : ''}`}
+                      onClick={() => setSortAll(key)}
+                    >{label}</button>
+                  ))}
+                </>
+              ) : (
+                availableTypeIds.map((id, i) => {
+                  const sub = subcategories.find((s) => s.id === id);
+                  if (!sub) return null;
+                  return (
+                    <span key={id} className={styles.filterRow}>
+                      {i > 0 && <span className={styles.filterSep}>—</span>}
+                      <button
+                        className={`${styles.filterItem} ${filterType === id ? styles.filterItemActive : ''}`}
+                        onClick={() => setFilterType(filterType === id ? null : id)}
+                      >{sub.label}</button>
+                    </span>
+                  );
+                })
+              )}
             </div>
             {availableColorIds.length > 0 && (
               <div className={styles.filterColors}>

@@ -1,0 +1,175 @@
+.page {
+  min-height: 100vh;
+  background: url('/mer.webp') center center / cover no-repeat fixed;
+  position: relative;
+  padding-top: 64px;
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 2rem 200px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--dark);
+  letter-spacing: -0.5px;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+.btnPrimary {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  background: #FDE8F2;
+  color: #C42C6E;
+  border: 2px solid #C42C6E;
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.btnPrimary:hover:not(:disabled) { background: #C42C6E; color: #fff; }
+.btnPrimary:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btnGhost {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  background: #FDE8F2;
+  color: #C42C6E;
+  border: 2px solid #C42C6E;
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.btnGhost:hover { background: #C42C6E; color: #fff; }
+
+.cardWrap {
+  position: relative;
+}
+
+.cardWrapSelecting {
+  cursor: pointer;
+}
+
+.cardWrapSelecting > :last-child {
+  pointer-events: none;
+}
+
+.cardWrapSelected > :last-child {
+  outline: 3px solid var(--dark);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.checkOverlay {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 20;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--dark);
+  background: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--dark);
+  transition: background 0.12s;
+}
+
+.checkOn {
+  background: var(--dark);
+  color: #fff;
+}
+
+.inCartBadge {
+  position: absolute;
+  bottom: 52px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  background: var(--dark);
+  color: #fff;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+}
+
+.empty {
+  font-family: var(--font-dm-sans), sans-serif;
+  color: rgba(28,28,28,0.5);
+  font-size: 0.95rem;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.emptyHeart {
+  font-size: 3.5rem;
+  color: rgba(28,28,28,0.2);
+  line-height: 1;
+}
+
+.emptyText {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin: 0;
+}
+
+.emptySub {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.88rem;
+  color: rgba(28,28,28,0.5);
+  margin: 0;
+}
