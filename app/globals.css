@@ -52,3 +52,30 @@ body {
 }
 
 main { flex: 1; }
+
+/* ── Nav mobile : fallback si le chunk CSS Module ne charge pas ──────────────
+   Ces règles utilisent le sélecteur de balise (spécificité faible) :
+   elles s'appliquent seulement si Nav.module.css ne charge pas,
+   car les classes CSS Modules ont une spécificité plus haute. */
+@media (max-width: 768px) {
+  /* Positionnement fixe + fond crème */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    min-height: 52px;
+    background: var(--cream);
+    border-bottom: 2.5px solid var(--dark);
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+  }
+  /* Icônes profil et panier — taille fixe quoi qu'il arrive */
+  img[src="/icon-panier.png"],
+  img[src="/icon-profil.png"] {
+    width: 24px !important;
+    height: 24px !important;
+    max-width: 24px !important;
+    max-height: 24px !important;
+  }
+}
