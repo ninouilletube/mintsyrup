@@ -692,41 +692,42 @@
 
   .itemImg {
     width: 100% !important;
-    height: 280px !important;
+    height: 160px !important;
     border-radius: 0;
   }
 
-  /* Infos produit : textes agrandis */
+  /* Infos produit */
   .itemInfo {
-    padding: 0.85rem 1rem 0.25rem;
-    gap: 0.3rem;
+    padding: 0.6rem 0.85rem 0.2rem;
+    gap: 0.2rem;
   }
 
   .itemName {
-    font-size: 1.15rem;
+    font-size: 0.95rem;
     white-space: normal;
   }
-  .itemBrand { font-size: 0.95rem; }
-  .itemSize  { font-size: 0.85rem; }
+  .itemBrand { font-size: 0.78rem; }
+  .itemSize  { font-size: 0.72rem; }
 
-  /* Bouton Vinted pleine largeur */
+  /* Bouton Vinted ajusté au contenu */
   .vintedBtn {
-    margin: 0.4rem 1rem 0;
-    width: calc(100% - 2rem);
-    font-size: 0.85rem;
-    padding: 0.6rem 1rem;
+    margin: 0.35rem 0.85rem 0;
+    width: auto;
+    align-self: flex-start;
+    font-size: 0.78rem;
+    padding: 0.45rem 0.85rem;
     justify-content: center;
   }
 
   /* Prix + bouton supprimer */
   .itemRight {
-    padding: 0.5rem 1rem 0.9rem;
+    padding: 0.35rem 0.85rem 0.7rem;
     justify-content: space-between;
     width: 100%;
   }
 
-  .itemPrice { font-size: 1.45rem; }
-  .removeBtn { font-size: 1.8rem; }
+  .itemPrice { font-size: 1.2rem; }
+  .removeBtn { font-size: 1.5rem; }
 
   /* Masquer "Vider le panier" (les croix suffisent) */
   .clearBtn { display: none; }
