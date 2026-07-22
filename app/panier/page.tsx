@@ -53,7 +53,7 @@ function formatTimer(ms: number) {
 }
 
 export default function PanierPage() {
-  const { items, removeItem, clearCart, expiresAt } = useCart();
+  const { items, removeItem, clearCart, expiresAt, sessionId } = useCart();
   const { products } = useProducts();
   const { user, profile } = useAuth();
   const { wishlist } = useWishlist();
@@ -172,6 +172,7 @@ export default function PanierPage() {
           },
           promoCode: promoCode ?? null,
           promoDiscount,
+          sessionId,
         }),
       });
       const data = await res.json();

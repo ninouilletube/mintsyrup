@@ -7,12 +7,17 @@ import type { Product } from '@/data/products';
 import styles from './ProductCard.module.css';
 import WishlistButton from './WishlistButton';
 import { ORIGIN_KEY } from './NavigationTracker';
+import { useCart, RESERVE_DURATION } from '@/context/CartContext';
 
 const SOLD_DELAY = 7 * 24 * 60 * 60 * 1000;
 
 export default function ProductCard({ product }: { product: Product }) {
   const { lang } = useLang();
+  const { sessionId } = useCart();
   const recentlySold = !!product.sold && !!product.soldAt && Date.now() - product.soldAt < SOLD_DELAY;
+  const isReservedByOther = !!product.reservedAt && !!product.reservedSession &&
+    product.reservedSession !== sessionId &&
+    Date.now() - product.reservedAt < RESERVE_DURATION;
 
   const captureOrigin = () => {
     if (!window.location.pathname.startsWith('/product/')) {
@@ -44,6 +49,9 @@ export default function ProductCard({ product }: { product: Product }) {
             <span className={styles.priceTag}>
               {product.price} €
             </span>
+            {isReservedByOther && !recentlySold && (
+              <div className={styles.reservedBadge}>⏳ Réservé</div>
+            )}
             {recentlySold && (
               <div className={styles.soldWatermark}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
