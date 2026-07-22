@@ -49,9 +49,6 @@ export default function ProductCard({ product }: { product: Product }) {
             <span className={styles.priceTag}>
               {product.price} €
             </span>
-            {isReservedByOther && !recentlySold && (
-              <div className={styles.reservedBadge}>⏳ Réservé</div>
-            )}
             {recentlySold && (
               <div className={styles.soldWatermark}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -59,6 +56,9 @@ export default function ProductCard({ product }: { product: Product }) {
               </div>
             )}
           </div>
+          {isReservedByOther && !recentlySold && (
+            <div className={styles.reservedBadge}>⏳ Réservé</div>
+          )}
           {!product.sold && <WishlistButton productId={product.id} />}
         </div>
         <div className={styles.body}>

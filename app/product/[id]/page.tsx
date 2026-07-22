@@ -179,6 +179,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
 
   const current = images[activeIndex] ?? null;
 
+  const RESERVE_MS = 15 * 60 * 1000;
+  const isReservedByOther = !!product.reservedAt && !!product.reservedSession &&
+    product.reservedSession !== sessionId &&
+    Date.now() - product.reservedAt < RESERVE_MS;
+
   return (
     <>
       <Nav />
@@ -234,6 +239,9 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                   <button className={`${styles.arrow} ${styles.arrowRight}`} onClick={(e) => { e.stopPropagation(); setDirection('right'); setActiveIndex((activeIndex + 1) % images.length); }}>→</button>
                 </>
               )}
+              {isReservedByOther && (
+                <div className={styles.reservedBadgeImg}>⏳ Réservé</div>
+              )}
             </div>
           </div>
           {/* Mobile uniquement : taille sous les images, alignée à droite */}
@@ -269,49 +277,41 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
                     <p className={styles.price}>{product.price} €</p>
                   )}
 
-                  {(() => {
-                    const RESERVE_MS = 15 * 60 * 1000;
-                    const isReservedByOther = !!product.reservedAt && !!product.reservedSession &&
-                      product.reservedSession !== sessionId &&
-                      Date.now() - product.reservedAt < RESERVE_MS;
-                    return (
-                      <div className={styles.btnCartWrap}>
-                        {isReservedByOther ? (
-                          <p className={styles.reservedMsg}>⏳ Réservé — disponible dans {Math.ceil((RESERVE_MS - (Date.now() - (product.reservedAt ?? 0))) / 60000)} min</p>
-                        ) : (
-                          <>
-                            <button
-                              className={`${styles.btnCart} ${isInCart(product.id) || cartAdded ? styles.btnCartDone : ''}`}
-                              disabled={isInCart(product.id)}
-                              onClick={async () => {
-                                setCartError(null);
-                                const result = await addItem(product);
-                                if (result.ok) {
-                                  setCartAdded(true);
-                                  setTimeout(() => setCartAdded(false), 2000);
-                                } else {
-                                  setCartError(result.error ?? 'Impossible d\'ajouter au panier');
-                                  setTimeout(() => setCartError(null), 4000);
-                                }
-                              }}
-                            >
-                              {isInCart(product.id) || cartAdded ? (
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
-                                  <polyline points="20 6 9 17 4 12"/>
-                                </svg>
-                              ) : (
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
-                                  <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-                                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                                </svg>
-                              )}
-                            </button>
-                            {cartError && <p className={styles.cartErrorMsg}>{cartError}</p>}
-                          </>
-                        )}
-                      </div>
-                    );
-                  })()}
+                  <div className={styles.btnCartWrap} data-tip={isInCart(product.id) || cartAdded ? undefined : 'Ajouter au panier'}>
+                    {isReservedByOther ? (
+                      <p className={styles.reservedMsg}>⏳ Réservé — disponible dans {Math.ceil((RESERVE_MS - (Date.now() - (product.reservedAt ?? 0))) / 60000)} min</p>
+                    ) : (
+                      <>
+                        <button
+                          className={`${styles.btnCart} ${isInCart(product.id) || cartAdded ? styles.btnCartDone : ''}`}
+                          disabled={isInCart(product.id)}
+                          onClick={async () => {
+                            setCartError(null);
+                            const result = await addItem(product);
+                            if (result.ok) {
+                              setCartAdded(true);
+                              setTimeout(() => setCartAdded(false), 2000);
+                            } else {
+                              setCartError(result.error ?? 'Impossible d\'ajouter au panier');
+                              setTimeout(() => setCartError(null), 4000);
+                            }
+                          }}
+                        >
+                          {isInCart(product.id) || cartAdded ? (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                              <polyline points="20 6 9 17 4 12"/>
+                            </svg>
+                          ) : (
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" width="20" height="20">
+                              <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                            </svg>
+                          )}
+                        </button>
+                        {cartError && <p className={styles.cartErrorMsg}>{cartError}</p>}
+                      </>
+                    )}
+                  </div>
 
                   <div className={styles.btnCartWrap} data-tip={isInWishlist(product.id) ? 'Retirer de ma wishlist' : 'Ajouter à ma wishlist'}>
                     <button

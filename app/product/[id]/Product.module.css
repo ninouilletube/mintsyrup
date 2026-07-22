@@ -504,6 +504,27 @@
   margin-top: auto;
 }
 
+.reservedBadgeImg {
+  position: absolute;
+  bottom: 0.85rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
+  background: rgba(232, 98, 26, 0.92);
+  color: #fff;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 0.3rem 1rem;
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 2px 12px rgba(232, 98, 26, 0.35);
+}
+
 .reservedMsg {
   font-family: var(--font-dm-sans), sans-serif;
   font-size: 0.78rem;

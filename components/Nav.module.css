@@ -454,6 +454,9 @@
   .links { display: none !important; position: static; transform: none; }
   .lang  { display: none !important; }
 
+  /* Icônes profil + panier à l'extrême droite */
+  .rightSection { margin-left: auto; }
+
   /* Logo absolument centré sur l'écran */
   .logoWrap {
     position: absolute;
