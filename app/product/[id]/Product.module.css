@@ -753,7 +753,6 @@
 
   /* Titre + marque : affichés dans .info (dans la carte), pas au-dessus */
   .title { font-size: 1.15rem; }
-  .brand { /* style desktop OK */ }
 
   /* Taille sous les images — même style que desktop, alignée à droite */
   .mobileSizeBelow {
