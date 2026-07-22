@@ -143,7 +143,7 @@ export default function Nav() {
       </div>
 
       {/* ── Desktop : nav restructurée ── */}
-      <div className={styles.links}>
+      <div id="nav-links" className={styles.links}>
 
         {/* Derniers drops */}
         <button

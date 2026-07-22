@@ -69,7 +69,10 @@ main { flex: 1; }
     display: flex;
     align-items: center;
     padding: 0.5rem 0.75rem;
+    overflow: hidden;
   }
+  /* Cacher les liens desktop sur mobile */
+  #nav-links { display: none !important; }
   /* Icônes profil et panier — taille fixe quoi qu'il arrive */
   img[src="/icon-panier.png"],
   img[src="/icon-profil.png"] {
