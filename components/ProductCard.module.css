@@ -24,6 +24,7 @@
 .imageOuter {
   position: relative;
   border-bottom: 2.5px solid var(--dark);
+  z-index: 1;
 }
 
 .imageWrapper {
@@ -119,9 +120,10 @@
 
 .reservedBadge {
   position: absolute;
-  top: 0.65rem;
-  right: 0.65rem;
-  z-index: 3;
+  bottom: -0.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 5;
   background: rgba(232, 98, 26, 0.92);
   color: #fff;
   font-family: var(--font-dm-sans), sans-serif;
@@ -129,9 +131,11 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  padding: 0.2rem 0.55rem;
+  padding: 0.22rem 0.8rem;
   border-radius: 999px;
   backdrop-filter: blur(4px);
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(232, 98, 26, 0.35);
 }
 
 .card:not(:hover) .priceTag { opacity: 0; }
