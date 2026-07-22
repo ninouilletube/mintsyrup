@@ -202,16 +202,21 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
           <div className={styles.gallery}>
             {/* Mobile : carrousel scroll-snap (remplace imageWrap) */}
             {images.length > 0 && (
-              <div
-                className={styles.mobileGalleryStrip}
-                ref={mainStripRef}
-                onClick={() => current && setLightbox(true)}
-              >
-                {images.map((src, i) => (
-                  <div key={i} className={styles.mobileGallerySlide}>
-                    <img src={src} alt={product.title[lang]} className={styles.mobileGalleryImg} />
-                  </div>
-                ))}
+              <div className={styles.mobileGalleryOuter}>
+                <div
+                  className={styles.mobileGalleryStrip}
+                  ref={mainStripRef}
+                  onClick={() => current && setLightbox(true)}
+                >
+                  {images.map((src, i) => (
+                    <div key={i} className={styles.mobileGallerySlide}>
+                      <img src={src} alt={product.title[lang]} className={styles.mobileGalleryImg} />
+                    </div>
+                  ))}
+                </div>
+                {isReservedByOther && (
+                  <div className={styles.reservedBadgeImg}>⏳ Réservé</div>
+                )}
               </div>
             )}
             {images.length > 1 && (
