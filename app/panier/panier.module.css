@@ -669,20 +669,25 @@
 
   .summary { position: static; }
 
-  /* ── Item card : vertical, image pleine largeur ── */
+  /* ── Item card : vertical, image pleine largeur, sans bords ── */
   .item {
     flex-direction: column;
     align-items: stretch;
     padding: 0;
     gap: 0;
     overflow: hidden;
+    border: none;
+    box-shadow: none;
+    border-radius: 12px;
   }
 
-  /* Image : pleine largeur, haute */
+  /* Image : pleine largeur, hauteur réduite */
   .itemImgs {
     width: 100%;
     gap: 0;
     flex-shrink: 0;
+    overflow: hidden;
+    max-height: 180px;
   }
 
   /* Cacher les images au-delà de la 1ère */
@@ -691,9 +696,12 @@
   }
 
   .itemImg {
+    position: relative !important;
     width: 100% !important;
-    height: 160px !important;
-    border-radius: 0;
+    height: 180px !important;
+    max-height: 180px !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
   }
 
   /* Infos produit */

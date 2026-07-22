@@ -249,7 +249,7 @@ export default function PanierPage() {
                   {previewImgs.length > 0
                     ? previewImgs.map((src, i) => (
                         <div key={i} className={styles.itemImg}>
-                          <Image src={src} alt={product.title.fr} fill style={{ objectFit: 'cover' }} sizes="96px" />
+                          <Image src={src} alt={product.title.fr} fill style={{ objectFit: 'cover' }} sizes="(max-width: 768px) 100vw, 96px" />
                         </div>
                       ))
                     : <div className={styles.itemImg}>
