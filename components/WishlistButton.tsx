@@ -10,9 +10,10 @@ type Props = { productId: number; className?: string };
 
 export default function WishlistButton({ productId, className }: Props) {
   const { user } = useAuth();
-  const { isInWishlist, toggle } = useWishlist();
+  const { isInWishlist, toggle, wishlistCounts } = useWishlist();
   const [showAuth, setShowAuth] = useState(false);
   const active = isInWishlist(productId);
+  const count = wishlistCounts[productId] ?? 0;
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -24,13 +25,14 @@ export default function WishlistButton({ productId, className }: Props) {
   return (
     <>
       <button
-        className={`${styles.btn} ${active ? styles.active : ''} ${className ?? ''}`}
+        className={`${styles.btn} ${active ? styles.active : ''} ${count > 0 ? styles.hasCount : ''} ${className ?? ''}`}
         onClick={handleClick}
         title={active ? 'Retirer de ma wishlist' : 'Ajouter à ma wishlist'}
         aria-label={active ? 'Retirer de ma wishlist' : 'Ajouter à ma wishlist'}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={active ? '/icon-wishlist-active.png' : '/icon-wishlist.png'} alt="" className={styles.icon} />
+        {count > 0 && <span className={styles.count}>{count}</span>}
       </button>
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
     </>

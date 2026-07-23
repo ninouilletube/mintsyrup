@@ -6,6 +6,7 @@ import { useAuth } from './AuthContext';
 
 type WishlistContextType = {
   wishlist: number[]; // product IDs
+  wishlistCounts: Record<number, number>; // productId → global favorite count
   isInWishlist: (productId: number) => boolean;
   toggle: (productId: number) => Promise<void>;
   loading: boolean;
@@ -13,6 +14,7 @@ type WishlistContextType = {
 
 const WishlistContext = createContext<WishlistContextType>({
   wishlist: [],
+  wishlistCounts: {},
   isInWishlist: () => false,
   toggle: async () => {},
   loading: false,
@@ -21,8 +23,20 @@ const WishlistContext = createContext<WishlistContextType>({
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
   const [wishlist, setWishlist] = useState<number[]>([]);
+  const [wishlistCounts, setWishlistCounts] = useState<Record<number, number>>({});
   const [loading, setLoading] = useState(false);
   const loadedForRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    supabase.rpc('get_wishlist_counts').then(({ data }) => {
+      if (!data) return;
+      const counts: Record<number, number> = {};
+      for (const row of data as { product_id: number; count: number }[]) {
+        counts[row.product_id] = Number(row.count);
+      }
+      setWishlistCounts(counts);
+    });
+  }, []);
 
   const userId = user?.id ?? null;
 
@@ -52,15 +66,17 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
     if (!user) return;
     if (wishlist.includes(productId)) {
       setWishlist(prev => prev.filter(id => id !== productId));
+      setWishlistCounts(prev => ({ ...prev, [productId]: Math.max(0, (prev[productId] ?? 0) - 1) }));
       await supabase.from('wishlists').delete().eq('user_id', user.id).eq('product_id', productId);
     } else {
       setWishlist(prev => [...prev, productId]);
+      setWishlistCounts(prev => ({ ...prev, [productId]: (prev[productId] ?? 0) + 1 }));
       await supabase.from('wishlists').insert({ user_id: user.id, product_id: productId });
     }
   }, [user, wishlist]);
 
   return (
-    <WishlistContext.Provider value={{ wishlist, isInWishlist, toggle, loading }}>
+    <WishlistContext.Provider value={{ wishlist, wishlistCounts, isInWishlist, toggle, loading }}>
       {children}
     </WishlistContext.Provider>
   );
