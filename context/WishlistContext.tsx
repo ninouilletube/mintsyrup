@@ -28,7 +28,9 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const loadedForRef = useRef<string | null>(null);
 
   useEffect(() => {
+    console.log('[wishlist counts] fetching...');
     supabase.rpc('get_wishlist_counts').then(({ data, error }) => {
+      console.log('[wishlist counts] result:', { data, error });
       if (error) {
         // Fallback : lecture directe si RPC indisponible (RLS permissive ou anon autorisé)
         console.warn('[wishlist counts] RPC failed, trying direct query:', error.message);
