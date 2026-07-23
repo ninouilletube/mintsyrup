@@ -28,7 +28,18 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
   const loadedForRef = useRef<string | null>(null);
 
   useEffect(() => {
-    supabase.rpc('get_wishlist_counts').then(({ data }) => {
+    supabase.rpc('get_wishlist_counts').then(({ data, error }) => {
+      if (error) {
+        // Fallback : lecture directe si RPC indisponible (RLS permissive ou anon autorisé)
+        console.warn('[wishlist counts] RPC failed, trying direct query:', error.message);
+        supabase.from('wishlists').select('product_id').then(({ data: rows, error: err2 }) => {
+          if (err2 || !rows) { console.warn('[wishlist counts] direct query also failed:', err2?.message); return; }
+          const counts: Record<number, number> = {};
+          for (const row of rows) counts[row.product_id] = (counts[row.product_id] ?? 0) + 1;
+          setWishlistCounts(counts);
+        });
+        return;
+      }
       if (!data) return;
       const counts: Record<number, number> = {};
       for (const row of data as { product_id: number; count: number }[]) {
