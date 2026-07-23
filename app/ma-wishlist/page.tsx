@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { useCart } from '@/context/CartContext';
 import { useProducts } from '@/context/ProductsContext';
+import Link from 'next/link';
 import Nav from '@/components/Nav';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
@@ -102,10 +103,14 @@ export default function MaWishlistPage() {
           {loading ? (
             <p className={styles.empty}>Chargement…</p>
           ) : wishlistProducts.length === 0 ? (
-            <div className={styles.emptyState}>
-              <span className={styles.emptyHeart}>♡</span>
-              <p className={styles.emptyText}>Ta wishlist est vide pour l&apos;instant.</p>
-              <p className={styles.emptySub}>Clique sur le ♡ sur les articles qui te font envie !</p>
+            <div className={styles.emptyWrap}>
+              <div className={styles.emptyCard}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/icon-wishlist.png" alt="" className={styles.emptyIcon} />
+                <p className={styles.emptyTitle}>Ta wishlist est vide</p>
+                <p className={styles.emptyText}>Clique sur le ♡ sur les articles qui te font envie !</p>
+                <Link href="/?cat=drops" className={styles.emptyBtn}>Parcourir la boutique</Link>
+              </div>
             </div>
           ) : (
             <div className={styles.grid}>

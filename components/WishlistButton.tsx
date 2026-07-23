@@ -32,7 +32,7 @@ export default function WishlistButton({ productId, className }: Props) {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={active ? '/icon-wishlist-active.png' : '/icon-wishlist.png'} alt="" className={styles.icon} />
-        <span className={styles.count}>{count > 0 ? count : '·'}</span>
+        {count > 0 && <span className={styles.count}>{count}</span>}
       </button>
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} />}
     </>
