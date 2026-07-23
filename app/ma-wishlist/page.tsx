@@ -108,7 +108,6 @@ export default function MaWishlistPage() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/icon-wishlist.png" alt="" className={styles.emptyIcon} />
                 <p className={styles.emptyTitle}>Ta wishlist est vide</p>
-                <p className={styles.emptyText}>Clique sur le ♡ sur les articles qui te font envie !</p>
                 <Link href="/?cat=drops" className={styles.emptyBtn}>Parcourir la boutique</Link>
               </div>
             </div>
