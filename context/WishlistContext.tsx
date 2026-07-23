@@ -44,8 +44,8 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
       }
       if (!data) return;
       const counts: Record<number, number> = {};
-      for (const row of data as { product_id: number; count: number }[]) {
-        counts[row.product_id] = Number(row.count);
+      for (const row of data as { product_id: number; cnt: number }[]) {
+        counts[row.product_id] = Number(row.cnt);
       }
       setWishlistCounts(counts);
     });
