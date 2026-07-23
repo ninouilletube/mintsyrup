@@ -181,12 +181,6 @@
   margin: 0;
 }
 
-.emptyText {
-  font-family: var(--font-dm-sans), sans-serif;
-  font-size: 0.9rem;
-  color: rgba(28,28,28,0.55);
-  margin: 0 0 0.5rem;
-}
 
 .emptyBtn {
   font-family: var(--font-dm-sans), sans-serif;
