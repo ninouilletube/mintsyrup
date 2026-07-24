@@ -7,6 +7,7 @@ import { useShop } from '@/context/ShopContext';
 import { useProducts } from '@/context/ProductsContext';
 import { useSubcategories } from '@/context/SubcategoriesContext';
 import { useSelections } from '@/context/SelectionsContext';
+import { useWishlist } from '@/context/WishlistContext';
 import { getCurrentSeason, SEASON_TO_ID, type SeasonKey } from '@/lib/season';
 import { getColor } from '@/data/colors';
 import { CATEGORIES } from '@/data/categories';
@@ -20,12 +21,13 @@ export default function ProductGrid() {
   const { products } = useProducts();
   const { subcategories, colorOrder, colorLabels } = useSubcategories();
   const { selections } = useSelections();
+  const { wishlistCounts } = useWishlist();
 
   const [specialPostits, setSpecialPostits] = useState<{ summer?: string; coeur?: string }>({});
   const [dropsIndex, setDropsIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [sortAll, setSortAll] = useState<'oldest' | 'newest' | 'cheapest' | 'priciest'>('oldest');
+  const [sortAll, setSortAll] = useState<'oldest' | 'newest' | 'cheapest' | 'priciest' | 'popular'>('oldest');
   const carouselWindowRef = useRef<HTMLDivElement>(null);
 
   const GAP = 16;
@@ -150,6 +152,10 @@ export default function ProductGrid() {
               if (sortAll === 'newest')   return b.id - a.id;
               if (sortAll === 'cheapest') return a.price - b.price;
               if (sortAll === 'priciest') return b.price - a.price;
+              if (sortAll === 'popular') {
+                const diff = (wishlistCounts[b.id] ?? 0) - (wishlistCounts[a.id] ?? 0);
+                return diff !== 0 ? diff : b.price - a.price;
+              }
               return a.id - b.id; // oldest
             })
           : [...visible.filter((p) => activeCategory ? p.categories.includes(activeCategory as never) : false)].sort((a, b) => b.id - a.id);
@@ -285,6 +291,7 @@ export default function ProductGrid() {
                     { key: 'newest',   label: '+ récent' },
                     { key: 'cheapest', label: 'prix croissant' },
                     { key: 'priciest', label: 'prix décroissant' },
+                    { key: 'popular',  label: 'popularité' },
                   ] as const).map(({ key, label }) => (
                     <button
                       key={key}
@@ -330,7 +337,7 @@ export default function ProductGrid() {
         )}
 
         {/* Mobile uniquement : bouton Filtrer + panneau déroulant */}
-        {(hasFilters || hasSizeFilter) && (
+        {(hasFilters || hasSizeFilter || isAll) && (
           <div className={styles.mobileFilterWrap}>
             <button
               className={`${styles.mobileFilterBtn} ${activeFilterCount > 0 ? styles.mobileFilterBtnActive : ''} ${mobileFilterOpen ? styles.mobileFilterBtnOpen : ''}`}
@@ -345,6 +352,28 @@ export default function ProductGrid() {
 
             {mobileFilterOpen && (
               <div className={styles.mobileFilterPanel}>
+
+                {/* Tri (tout voir uniquement) */}
+                {isAll && (
+                  <div className={styles.mobileFilterSection}>
+                    <p className={styles.mobileFilterLabel}>Trier par</p>
+                    <div className={styles.mobileFilterPills}>
+                      {([
+                        { key: 'oldest',   label: '+ ancien' },
+                        { key: 'newest',   label: '+ récent' },
+                        { key: 'cheapest', label: 'prix croissant' },
+                        { key: 'priciest', label: 'prix décroissant' },
+                        { key: 'popular',  label: 'popularité' },
+                      ] as const).map(({ key, label }) => (
+                        <button
+                          key={key}
+                          className={`${styles.mobileFilterPill} ${sortAll === key ? styles.mobileFilterPillActive : ''}`}
+                          onClick={() => setSortAll(key)}
+                        >{label}</button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Sous-catégorie */}
                 {availableTypeIds.length > 0 && (
