@@ -714,7 +714,11 @@ export default function AdminPage() {
               <p className={styles.empty}>Aucun article dans cette catégorie.</p>
             ) : (
               <div className={styles.articlesGrid}>
-                {[...filteredArticles].reverse().map((p) => (
+                {[...filteredArticles].sort((a, b) =>
+                  articleFilter === 'sold'
+                    ? (b.soldAt ?? 0) - (a.soldAt ?? 0)
+                    : b.id - a.id
+                ).map((p) => (
                   <button
                     key={p.id}
                     className={`${styles.articleGridCard} ${p.hidden && !p.sold ? styles.productRowHidden : ''}`}
