@@ -1231,6 +1231,20 @@
   border: 1.5px solid rgba(32,192,180,0.3);
 }
 
+.statPillHeart {
+  background: rgba(192, 24, 90, 0.08);
+  color: #C0185A;
+  border: 1.5px solid rgba(192, 24, 90, 0.22);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 .statPillVintedLetter {
   font-size: 0.68rem;
   font-weight: 900;

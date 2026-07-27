@@ -10,6 +10,7 @@ import type { Category, Season, Product } from '@/data/products';
 import { getCurrentSeason } from '@/lib/season';
 import { getData, setData, uploadPostitImage, uploadSpecialPostit, supabase } from '@/lib/supabase';
 import { useSelections } from '@/context/SelectionsContext';
+import { useWishlist } from '@/context/WishlistContext';
 import styles from './Admin.module.css';
 import MobileAdmin from './MobileAdmin';
 
@@ -187,6 +188,7 @@ export default function AdminPage() {
   const { products, addProduct, updateProduct, deleteProduct } = useProducts();
   const { subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder, colorLabels, setColorLabel } = useSubcategories();
   const { selections, addSelection, deleteSelection, renameSelection, updateSelection, setPostitImage, reorderSelections } = useSelections();
+  const { wishlistCounts } = useWishlist();
 
   const [postitUploading, setPostitUploading] = useState<string | null>(null);
   const [specialPostits, setSpecialPostits] = useState<{ summer?: string; coeur?: string }>({});
@@ -668,6 +670,9 @@ export default function AdminPage() {
                         <span className={styles.statPillVintedLetter}>V</span>
                         {articleStats[String(p.id)]?.vinted || 0}
                       </span>
+                      <span className={styles.statPillHeart}>
+                        ♡ {wishlistCounts[p.id] ?? 0}
+                      </span>
                     </div>
                   </button>
                 ))}
@@ -739,6 +744,9 @@ export default function AdminPage() {
                       <span className={styles.statPillVinted}>
                         <span className={styles.statPillVintedLetter}>V</span>
                         {articleStats[String(p.id)]?.vinted || 0}
+                      </span>
+                      <span className={styles.statPillHeart}>
+                        ♡ {wishlistCounts[p.id] ?? 0}
                       </span>
                     </div>
                   </button>
