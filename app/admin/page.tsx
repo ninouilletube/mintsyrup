@@ -151,6 +151,9 @@ export default function AdminPage() {
   // Articles multi-select
   const [selected, setSelected] = useState<Set<number>>(new Set());
 
+  // Filtre vue articles
+  const [articleFilter, setArticleFilter] = useState<'visible' | 'hidden' | 'sold'>('visible');
+
   // Modal vendu
   const [soldModal, setSoldModal] = useState<{ product: Product; isEdit?: boolean } | null>(null);
   const [soldPriceInput, setSoldPriceInput] = useState('');
@@ -675,51 +678,72 @@ export default function AdminPage() {
       )}
 
       {/* ── ARTICLES ────────────────────────────────────────────────────────── */}
-      {view === 'articles' && (
-        <div className={styles.section}>
-          <div className={styles.articlesHeader}>
-            <span className={styles.selectionCount}>{products.length} article(s)</span>
-            <button
-              className={styles.btnPrimary}
-              onClick={() => { setForm(emptyForm); setStep(0); setView('add-article'); }}
-            >
-              + Ajouter
-            </button>
-          </div>
-
-          {products.length === 0 ? (
-            <p className={styles.empty}>Aucun article.</p>
-          ) : (
-            <div className={styles.articlesGrid}>
-              {[...products].reverse().map((p) => (
+      {view === 'articles' && (() => {
+        const visibleProducts = products.filter(p => !p.sold && !p.hidden);
+        const hiddenProducts  = products.filter(p => !p.sold && p.hidden);
+        const soldProducts    = products.filter(p => p.sold);
+        const filteredArticles = articleFilter === 'hidden' ? hiddenProducts
+          : articleFilter === 'sold' ? soldProducts
+          : visibleProducts;
+        return (
+          <div className={styles.section}>
+            <div className={styles.articlesHeader}>
+              <div className={styles.articleFilterTabs}>
                 <button
-                  key={p.id}
-                  className={`${styles.articleGridCard} ${p.hidden ? styles.productRowHidden : ''}`}
-                  onClick={() => { setDetailProduct(p); setDetailImageIndex(0); setDetailOrigin('articles'); setView('article-detail'); }}
-                >
-                  <div
-                    className={styles.articleGridThumb}
-                    style={{ background: `linear-gradient(135deg, ${p.placeholder[0]}, ${p.placeholder[1]})` }}
-                  >
-                    {p.image && <Image src={p.image} alt={p.title.fr} fill style={{ objectFit: 'cover' }} />}
-                    {p.hidden && <span className={styles.hiddenBadge}>masqué</span>}
-                  </div>
-                  <div className={styles.articleGridStats}>
-                    <span className={styles.statPill}>
-                      <svg width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><ellipse cx="10" cy="10" rx="9" ry="6"/><circle cx="10" cy="10" r="2.5" fill="currentColor" stroke="none"/></svg>
-                      {articleStats[String(p.id)]?.views || 0}
-                    </span>
-                    <span className={styles.statPillVinted}>
-                      <span className={styles.statPillVintedLetter}>V</span>
-                      {articleStats[String(p.id)]?.vinted || 0}
-                    </span>
-                  </div>
-                </button>
-              ))}
+                  className={`${styles.articleFilterTab} ${articleFilter === 'visible' ? styles.articleFilterTabActive : ''}`}
+                  onClick={() => setArticleFilter('visible')}
+                >Visibles ({visibleProducts.length})</button>
+                <button
+                  className={`${styles.articleFilterTab} ${articleFilter === 'hidden' ? styles.articleFilterTabActive : ''}`}
+                  onClick={() => setArticleFilter('hidden')}
+                >Masqués ({hiddenProducts.length})</button>
+                <button
+                  className={`${styles.articleFilterTab} ${articleFilter === 'sold' ? styles.articleFilterTabActive : ''}`}
+                  onClick={() => setArticleFilter('sold')}
+                >Vendus ({soldProducts.length})</button>
+              </div>
+              <button
+                className={styles.btnPrimary}
+                onClick={() => { setForm(emptyForm); setStep(0); setView('add-article'); }}
+              >
+                + Ajouter
+              </button>
             </div>
-          )}
-        </div>
-      )}
+
+            {filteredArticles.length === 0 ? (
+              <p className={styles.empty}>Aucun article dans cette catégorie.</p>
+            ) : (
+              <div className={styles.articlesGrid}>
+                {[...filteredArticles].reverse().map((p) => (
+                  <button
+                    key={p.id}
+                    className={`${styles.articleGridCard} ${p.hidden && !p.sold ? styles.productRowHidden : ''}`}
+                    onClick={() => { setDetailProduct(p); setDetailImageIndex(0); setDetailOrigin('articles'); setView('article-detail'); }}
+                  >
+                    <div
+                      className={styles.articleGridThumb}
+                      style={{ background: `linear-gradient(135deg, ${p.placeholder[0]}, ${p.placeholder[1]})` }}
+                    >
+                      {p.image && <Image src={p.image} alt={p.title.fr} fill style={{ objectFit: 'cover' }} />}
+                      {p.sold && <span className={styles.soldBadge} style={{ position: 'absolute', top: 6, left: 6, fontSize: '0.65rem' }}>vendu</span>}
+                    </div>
+                    <div className={styles.articleGridStats}>
+                      <span className={styles.statPill}>
+                        <svg width="10" height="10" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><ellipse cx="10" cy="10" rx="9" ry="6"/><circle cx="10" cy="10" r="2.5" fill="currentColor" stroke="none"/></svg>
+                        {articleStats[String(p.id)]?.views || 0}
+                      </span>
+                      <span className={styles.statPillVinted}>
+                        <span className={styles.statPillVintedLetter}>V</span>
+                        {articleStats[String(p.id)]?.vinted || 0}
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* ── EDIT ARTICLE (full form) ─────────────────────────────────────────── */}
       {view === 'edit-article' && editingProduct && (

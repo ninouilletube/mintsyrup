@@ -69,13 +69,17 @@ export default function ProductCard({ product }: { product: Product }) {
           {product.brand && <p className={styles.brand}>{product.brand}</p>}
         </div>
       </div>
-      {!recentlySold && (
-        <div className={styles.btnWrap}>
+      <div className={styles.btnWrap}>
+        {recentlySold ? (
+          <Link href="/archives" className={styles.btn}>
+            {lang === 'fr' ? 'Voir les archives' : 'See archives'}<span className={styles.btnArrow}> →</span>
+          </Link>
+        ) : (
           <Link href={`/product/${product.id}`} className={styles.btn} prefetch={true} onClick={captureOrigin}>
             {lang === 'fr' ? 'Voir la pièce' : 'See item'}<span className={styles.btnArrow}> →</span>
           </Link>
-        </div>
-      )}
+        )}
+      </div>
     </article>
   );
 }
