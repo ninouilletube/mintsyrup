@@ -37,10 +37,9 @@
 .error { font-size: 0.75rem; color: var(--crimson); font-weight: 600; }
 
 .page {
-  padding: 2.5rem 33vw 5rem;
+  padding: 2.5rem 4rem 5rem;
   background: #FAE2E8;
   min-height: 100vh;
-  box-shadow: 0 0 0 100vw #FAE2E8;
 }
 
 .header {
@@ -1124,13 +1123,45 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.articleFilterTabs {
+  display: inline-flex;
+  background: rgba(58, 16, 8, 0.09);
+  border-radius: 999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.articleFilterTab {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.38rem 1rem;
+  border-radius: 999px;
+  border: none;
+  background: none;
+  color: rgba(58, 16, 8, 0.55);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+.articleFilterTab:hover { color: var(--dark); }
+.articleFilterTabActive {
+  background: var(--dark);
+  color: #FAE8D0;
+  box-shadow: 0 1px 4px rgba(58, 16, 8, 0.25);
 }
 
 .articlesGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1.25rem;
+  padding-right: 4px; /* espace pour l'ombre droite du dernier item */
 }
 
 .articleGridCard {
