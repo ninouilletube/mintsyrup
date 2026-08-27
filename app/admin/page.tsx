@@ -129,16 +129,6 @@ export default function AdminPage() {
   // Navigation
   const [view, setView] = useState<View>('dashboard');
 
-  // Ouvrir directement un article via ?article=ID
-  useEffect(() => {
-    if (!products.length) return;
-    const params = new URLSearchParams(window.location.search);
-    const articleId = params.get('article');
-    if (!articleId) return;
-    const p = products.find(prod => String(prod.id) === articleId);
-    if (p) { setDetailProduct(p); setDetailImageIndex(0); setDetailOrigin('articles'); setView('article-detail'); }
-  }, [products]);
-
   // Analytics
   const [analytics, setAnalytics] = useState<Analytics>({ total: 0, days: {} });
   const [articleStats, setArticleStats] = useState<ArticleStats>({});
@@ -199,6 +189,16 @@ export default function AdminPage() {
   const { subcategories, addSubcategory, deleteSubcategory, reorderSubcategories, colorOrder, setColorOrder, colorLabels, setColorLabel } = useSubcategories();
   const { selections, addSelection, deleteSelection, renameSelection, updateSelection, setPostitImage, reorderSelections } = useSelections();
   const { wishlistCounts } = useWishlist();
+
+  // Ouvrir directement un article via ?article=ID
+  useEffect(() => {
+    if (!products.length) return;
+    const params = new URLSearchParams(window.location.search);
+    const articleId = params.get('article');
+    if (!articleId) return;
+    const p = products.find(prod => String(prod.id) === articleId);
+    if (p) { setDetailProduct(p); setDetailImageIndex(0); setDetailOrigin('articles'); setView('article-detail'); }
+  }, [products]);
 
   const [postitUploading, setPostitUploading] = useState<string | null>(null);
   const [specialPostits, setSpecialPostits] = useState<{ summer?: string; coeur?: string }>({});
