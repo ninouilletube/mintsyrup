@@ -724,10 +724,12 @@ export default function AdminPage() {
                     ? (b.soldAt ?? 0) - (a.soldAt ?? 0)
                     : b.id - a.id
                 ).map((p) => (
-                  <button
+                  <a
                     key={p.id}
+                    href={`/product/${p.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={`${styles.articleGridCard} ${p.hidden && !p.sold ? styles.productRowHidden : ''}`}
-                    onClick={() => { setDetailProduct(p); setDetailImageIndex(0); setDetailOrigin('articles'); setView('article-detail'); }}
                   >
                     <div
                       className={styles.articleGridThumb}
@@ -749,7 +751,7 @@ export default function AdminPage() {
                         ♡ {wishlistCounts[p.id] ?? 0}
                       </span>
                     </div>
-                  </button>
+                  </a>
                 ))}
               </div>
             )}
