@@ -886,10 +886,15 @@ export default function AdminPage() {
                     <div className={styles.subRow}>
                       <div className={styles.subRowPills}>
                         {subs.map((s) => (
-                          <button key={s.id} type="button"
-                            className={`${styles.subPill} ${editForm.subcategory === s.id ? styles.subPillActive : ''}`}
-                            onClick={() => setEditForm({ ...editForm, subcategory: editForm.subcategory === s.id ? '' : s.id })}
-                          >{s.label}</button>
+                          <span key={s.id} className={styles.subPillWrap}>
+                            <button type="button"
+                              className={`${styles.subPill} ${editForm.subcategory === s.id ? styles.subPillActive : ''}`}
+                              onClick={() => setEditForm({ ...editForm, subcategory: editForm.subcategory === s.id ? '' : s.id })}
+                            >{s.label}</button>
+                            <button type="button" className={styles.subPillDeleteBtn}
+                              onClick={() => { if (confirm(`Supprimer "${s.label}" ?`)) { deleteSubcategory(s.id); if (editForm.subcategory === s.id) setEditForm(f => ({ ...f, subcategory: '' })); } }}
+                            >×</button>
+                          </span>
                         ))}
                         {editAddingSubFor === catId ? (
                           <div className={styles.inlineSubInput}>
@@ -1680,10 +1685,15 @@ export default function AdminPage() {
                       <div className={styles.subRow}>
                         <div className={styles.subRowPills}>
                           {subs.map((s) => (
-                            <button key={s.id} type="button"
-                              className={`${styles.subPill} ${form.subcategory === s.id ? styles.subPillActive : ''}`}
-                              onClick={() => setForm({ ...form, subcategory: form.subcategory === s.id ? '' : s.id })}
-                            >{s.label}</button>
+                            <span key={s.id} className={styles.subPillWrap}>
+                              <button type="button"
+                                className={`${styles.subPill} ${form.subcategory === s.id ? styles.subPillActive : ''}`}
+                                onClick={() => setForm({ ...form, subcategory: form.subcategory === s.id ? '' : s.id })}
+                              >{s.label}</button>
+                              <button type="button" className={styles.subPillDeleteBtn}
+                                onClick={() => { if (confirm(`Supprimer "${s.label}" ?`)) { deleteSubcategory(s.id); if (form.subcategory === s.id) setForm(f => ({ ...f, subcategory: '' })); } }}
+                              >×</button>
+                            </span>
                           ))}
                           {addingSubFor === catId ? (
                             <div className={styles.inlineSubInput}>

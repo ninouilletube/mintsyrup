@@ -581,6 +581,34 @@
 .subPill:hover { background: rgba(232,98,26,0.1); border-color: var(--orange); color: var(--orange); }
 .subPillActive { background: var(--dark); color: white; border-color: var(--dark); }
 
+.subPillWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.subPillDeleteBtn {
+  display: none;
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--dark);
+  color: #FAE8D0;
+  border: none;
+  cursor: pointer;
+  font-size: 0.7rem;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  z-index: 2;
+  padding: 0;
+  transition: background 0.12s;
+}
+.subPillDeleteBtn:hover { background: var(--coral); }
+.subPillWrap:hover .subPillDeleteBtn { display: flex; }
+
 .subForm { margin-bottom: 1.5rem; }
 
 .subList { display: flex; flex-direction: column; gap: 1.25rem; }
