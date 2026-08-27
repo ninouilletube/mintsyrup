@@ -230,7 +230,7 @@ export default function AdminPage() {
   const [dragOverSel, setDragOverSel] = useState<string | null>(null);
 
   useEffect(() => {
-    setAuth(sessionStorage.getItem('msc_auth') === '1');
+    setAuth(localStorage.getItem('msc_auth') === '1');
   }, []);
 
   useEffect(() => {
@@ -250,7 +250,7 @@ export default function AdminPage() {
   }, [auth]);
 
   const login = () => {
-    if (pwd === PASSWORD) { setAuth(true); sessionStorage.setItem('msc_auth', '1'); setPwdError(false); }
+    if (pwd === PASSWORD) { setAuth(true); localStorage.setItem('msc_auth', '1'); setPwdError(false); }
     else setPwdError(true);
   };
 
